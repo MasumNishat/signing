@@ -1,0 +1,1829 @@
+// DocuSign eSignature API - Database Schema (DBML)
+// Technology: PostgreSQL 16+
+// ORM: Laravel Eloquent
+
+Project signing_api {
+  database_type: 'PostgreSQL'
+  Note: 'DocuSign eSignature REST API Database Schema'
+}
+
+// =====================================================
+// CORE TABLES
+// =====================================================
+
+Table accounts {
+  id bigserial [pk, increment]
+  account_number varchar(50) [unique, not null]
+  account_name varchar(255) [not null]
+  status varchar(50) [not null, default: 'active', note: 'active, suspended, closed']
+  plan_id bigint [ref: > plans.id]
+  envelope_partition_id varchar(100)
+  can_upgrade boolean [default: true]
+  distributor_code varchar(100)
+  billing_plan_id bigint [ref: > billing_plans.id]
+
+  // Address Information
+  address_line1 varchar(255)
+  address_line2 varchar(255)
+  city varchar(100)
+  state varchar(100)
+  postal_code varchar(20)
+  country varchar(100)
+  phone varchar(50)
+  fax varchar(50)
+
+  // Settings
+  allow_tab_order boolean [default: true]
+  enable_sequential_signing boolean [default: false]
+  enable_recipient_viewing_notification boolean [default: true]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  deleted_at timestamp [null]
+
+  Indexes {
+    account_number
+    status
+    created_at
+    (account_name, status) [name: 'idx_account_name_status']
+  }
+
+  Note: 'Core account table storing DocuSign account information'
+}
+
+Table users {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  user_name varchar(255) [not null]
+  email varchar(255) [unique, not null]
+  password varchar(255) [not null]
+  first_name varchar(100)
+  middle_name varchar(100)
+  last_name varchar(100)
+  suffix_name varchar(50)
+  title varchar(100)
+  job_title varchar(100)
+  country_code varchar(10)
+
+  // Status and Settings
+  user_status varchar(50) [not null, default: 'active', note: 'active, inactive, closed']
+  user_type varchar(50) [not null, default: 'user', note: 'user, admin, company_user']
+  login_status varchar(50) [default: 'not_logged_in']
+  is_admin boolean [default: false]
+
+  // Authentication
+  activation_access_code varchar(255)
+  send_activation_email boolean [default: true]
+  send_activation_on_invalid_login boolean [default: false]
+  password_expiration timestamp
+  last_login timestamp
+
+  // Permission
+  permission_profile_id bigint [ref: > permission_profiles.id]
+
+  // Preferences
+  enable_connect_for_user boolean [default: false]
+  subscribe boolean [default: false]
+
+  // Timestamps
+  created_datetime timestamp [not null, default: `now()`]
+  user_profile_last_modified_date timestamp
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  deleted_at timestamp [null]
+
+  Indexes {
+    email
+    account_id
+    user_status
+    (account_id, user_status) [name: 'idx_account_user_status']
+  }
+
+  Note: 'Users associated with accounts'
+}
+
+Table user_addresses {
+  id bigserial [pk, increment]
+  user_id bigint [ref: > users.id, not null]
+  address_type varchar(50) [not null, note: 'home, work']
+  address1 varchar(255)
+  address2 varchar(255)
+  city varchar(100)
+  state_or_province varchar(100)
+  postal_code varchar(20)
+  country varchar(100)
+  phone varchar(50)
+  fax varchar(50)
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    user_id
+    address_type
+  }
+}
+
+// =====================================================
+// AUTHENTICATION & AUTHORIZATION
+// =====================================================
+
+Table oauth_clients {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id]
+  user_id bigint [ref: > users.id]
+  name varchar(255) [not null]
+  secret varchar(100) [unique]
+  provider varchar(255)
+  redirect text
+  personal_access_client boolean [default: false]
+  password_client boolean [default: false]
+  revoked boolean [default: false]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    user_id
+  }
+
+  Note: 'OAuth 2.0 client applications'
+}
+
+Table oauth_access_tokens {
+  id varchar(100) [pk]
+  user_id bigint [ref: > users.id]
+  client_id bigint [ref: > oauth_clients.id, not null]
+  name varchar(255)
+  scopes text
+  revoked boolean [default: false]
+  expires_at timestamp
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    user_id
+    client_id
+    expires_at
+  }
+
+  Note: 'OAuth 2.0 access tokens'
+}
+
+Table api_keys {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  user_id bigint [ref: > users.id]
+  key_hash varchar(255) [unique, not null]
+  name varchar(255) [not null]
+  scopes jsonb
+  last_used_at timestamp
+  expires_at timestamp
+  revoked boolean [default: false]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    key_hash
+    account_id
+    expires_at
+  }
+
+  Note: 'API keys for programmatic access'
+}
+
+Table permission_profiles {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id]
+  profile_name varchar(255) [not null]
+  is_default boolean [default: false]
+
+  // User Management Permissions
+  can_manage_users boolean [default: false]
+  can_view_users boolean [default: false]
+  can_manage_admins boolean [default: false]
+  can_manage_groups boolean [default: false]
+
+  // Account Management Permissions
+  can_manage_account_settings boolean [default: false]
+  can_manage_account_security_settings boolean [default: false]
+  can_manage_reporting boolean [default: false]
+  can_manage_sharing boolean [default: false]
+  can_manage_envelope_transfer boolean [default: false]
+  can_manage_signing_groups boolean [default: false]
+
+  // Integration Permissions
+  can_manage_connect boolean [default: false]
+  can_manage_document_retention boolean [default: false]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    profile_name
+  }
+
+  Note: 'Permission profiles for role-based access control'
+}
+
+Table user_authorizations {
+  id bigserial [pk, increment]
+  principal_user_id bigint [ref: > users.id, not null]
+  agent_user_id bigint [ref: > users.id, not null]
+  authorization_type varchar(50) [not null, note: 'principal, agent']
+  permissions jsonb
+  status varchar(50) [default: 'active', note: 'active, inactive']
+  start_date date
+  end_date date
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  deleted_at timestamp [null]
+
+  Indexes {
+    principal_user_id
+    agent_user_id
+    status
+  }
+
+  Note: 'User authorization relationships (agent/principal)'
+}
+
+// =====================================================
+// ACCOUNT SETTINGS
+// =====================================================
+
+Table account_settings {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, unique, not null]
+
+  // Signing Settings
+  allow_signing_extensions boolean [default: false]
+  allow_signature_stamps boolean [default: true]
+  enable_signer_attachments boolean [default: true]
+
+  // Security Settings
+  enable_two_factor_authentication boolean [default: false]
+  require_signing_captcha boolean [default: false]
+  session_timeout_minutes integer [default: 20]
+
+  // Branding Settings
+  can_self_brand_send boolean [default: false]
+  can_self_brand_sign boolean [default: false]
+
+  // API Settings
+  enable_api_request_logging boolean [default: false]
+  api_request_log_max_entries integer [default: 50]
+  api_request_log_remaining_entries integer [default: 50]
+
+  // Feature Flags
+  settings jsonb [note: 'Additional dynamic settings']
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+  }
+
+  Note: 'Account-level settings and preferences'
+}
+
+Table password_rules {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, unique, not null]
+
+  password_strength_type varchar(50) [default: 'medium', note: 'weak, medium, strong']
+  minimum_password_length integer [default: 8]
+  maximum_password_age_days integer [default: 90]
+  minimum_password_age_days integer [default: 0]
+
+  password_include_digit boolean [default: true]
+  password_include_lower_case boolean [default: true]
+  password_include_upper_case boolean [default: true]
+  password_include_special_character boolean [default: true]
+  password_include_digit_or_special_character boolean [default: false]
+
+  lockout_duration_minutes integer [default: 30]
+  lockout_duration_type varchar(50) [default: 'minutes']
+  failed_login_attempts integer [default: 5]
+
+  questions_required integer [default: 0]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: 'Password policy rules per account'
+}
+
+Table tab_settings {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, unique, not null]
+
+  text_tabs_enabled boolean [default: true]
+  radio_tabs_enabled boolean [default: true]
+  checkbox_tabs_enabled boolean [default: true]
+  list_tabs_enabled boolean [default: true]
+  approve_decline_tabs_enabled boolean [default: true]
+  note_tabs_enabled boolean [default: true]
+
+  data_field_regex_enabled boolean [default: false]
+  data_field_size_enabled boolean [default: false]
+  tab_location_enabled boolean [default: true]
+  tab_scale_enabled boolean [default: true]
+  tab_locking_enabled boolean [default: false]
+
+  saving_custom_tabs_enabled boolean [default: false]
+  tab_text_formatting_enabled boolean [default: true]
+  shared_custom_tabs_enabled boolean [default: false]
+  sender_to_change_tab_assignments_enabled boolean [default: false]
+  tab_data_label_enabled boolean [default: true]
+  first_last_email_tabs_enabled boolean [default: true]
+  calculated_fields_enabled boolean [default: false]
+  allow_tab_order boolean [default: true]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: 'Tab configuration settings per account'
+}
+
+Table notification_defaults {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, unique, not null]
+
+  api_email_notifications boolean [default: true]
+  bulk_email_notifications boolean [default: true]
+  reminder_email_notifications boolean [default: true]
+
+  email_subject_template text
+  email_body_template text
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: 'Default notification settings'
+}
+
+Table envelope_purge_configurations {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, unique, not null]
+
+  enable_purge boolean [default: false]
+  purge_interval_days integer [default: 365]
+  retain_completed_envelopes_days integer [default: 365]
+  retain_voided_envelopes_days integer [default: 90]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: 'Envelope purge configuration per account'
+}
+
+// =====================================================
+// BRANDING
+// =====================================================
+
+Table brands {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  brand_id varchar(100) [unique, not null]
+  brand_name varchar(255) [not null]
+  brand_company varchar(255)
+
+  is_sending_default boolean [default: false]
+  is_signing_default boolean [default: false]
+  is_overriding_company_name boolean [default: false]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  deleted_at timestamp [null]
+
+  Indexes {
+    account_id
+    brand_id
+    (account_id, is_sending_default)
+  }
+
+  Note: 'Brand profiles for white-labeling'
+}
+
+Table brand_logos {
+  id bigserial [pk, increment]
+  brand_id bigint [ref: > brands.id, not null]
+  logo_type varchar(50) [not null, note: 'primary, secondary, email']
+  file_path varchar(500) [not null]
+  file_name varchar(255)
+  mime_type varchar(100)
+  file_size integer
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    brand_id
+    logo_type
+  }
+
+  Note: 'Brand logo files'
+}
+
+Table brand_resources {
+  id bigserial [pk, increment]
+  brand_id bigint [ref: > brands.id, not null]
+  resource_content_type varchar(100) [not null, note: 'email, sending, signing, signing_captive']
+  file_path varchar(500) [not null]
+  file_name varchar(255)
+  mime_type varchar(100)
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    brand_id
+    resource_content_type
+  }
+
+  Note: 'Brand resource files'
+}
+
+Table brand_email_contents {
+  id bigserial [pk, increment]
+  brand_id bigint [ref: > brands.id, not null]
+  email_content_type varchar(100) [not null]
+  content text
+  email_to_link varchar(500)
+  link_text varchar(255)
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    brand_id
+    email_content_type
+  }
+
+  Note: 'Brand email content templates'
+}
+
+Table watermarks {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, unique, not null]
+
+  enabled boolean [default: false]
+  watermark_text varchar(255)
+  font varchar(100) [default: 'Arial']
+  font_size integer [default: 12]
+  font_color varchar(20) [default: '#000000']
+  display_angle integer [default: 0]
+  transparency integer [default: 50]
+  image_base64 text
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: 'Watermark settings for documents'
+}
+
+// =====================================================
+// SIGNATURES & SEALS
+// =====================================================
+
+Table signatures {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  signature_id varchar(100) [unique, not null]
+  signature_type varchar(50) [not null, note: 'signature, initials']
+  status varchar(50) [default: 'active', note: 'active, closed']
+
+  adopted_date_time timestamp
+  created_date_time timestamp [not null, default: `now()`]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  deleted_at timestamp [null]
+
+  Indexes {
+    account_id
+    signature_id
+    status
+  }
+
+  Note: 'Account-level signature definitions'
+}
+
+Table signature_images {
+  id bigserial [pk, increment]
+  signature_id bigint [ref: > signatures.id, not null]
+  image_type varchar(50) [not null, note: 'signature_image, initials_image, stamp_image']
+  file_path varchar(500) [not null]
+  file_name varchar(255)
+  mime_type varchar(100)
+  include_chrome boolean [default: false]
+  transparent_png boolean [default: false]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    signature_id
+    image_type
+  }
+
+  Note: 'Signature image files'
+}
+
+Table seals {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  seal_id varchar(100) [unique, not null]
+  seal_name varchar(255) [not null]
+  status varchar(50) [default: 'active']
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    seal_id
+  }
+
+  Note: 'Electronic seals for automated signing'
+}
+
+// =====================================================
+// CUSTOM FIELDS & TEMPLATES
+// =====================================================
+
+Table custom_fields {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  custom_field_id varchar(100) [unique, not null]
+  field_name varchar(255) [not null]
+  field_type varchar(50) [not null, note: 'text, list, date']
+
+  show boolean [default: true]
+  required boolean [default: false]
+
+  list_items jsonb [note: 'For list type fields']
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  deleted_at timestamp [null]
+
+  Indexes {
+    account_id
+    custom_field_id
+  }
+
+  Note: 'Custom fields for envelopes'
+}
+
+Table templates {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  template_id varchar(100) [unique, not null]
+  template_name varchar(255) [not null]
+  description text
+
+  owner_user_id bigint [ref: > users.id]
+  shared varchar(50) [default: 'private', note: 'private, shared']
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  deleted_at timestamp [null]
+
+  Indexes {
+    account_id
+    template_id
+    owner_user_id
+  }
+
+  Note: 'Reusable envelope templates'
+}
+
+Table favorite_templates {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  user_id bigint [ref: > users.id, not null]
+  template_id bigint [ref: > templates.id, not null]
+
+  created_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    (account_id, user_id)
+    template_id
+  }
+
+  Note: 'User favorite templates'
+}
+
+Table shared_access {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  user_id bigint [ref: > users.id, not null]
+  item_type varchar(50) [not null, note: 'envelope, template']
+  item_id varchar(100) [not null]
+  shared_with_user_id bigint [ref: > users.id]
+  shared_with_group_id bigint
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    user_id
+    item_type
+  }
+
+  Note: 'Shared access to envelopes and templates'
+}
+
+// =====================================================
+// RECIPIENTS
+// =====================================================
+
+Table recipients {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  recipient_id varchar(100) [unique, not null]
+  recipient_type varchar(50) [not null, note: 'signer, carbon_copy, certified_delivery']
+  email varchar(255) [not null]
+  name varchar(255) [not null]
+
+  routing_order integer [default: 1]
+  status varchar(50) [default: 'created']
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    recipient_id
+    email
+  }
+
+  Note: 'Envelope recipients'
+}
+
+Table captive_recipients {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  recipient_part varchar(255) [not null]
+  email varchar(255) [not null]
+  user_name varchar(255)
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  deleted_at timestamp [null]
+
+  Indexes {
+    account_id
+    email
+  }
+
+  Note: 'Captive (embedded) recipient information'
+}
+
+// =====================================================
+// IDENTITY VERIFICATION
+// =====================================================
+
+Table identity_verification_workflows {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  workflow_id varchar(100) [unique, not null]
+  workflow_name varchar(255) [not null]
+  workflow_type varchar(100)
+
+  default_name varchar(255)
+  default_description text
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    workflow_id
+  }
+
+  Note: 'Identity verification workflow definitions'
+}
+
+// =====================================================
+// CONSUMER DISCLOSURE
+// =====================================================
+
+Table consumer_disclosures {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  lang_code varchar(10) [not null, default: 'en']
+
+  company_name varchar(255)
+  company_address text
+  company_phone varchar(50)
+  company_email varchar(255)
+
+  pdf_id varchar(100)
+  use_brand boolean [default: false]
+  withdraw_address_line1 varchar(255)
+  withdraw_address_line2 varchar(255)
+  withdraw_by_email boolean [default: false]
+  withdraw_by_mail boolean [default: false]
+  withdraw_by_phone boolean [default: false]
+  withdraw_consequences text
+
+  change_email text
+  custom_disclosure_text text
+  enable_esign boolean [default: true]
+  esign_agreement_text text
+  esign_text text
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    lang_code
+  }
+
+  Note: 'Electronic Record and Signature Disclosure'
+}
+
+// =====================================================
+// BILLING
+// =====================================================
+
+Table billing_plans {
+  id bigserial [pk, increment]
+  plan_id varchar(100) [unique, not null]
+  plan_name varchar(255) [not null]
+  plan_classification varchar(100)
+
+  currency_code varchar(10) [default: 'USD']
+  per_seat_price decimal(10,2)
+  support_incident_fee decimal(10,2)
+  support_plan_fee decimal(10,2)
+
+  included_seats integer [default: 0]
+  enable_support boolean [default: true]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    plan_id
+  }
+
+  Note: 'Billing plan definitions'
+}
+
+Table billing_charges {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  charge_type varchar(100) [not null, note: 'seat, envelope, storage']
+  charge_name varchar(255) [not null]
+
+  unit_price decimal(10,2)
+  quantity integer [default: 0]
+  incremental_quantity integer [default: 0]
+
+  blocked boolean [default: false]
+  chargeable_items jsonb
+  discount_information jsonb
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    charge_type
+  }
+
+  Note: 'Billing charges for account'
+}
+
+Table billing_invoices {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  invoice_id varchar(100) [unique, not null]
+  invoice_number varchar(100) [unique, not null]
+
+  invoice_date date [not null]
+  due_date date
+  balance decimal(12,2) [default: 0]
+  amount decimal(12,2) [not null]
+  tax_exempt_amount decimal(12,2) [default: 0]
+  non_tax_exempt_amount decimal(12,2) [default: 0]
+
+  currency_code varchar(10) [default: 'USD']
+  pdf_available boolean [default: false]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    invoice_id
+    invoice_number
+    invoice_date
+    due_date
+  }
+
+  Note: 'Billing invoices'
+}
+
+Table billing_invoice_items {
+  id bigserial [pk, increment]
+  invoice_id bigint [ref: > billing_invoices.id, not null]
+  charge_type varchar(100) [not null]
+  charge_name varchar(255) [not null]
+
+  unit_price decimal(10,2)
+  quantity integer [default: 0]
+  subtotal decimal(12,2)
+  tax decimal(12,2) [default: 0]
+  total decimal(12,2)
+
+  created_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    invoice_id
+  }
+
+  Note: 'Line items on billing invoices'
+}
+
+Table billing_payments {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  payment_id varchar(100) [unique, not null]
+  invoice_id bigint [ref: > billing_invoices.id]
+
+  payment_date date [not null]
+  payment_amount decimal(12,2) [not null]
+  payment_method varchar(50) [note: 'credit_card, ach, wire']
+
+  status varchar(50) [default: 'pending', note: 'pending, completed, failed']
+  transaction_id varchar(255)
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    invoice_id
+    payment_id
+    payment_date
+  }
+
+  Note: 'Billing payments'
+}
+
+// =====================================================
+// DIAGNOSTICS & LOGGING
+// =====================================================
+
+Table request_logs {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id]
+  user_id bigint [ref: > users.id]
+  request_log_id varchar(100) [unique, not null]
+
+  created_date_time timestamp [not null, default: `now()`]
+
+  request_method varchar(10)
+  request_url text
+  request_headers jsonb
+  request_body text
+
+  response_status integer
+  response_headers jsonb
+  response_body text
+
+  duration_ms integer
+  ip_address varchar(50)
+
+  created_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    request_log_id
+    account_id
+    user_id
+    created_date_time
+  }
+
+  Note: 'API request logs for troubleshooting'
+}
+
+Table audit_logs {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id]
+  user_id bigint [ref: > users.id]
+
+  action varchar(100) [not null]
+  resource_type varchar(100)
+  resource_id varchar(100)
+
+  old_values jsonb
+  new_values jsonb
+
+  ip_address varchar(50)
+  user_agent text
+
+  created_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    user_id
+    action
+    resource_type
+    created_at
+  }
+
+  Note: 'Audit trail for security and compliance'
+}
+
+// =====================================================
+// SYSTEM & CONFIGURATION
+// =====================================================
+
+Table plans {
+  id bigserial [pk, increment]
+  plan_id varchar(100) [unique, not null]
+  plan_name varchar(255) [not null]
+  plan_type varchar(50) [note: 'free, pro, business, enterprise']
+
+  max_users integer [default: 1]
+  max_envelopes_per_month integer [default: 5]
+  max_storage_gb integer [default: 5]
+
+  features jsonb
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: 'Plan definitions'
+}
+
+Table signature_providers {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id]
+  provider_id varchar(100) [unique, not null]
+  provider_name varchar(255) [not null]
+  priority integer [default: 0]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    account_id
+    provider_id
+  }
+
+  Note: 'Third-party signature provider integrations'
+}
+
+Table supported_languages {
+  id bigserial [pk, increment]
+  lang_code varchar(10) [unique, not null]
+  lang_name varchar(100) [not null]
+  is_default boolean [default: false]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: 'Supported languages for localization'
+}
+
+Table file_types {
+  id bigserial [pk, increment]
+  mime_type varchar(100) [unique, not null]
+  file_extension varchar(20) [not null]
+  is_supported boolean [default: true]
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+
+  Note: 'Supported and unsupported file types'
+}
+
+Table enote_configurations {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, unique, not null]
+
+  api_key varchar(255)
+  connect_username varchar(255)
+  connect_password varchar(255)
+  connect_config_name varchar(255)
+
+  org_id varchar(255)
+  user_id varchar(255)
+
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  deleted_at timestamp [null]
+
+  Note: 'eNote eOriginal integration configuration'
+}
+
+// =====================================================
+// JOBS & QUEUES (Laravel Specific)
+// =====================================================
+
+Table jobs {
+  id bigserial [pk, increment]
+  queue varchar(255) [not null]
+  payload text [not null]
+  attempts smallint [not null, default: 0]
+  reserved_at integer [null]
+  available_at integer [not null]
+  created_at integer [not null]
+
+  Indexes {
+    queue
+    (queue, reserved_at)
+  }
+
+  Note: 'Laravel queue jobs table'
+}
+
+Table failed_jobs {
+  id bigserial [pk, increment]
+  uuid varchar(255) [unique, not null]
+  connection text [not null]
+  queue text [not null]
+  payload text [not null]
+  exception text [not null]
+  failed_at timestamp [not null, default: `now()`]
+
+  Indexes {
+    uuid
+  }
+
+  Note: 'Failed queue jobs for monitoring'
+}
+
+// =====================================================
+// ENVELOPES (CORE FEATURE - 125 ENDPOINTS)
+// =====================================================
+
+Table envelopes {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  envelope_id varchar(100) [unique, not null]
+  
+  // Basic Info
+  email_subject varchar(500)
+  email_blurb text
+  status varchar(50) [not null, default: 'created', note: 'created, sent, delivered, signed, completed, declined, voided']
+  
+  // Sender Info
+  sender_user_id bigint [ref: > users.id]
+  sender_name varchar(255)
+  sender_email varchar(255)
+  
+  // Status Dates
+  created_date_time timestamp [not null, default: `now()`]
+  sent_date_time timestamp
+  delivered_date_time timestamp
+  signed_date_time timestamp
+  completed_date_time timestamp
+  declined_date_time timestamp
+  voided_date_time timestamp
+  voided_reason text
+  
+  // Settings
+  enable_wet_sign boolean [default: false]
+  allow_markup boolean [default: true]
+  allow_reassign boolean [default: true]
+  allow_view_history boolean [default: true]
+  enforce_signer_visibility boolean [default: false]
+  is_signature_provider_envelope boolean [default: false]
+  
+  // Notification Settings
+  use_disclosure boolean [default: true]
+  reminder_enabled boolean [default: false]
+  reminder_delay integer
+  reminder_frequency integer
+  expire_enabled boolean [default: false]
+  expire_after integer
+  expire_warn integer
+  
+  // Workflow
+  is_dynamic_envelope boolean [default: false]
+  enable_sequential_signing boolean [default: false]
+  
+  // Metadata
+  custom_fields_uri text
+  documents_uri text
+  recipients_uri text
+  envelope_uri text
+  
+  // Timestamps
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  deleted_at timestamp [null]
+  
+  Indexes {
+    account_id
+    envelope_id
+    status
+    sender_user_id
+    created_date_time
+    (account_id, status, created_date_time) [name: 'idx_envelope_account_status_date']
+  }
+  
+  Note: 'Core envelopes table - THE MOST IMPORTANT TABLE'
+}
+
+Table envelope_documents {
+  id bigserial [pk, increment]
+  envelope_id bigint [ref: > envelopes.id, not null]
+  document_id varchar(100) [not null]
+  
+  name varchar(255) [not null]
+  document_base64 text
+  file_extension varchar(20)
+  order_number integer [default: 1]
+  
+  // Document Settings
+  display varchar(50) [default: 'inline']
+  include_in_download boolean [default: true]
+  signable boolean [default: true]
+  
+  // File Info
+  file_path varchar(500)
+  file_size integer
+  mime_type varchar(100)
+  pages integer
+  
+  // Transform
+  transform_pdf_fields boolean [default: false]
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    envelope_id
+    document_id
+    (envelope_id, order_number)
+  }
+  
+  Note: 'Documents attached to envelopes'
+}
+
+Table envelope_recipients {
+  id bigserial [pk, increment]
+  envelope_id bigint [ref: > envelopes.id, not null]
+  recipient_id varchar(100) [not null]
+  
+  // Recipient Info
+  recipient_type varchar(50) [not null, note: 'signer, carbon_copy, certified_delivery, in_person_signer, agent, editor, intermediary']
+  role_name varchar(255)
+  name varchar(255) [not null]
+  email varchar(255) [not null]
+  
+  // Routing
+  routing_order integer [default: 1]
+  
+  // Status
+  status varchar(50) [default: 'created', note: 'created, sent, delivered, signed, declined, completed, fax_pending, auto_responded']
+  signed_date_time timestamp
+  delivered_date_time timestamp
+  sent_date_time timestamp
+  declined_date_time timestamp
+  declined_reason text
+  
+  // Authentication
+  access_code varchar(100)
+  require_id_lookup boolean [default: false]
+  id_check_configuration_name varchar(255)
+  phone_authentication_country_code varchar(10)
+  phone_authentication_number varchar(50)
+  sms_authentication_country_code varchar(10)
+  sms_authentication_number varchar(50)
+  
+  // Settings
+  can_sign_offline boolean [default: false]
+  require_signer_certificate boolean [default: false]
+  require_sign_on_paper boolean [default: false]
+  sign_in_each_location boolean [default: false]
+  
+  // Host Info (for in-person signing)
+  host_name varchar(255)
+  host_email varchar(255)
+  
+  // Metadata
+  client_user_id varchar(255)
+  embedded_recipient_start_url text
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    envelope_id
+    recipient_id
+    status
+    routing_order
+    (envelope_id, routing_order)
+  }
+  
+  Note: 'Recipients for envelope signing/viewing'
+}
+
+Table envelope_tabs {
+  id bigserial [pk, increment]
+  envelope_id bigint [ref: > envelopes.id, not null]
+  document_id bigint [ref: > envelope_documents.id, not null]
+  recipient_id bigint [ref: > envelope_recipients.id, not null]
+  tab_id varchar(100) [not null]
+  
+  // Tab Type
+  tab_type varchar(50) [not null, note: 'sign_here, initial_here, date_signed, text, checkbox, radio_group, list, number, email, etc.']
+  tab_label varchar(255)
+  
+  // Position
+  page_number integer [not null]
+  x_position integer [not null]
+  y_position integer [not null]
+  width integer
+  height integer
+  
+  // Settings
+  required boolean [default: false]
+  locked boolean [default: false]
+  disabled boolean [default: false]
+  read_only boolean [default: false]
+  bold boolean [default: false]
+  italic boolean [default: false]
+  underline boolean [default: false]
+  
+  // Value
+  value text
+  original_value text
+  
+  // Validation
+  validation_type varchar(50)
+  validation_pattern varchar(255)
+  validation_message varchar(255)
+  min_length integer
+  max_length integer
+  
+  // Conditional Logic
+  conditional_parent_label varchar(255)
+  conditional_parent_value varchar(255)
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    envelope_id
+    document_id
+    recipient_id
+    tab_id
+    tab_type
+  }
+  
+  Note: 'Tabs/fields on envelope documents'
+}
+
+Table envelope_custom_fields {
+  id bigserial [pk, increment]
+  envelope_id bigint [ref: > envelopes.id, not null]
+  field_id varchar(100) [not null]
+  
+  name varchar(255) [not null]
+  value text
+  required boolean [default: false]
+  show boolean [default: true]
+  
+  // Type: text, list
+  field_type varchar(50) [default: 'text']
+  list_items jsonb
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    envelope_id
+  }
+  
+  Note: 'Custom fields for envelopes'
+}
+
+Table envelope_attachments {
+  id bigserial [pk, increment]
+  envelope_id bigint [ref: > envelopes.id, not null]
+  attachment_id varchar(100) [not null]
+  
+  label varchar(255)
+  attachment_type varchar(50) [note: 'sender, signer']
+  data text
+  
+  created_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    envelope_id
+    attachment_id
+  }
+  
+  Note: 'Attachments to envelopes'
+}
+
+Table envelope_locks {
+  id bigserial [pk, increment]
+  envelope_id bigint [ref: > envelopes.id, unique, not null]
+  
+  locked_by_user_id bigint [ref: > users.id]
+  locked_by_user_name varchar(255)
+  locked_until_date_time timestamp
+  lock_duration_in_seconds integer
+  lock_type varchar(50) [default: 'edit']
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    envelope_id
+    locked_by_user_id
+  }
+  
+  Note: 'Envelope locks for editing protection'
+}
+
+Table envelope_audit_events {
+  id bigserial [pk, increment]
+  envelope_id bigint [ref: > envelopes.id, not null]
+  
+  event_timestamp timestamp [not null]
+  event_type varchar(100)
+  event_description text
+  user_name varchar(255)
+  user_id bigint [ref: > users.id]
+  
+  created_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    envelope_id
+    event_timestamp
+  }
+  
+  Note: 'Audit trail for envelope events'
+}
+
+Table envelope_views {
+  id bigserial [pk, increment]
+  envelope_id bigint [ref: > envelopes.id, not null]
+  recipient_id bigint [ref: > envelope_recipients.id]
+  
+  view_type varchar(50) [not null, note: 'sender, recipient, correct, edit, shared']
+  view_url text [not null]
+  
+  created_at timestamp [not null, default: `now()`]
+  expires_at timestamp
+  
+  Indexes {
+    envelope_id
+    recipient_id
+  }
+  
+  Note: 'Generated view URLs for envelope access'
+}
+
+Table envelope_workflow {
+  id bigserial [pk, increment]
+  envelope_id bigint [ref: > envelopes.id, unique, not null]
+  
+  workflow_status varchar(50) [default: 'in_progress']
+  current_routing_order integer [default: 1]
+  
+  // Scheduled Sending
+  scheduled_sending_enabled boolean [default: false]
+  scheduled_sending_resume_date timestamp
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    envelope_id
+  }
+  
+  Note: 'Envelope workflow configuration'
+}
+
+Table envelope_workflow_steps {
+  id bigserial [pk, increment]
+  workflow_id bigint [ref: > envelope_workflow.id, not null]
+  step_id varchar(100) [not null]
+  
+  step_name varchar(255)
+  step_status varchar(50) [default: 'inactive']
+  trigger_on_item varchar(50)
+  
+  // Delayed Routing
+  delayed_routing_enabled boolean [default: false]
+  delay_hours integer
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    workflow_id
+  }
+  
+  Note: 'Workflow steps for envelopes'
+}
+
+Table envelope_transfer_rules {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  rule_id varchar(100) [unique, not null]
+  
+  rule_name varchar(255)
+  enabled boolean [default: true]
+  
+  // From/To
+  from_user_id bigint [ref: > users.id]
+  to_user_id bigint [ref: > users.id]
+  from_group_id bigint
+  to_group_id bigint
+  
+  // Conditions
+  modified_start_date date
+  modified_end_date date
+  envelope_types jsonb
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    account_id
+    from_user_id
+    to_user_id
+  }
+  
+  Note: 'Rules for envelope transfer between users'
+}
+
+Table chunked_uploads {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  chunked_upload_id varchar(100) [unique, not null]
+  
+  chunked_upload_uri text
+  committed boolean [default: false]
+  expires_date_time timestamp
+  max_chunk_size bigint
+  max_chunks integer
+  total_parts integer
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    account_id
+    chunked_upload_id
+  }
+  
+  Note: 'Chunked file uploads for large documents'
+}
+
+// =====================================================
+// BULK ENVELOPES (12 ENDPOINTS)
+// =====================================================
+
+Table bulk_send_batches {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  batch_id varchar(100) [unique, not null]
+  
+  batch_name varchar(255)
+  status varchar(50) [default: 'queued', note: 'queued, processing, sent, failed']
+  
+  batch_size integer
+  envelopes_sent integer [default: 0]
+  envelopes_failed integer [default: 0]
+  
+  submitted_date timestamp
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    account_id
+    batch_id
+    status
+  }
+  
+  Note: 'Bulk sending batches'
+}
+
+Table bulk_send_lists {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  list_id varchar(100) [unique, not null]
+  
+  list_name varchar(255) [not null]
+  created_by_user_id bigint [ref: > users.id]
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    account_id
+    list_id
+  }
+  
+  Note: 'Bulk recipient lists'
+}
+
+Table bulk_send_recipients {
+  id bigserial [pk, increment]
+  list_id bigint [ref: > bulk_send_lists.id, not null]
+  
+  recipient_name varchar(255)
+  recipient_email varchar(255)
+  custom_fields jsonb
+  
+  created_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    list_id
+  }
+  
+  Note: 'Recipients in bulk send lists'
+}
+
+// =====================================================
+// FOLDERS (4 ENDPOINTS)
+// =====================================================
+
+Table folders {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  folder_id varchar(100) [unique, not null]
+  
+  folder_name varchar(255) [not null]
+  folder_type varchar(50) [note: 'normal, inbox, sentitems, draft, trash, recyclebin, custom']
+  owner_user_id bigint [ref: > users.id]
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    account_id
+    folder_id
+    owner_user_id
+  }
+  
+  Note: 'Folders for organizing envelopes'
+}
+
+Table envelope_folders {
+  id bigserial [pk, increment]
+  envelope_id bigint [ref: > envelopes.id, not null]
+  folder_id bigint [ref: > folders.id, not null]
+  
+  created_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    envelope_id
+    folder_id
+    (envelope_id, folder_id) [unique]
+  }
+  
+  Note: 'Junction table for envelopes and folders'
+}
+
+// =====================================================
+// POWERFORMS (8 ENDPOINTS)
+// =====================================================
+
+Table powerforms {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  powerform_id varchar(100) [unique, not null]
+  
+  name varchar(255) [not null]
+  is_active boolean [default: true]
+  powerform_url text
+  
+  // Settings
+  email_subject varchar(500)
+  email_body text
+  
+  // Limits
+  uses_remaining integer
+  limit_use_interval varchar(50)
+  limit_use_interval_units integer
+  limit_use_interval_enabled boolean [default: false]
+  
+  created_by_user_id bigint [ref: > users.id]
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    account_id
+    powerform_id
+    is_active
+  }
+  
+  Note: 'Reusable PowerForms for signing'
+}
+
+Table powerform_submissions {
+  id bigserial [pk, increment]
+  powerform_id bigint [ref: > powerforms.id, not null]
+  envelope_id bigint [ref: > envelopes.id]
+  
+  submitter_name varchar(255)
+  submitter_email varchar(255)
+  form_data jsonb
+  
+  created_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    powerform_id
+    envelope_id
+  }
+  
+  Note: 'PowerForm submission tracking'
+}
+
+// =====================================================
+// CONNECT (19 ENDPOINTS)
+// =====================================================
+
+Table connect_configurations {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  connect_id varchar(100) [unique, not null]
+  
+  name varchar(255)
+  url_to_publish_to text [not null]
+  
+  // Events to publish
+  envelope_events jsonb
+  recipient_events jsonb
+  
+  // Settings
+  all_users boolean [default: true]
+  include_certificate_of_completion boolean [default: true]
+  include_documents boolean [default: true]
+  include_envelope_void_reason boolean [default: true]
+  include_sender_account_as_custom_field boolean [default: false]
+  include_time_zone_information boolean [default: true]
+  
+  // OAuth
+  use_soap_interface boolean [default: false]
+  include_hmac boolean [default: false]
+  sign_message_with_x509_certificate boolean [default: false]
+  
+  enabled boolean [default: true]
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    account_id
+    connect_id
+  }
+  
+  Note: 'Connect webhook configurations'
+}
+
+Table connect_logs {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  connect_id bigint [ref: > connect_configurations.id]
+  log_id varchar(100) [unique, not null]
+  
+  envelope_id varchar(100)
+  status varchar(50) [note: 'success, failed']
+  created_date_time timestamp [not null]
+  
+  request_url text
+  request_body text
+  response_body text
+  error text
+  
+  Indexes {
+    account_id
+    connect_id
+    envelope_id
+    created_date_time
+  }
+  
+  Note: 'Connect webhook delivery logs'
+}
+
+Table connect_failures {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  failure_id varchar(100) [unique, not null]
+  
+  envelope_id varchar(100)
+  error text
+  failed_date_time timestamp
+  
+  retry_count integer [default: 0]
+  
+  created_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    account_id
+    envelope_id
+  }
+  
+  Note: 'Connect webhook failures for retry'
+}
+
+Table connect_oauth_config {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, unique, not null]
+  connect_id bigint [ref: > connect_configurations.id]
+  
+  oauth_client_id varchar(255)
+  oauth_token_endpoint text
+  oauth_authorization_endpoint text
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Note: 'OAuth configuration for Connect'
+}
+
+// =====================================================
+// WORKSPACES (11 ENDPOINTS)
+// =====================================================
+
+Table workspaces {
+  id bigserial [pk, increment]
+  account_id bigint [ref: > accounts.id, not null]
+  workspace_id varchar(100) [unique, not null]
+  
+  workspace_name varchar(255) [not null]
+  workspace_description text
+  workspace_uri text
+  
+  created_by_user_id bigint [ref: > users.id]
+  status varchar(50) [default: 'active']
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    account_id
+    workspace_id
+  }
+  
+  Note: 'Collaborative workspaces'
+}
+
+Table workspace_folders {
+  id bigserial [pk, increment]
+  workspace_id bigint [ref: > workspaces.id, not null]
+  folder_id varchar(100) [unique, not null]
+  parent_folder_id bigint [ref: > workspace_folders.id]
+  
+  folder_name varchar(255) [not null]
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    workspace_id
+    parent_folder_id
+  }
+  
+  Note: 'Folders within workspaces'
+}
+
+Table workspace_files {
+  id bigserial [pk, increment]
+  folder_id bigint [ref: > workspace_folders.id, not null]
+  file_id varchar(100) [unique, not null]
+  
+  file_name varchar(255) [not null]
+  file_uri text
+  file_size bigint
+  content_type varchar(100)
+  
+  created_by_user_id bigint [ref: > users.id]
+  
+  created_at timestamp [not null, default: `now()`]
+  updated_at timestamp [not null, default: `now()`]
+  
+  Indexes {
+    folder_id
+    file_id
+  }
+  
+  Note: 'Files in workspace folders'
+}
