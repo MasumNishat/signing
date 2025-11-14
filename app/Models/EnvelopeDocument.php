@@ -24,6 +24,11 @@ use Illuminate\Support\Str;
  * @property bool $include_in_download
  * @property bool $signable
  * @property string|null $file_path
+ * @property string|null $pdf_path
+ * @property string|null $file_hash
+ * @property string $conversion_status
+ * @property string|null $conversion_error
+ * @property \Carbon\Carbon|null $converted_at
  * @property int|null $file_size
  * @property string|null $mime_type
  * @property int|null $pages
@@ -51,6 +56,11 @@ class EnvelopeDocument extends Model
         'include_in_download',
         'signable',
         'file_path',
+        'pdf_path',
+        'file_hash',
+        'conversion_status',
+        'conversion_error',
+        'converted_at',
         'file_size',
         'mime_type',
         'pages',
@@ -64,6 +74,7 @@ class EnvelopeDocument extends Model
         'file_size' => 'integer',
         'pages' => 'integer',
         'transform_pdf_fields' => 'boolean',
+        'converted_at' => 'datetime',
     ];
 
     protected $hidden = [
