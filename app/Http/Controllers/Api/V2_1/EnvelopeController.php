@@ -314,4 +314,370 @@ class EnvelopeController extends BaseController
 
         return $this->success($statistics, 'Envelope statistics retrieved successfully');
     }
+
+    /**
+     * Get envelope notification settings.
+     *
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function getNotification(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $settings = $this->envelopeService->getNotificationSettings($envelope);
+
+        return $this->success($settings, 'Notification settings retrieved successfully');
+    }
+
+    /**
+     * Update envelope notification settings.
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function updateNotification(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'reminders.reminderEnabled' => 'nullable|string|in:true,false',
+            'reminders.reminderDelay' => 'nullable|string',
+            'reminders.reminderFrequency' => 'nullable|string',
+            'expirations.expireEnabled' => 'nullable|string|in:true,false',
+            'expirations.expireAfter' => 'nullable|string',
+            'expirations.expireWarn' => 'nullable|string',
+            'useAccountDefaults' => 'nullable|string|in:true,false',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $updatedEnvelope = $this->envelopeService->updateNotificationSettings(
+                $envelope,
+                $validator->validated()
+            );
+
+            $settings = $this->envelopeService->getNotificationSettings($updatedEnvelope);
+
+            return $this->success($settings, 'Notification settings updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get envelope email settings.
+     *
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function getEmailSettings(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $settings = $this->envelopeService->getEmailSettings($envelope);
+
+        return $this->success($settings, 'Email settings retrieved successfully');
+    }
+
+    /**
+     * Update envelope email settings.
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function updateEmailSettings(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'replyEmailAddressOverride' => 'nullable|email|max:255',
+            'replyEmailNameOverride' => 'nullable|string|max:255',
+            'bccEmailAddresses' => 'nullable|array',
+            'bccEmailAddresses.*' => 'email|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $updatedEnvelope = $this->envelopeService->updateEmailSettings(
+                $envelope,
+                $validator->validated()
+            );
+
+            $settings = $this->envelopeService->getEmailSettings($updatedEnvelope);
+
+            return $this->success($settings, 'Email settings updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get envelope custom fields.
+     *
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function getCustomFields(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $customFields = $this->envelopeService->getCustomFields($envelope);
+
+        return $this->success($customFields, 'Custom fields retrieved successfully');
+    }
+
+    /**
+     * Create or update envelope custom fields.
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function updateCustomFields(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'textCustomFields' => 'nullable|array',
+            'textCustomFields.*.name' => 'required|string|max:255',
+            'textCustomFields.*.value' => 'nullable|string',
+            'textCustomFields.*.required' => 'nullable|string|in:true,false',
+            'textCustomFields.*.show' => 'nullable|string|in:true,false',
+            'listCustomFields' => 'nullable|array',
+            'listCustomFields.*.name' => 'required|string|max:255',
+            'listCustomFields.*.value' => 'nullable|string',
+            'listCustomFields.*.required' => 'nullable|string|in:true,false',
+            'listCustomFields.*.show' => 'nullable|string|in:true,false',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $updatedEnvelope = $this->envelopeService->updateCustomFields(
+                $envelope,
+                $validator->validated()
+            );
+
+            $customFields = $this->envelopeService->getCustomFields($updatedEnvelope);
+
+            return $this->success($customFields, 'Custom fields updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Create envelope custom fields (POST).
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function createCustomFields(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        // POST and PUT do the same thing for custom fields (replace all)
+        return $this->updateCustomFields($request, $accountId, $envelopeId);
+    }
+
+    /**
+     * Delete envelope custom fields.
+     *
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function deleteCustomFields(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $this->envelopeService->deleteCustomFields($envelope);
+
+            return $this->noContent('Custom fields deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get envelope lock status.
+     *
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function getLock(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $lock = $this->envelopeService->getLock($envelope);
+
+        if (!$lock) {
+            return $this->error('Envelope is not locked', 404);
+        }
+
+        return $this->success($lock, 'Lock information retrieved successfully');
+    }
+
+    /**
+     * Create envelope lock.
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function createLock(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'lockDurationInSeconds' => 'nullable|integer|min:60|max:3600',
+            'lockedByApp' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $duration = $request->input('lockDurationInSeconds', 300);
+
+        try {
+            $lock = $this->envelopeService->createLock(
+                $envelope,
+                $request->user(),
+                (int) $duration
+            );
+
+            return $this->created($lock, 'Envelope locked successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Update envelope lock.
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function updateLock(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'lockToken' => 'required|string',
+            'lockDurationInSeconds' => 'nullable|integer|min:60|max:3600',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $duration = $request->input('lockDurationInSeconds', 300);
+
+        try {
+            $lock = $this->envelopeService->updateLock(
+                $envelope,
+                $request->input('lockToken'),
+                (int) $duration
+            );
+
+            return $this->success($lock, 'Lock updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Delete envelope lock.
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function deleteLock(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $lockToken = $request->header('X-DocuSign-Lock-Token') ?? $request->input('lockToken');
+
+        try {
+            $this->envelopeService->deleteLock($envelope, $lockToken);
+
+            return $this->noContent('Lock deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
 }

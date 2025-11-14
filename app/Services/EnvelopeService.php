@@ -420,4 +420,315 @@ class EnvelopeService
             'draft' => $draft,
         ];
     }
+
+    /**
+     * Get envelope notification settings.
+     *
+     * @param  Envelope  $envelope
+     * @return array
+     */
+    public function getNotificationSettings(Envelope $envelope): array
+    {
+        return [
+            'reminders' => [
+                'reminderEnabled' => $envelope->reminder_enabled ? 'true' : 'false',
+                'reminderDelay' => (string) ($envelope->reminder_delay ?? ''),
+                'reminderFrequency' => (string) ($envelope->reminder_frequency ?? ''),
+            ],
+            'expirations' => [
+                'expireEnabled' => $envelope->expire_enabled ? 'true' : 'false',
+                'expireAfter' => (string) ($envelope->expire_after ?? ''),
+                'expireWarn' => (string) ($envelope->expire_warn ?? ''),
+            ],
+        ];
+    }
+
+    /**
+     * Update envelope notification settings.
+     *
+     * @param  Envelope  $envelope
+     * @param  array  $data
+     * @return Envelope
+     * @throws \Exception
+     */
+    public function updateNotificationSettings(Envelope $envelope, array $data): Envelope
+    {
+        // If use account defaults, we would load from account settings
+        // For now, we'll apply the provided settings
+
+        if (isset($data['reminders'])) {
+            $envelope->reminder_enabled = ($data['reminders']['reminderEnabled'] ?? 'false') === 'true';
+            $envelope->reminder_delay = !empty($data['reminders']['reminderDelay'])
+                ? (int) $data['reminders']['reminderDelay']
+                : null;
+            $envelope->reminder_frequency = !empty($data['reminders']['reminderFrequency'])
+                ? (int) $data['reminders']['reminderFrequency']
+                : null;
+        }
+
+        if (isset($data['expirations'])) {
+            $envelope->expire_enabled = ($data['expirations']['expireEnabled'] ?? 'false') === 'true';
+            $envelope->expire_after = !empty($data['expirations']['expireAfter'])
+                ? (int) $data['expirations']['expireAfter']
+                : null;
+            $envelope->expire_warn = !empty($data['expirations']['expireWarn'])
+                ? (int) $data['expirations']['expireWarn']
+                : null;
+        }
+
+        $envelope->save();
+
+        return $envelope->fresh();
+    }
+
+    /**
+     * Get envelope email settings.
+     *
+     * @param  Envelope  $envelope
+     * @return array
+     */
+    public function getEmailSettings(Envelope $envelope): array
+    {
+        return [
+            'replyEmailAddressOverride' => $envelope->sender_email ?? '',
+            'replyEmailNameOverride' => $envelope->sender_name ?? '',
+            'bccEmailAddresses' => [], // Would come from a separate table
+        ];
+    }
+
+    /**
+     * Update envelope email settings.
+     *
+     * @param  Envelope  $envelope
+     * @param  array  $data
+     * @return Envelope
+     */
+    public function updateEmailSettings(Envelope $envelope, array $data): Envelope
+    {
+        // Update email-related settings
+        // Most email settings would be in envelope metadata
+
+        if (isset($data['replyEmailAddressOverride'])) {
+            $envelope->sender_email = $data['replyEmailAddressOverride'];
+        }
+
+        if (isset($data['replyEmailNameOverride'])) {
+            $envelope->sender_name = $data['replyEmailNameOverride'];
+        }
+
+        $envelope->save();
+
+        return $envelope->fresh();
+    }
+
+    /**
+     * Get envelope custom fields.
+     *
+     * @param  Envelope  $envelope
+     * @return array
+     */
+    public function getCustomFields(Envelope $envelope): array
+    {
+        $textCustomFields = [];
+        $listCustomFields = [];
+
+        foreach ($envelope->customFields as $field) {
+            $fieldData = [
+                'fieldId' => (string) $field->id,
+                'name' => $field->name,
+                'value' => $field->value,
+                'required' => $field->required ? 'true' : 'false',
+                'show' => $field->show ? 'true' : 'false',
+            ];
+
+            if ($field->type === 'list') {
+                $listCustomFields[] = $fieldData;
+            } else {
+                $textCustomFields[] = $fieldData;
+            }
+        }
+
+        return [
+            'textCustomFields' => $textCustomFields,
+            'listCustomFields' => $listCustomFields,
+        ];
+    }
+
+    /**
+     * Update or create envelope custom fields.
+     *
+     * @param  Envelope  $envelope
+     * @param  array  $data
+     * @return Envelope
+     */
+    public function updateCustomFields(Envelope $envelope, array $data): Envelope
+    {
+        DB::beginTransaction();
+
+        try {
+            // Clear existing custom fields
+            $envelope->customFields()->delete();
+
+            // Add text custom fields
+            if (isset($data['textCustomFields'])) {
+                foreach ($data['textCustomFields'] as $field) {
+                    $customField = new EnvelopeCustomField();
+                    $customField->envelope_id = $envelope->id;
+                    $customField->name = $field['name'];
+                    $customField->value = $field['value'] ?? '';
+                    $customField->type = 'text';
+                    $customField->required = ($field['required'] ?? 'false') === 'true';
+                    $customField->show = ($field['show'] ?? 'true') === 'true';
+                    $customField->save();
+                }
+            }
+
+            // Add list custom fields
+            if (isset($data['listCustomFields'])) {
+                foreach ($data['listCustomFields'] as $field) {
+                    $customField = new EnvelopeCustomField();
+                    $customField->envelope_id = $envelope->id;
+                    $customField->name = $field['name'];
+                    $customField->value = $field['value'] ?? '';
+                    $customField->type = 'list';
+                    $customField->required = ($field['required'] ?? 'false') === 'true';
+                    $customField->show = ($field['show'] ?? 'true') === 'true';
+                    $customField->save();
+                }
+            }
+
+            DB::commit();
+
+            return $envelope->fresh(['customFields']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Delete envelope custom fields.
+     *
+     * @param  Envelope  $envelope
+     * @return bool
+     */
+    public function deleteCustomFields(Envelope $envelope): bool
+    {
+        return $envelope->customFields()->delete() > 0;
+    }
+
+    /**
+     * Get envelope lock status.
+     *
+     * @param  Envelope  $envelope
+     * @return array|null
+     */
+    public function getLock(Envelope $envelope): ?array
+    {
+        $lock = $envelope->lock;
+
+        if (!$lock) {
+            return null;
+        }
+
+        return [
+            'lockToken' => $lock->lock_token,
+            'lockDurationInSeconds' => (string) $lock->lock_duration_seconds,
+            'lockedByUser' => [
+                'userId' => (string) $lock->locked_by_user_id,
+                'userName' => $lock->locked_by_user_name,
+                'email' => $lock->locked_by_user_email,
+            ],
+            'lockedUntilDateTime' => $lock->locked_until->toIso8601String(),
+            'createdDateTime' => $lock->created_at->toIso8601String(),
+        ];
+    }
+
+    /**
+     * Create envelope lock.
+     *
+     * @param  Envelope  $envelope
+     * @param  User  $user
+     * @param  int  $duration  Duration in seconds
+     * @return array
+     * @throws \Exception
+     */
+    public function createLock(Envelope $envelope, User $user, int $duration = 300): array
+    {
+        // Check if envelope is already locked
+        if ($envelope->lock && $envelope->lock->locked_until > now()) {
+            throw new \Exception('Envelope is already locked by another user');
+        }
+
+        // Delete existing lock if any
+        if ($envelope->lock) {
+            $envelope->lock->delete();
+        }
+
+        // Create new lock
+        $lock = new \App\Models\EnvelopeLock();
+        $lock->envelope_id = $envelope->id;
+        $lock->locked_by_user_id = $user->id;
+        $lock->locked_by_user_name = $user->first_name . ' ' . $user->last_name;
+        $lock->locked_by_user_email = $user->email;
+        $lock->lock_duration_seconds = $duration;
+        $lock->locked_until = now()->addSeconds($duration);
+        $lock->lock_token = 'lock_' . \Illuminate\Support\Str::uuid()->toString();
+        $lock->save();
+
+        return $this->getLock($envelope->fresh(['lock']));
+    }
+
+    /**
+     * Update envelope lock.
+     *
+     * @param  Envelope  $envelope
+     * @param  string  $lockToken
+     * @param  int  $duration
+     * @return array
+     * @throws \Exception
+     */
+    public function updateLock(Envelope $envelope, string $lockToken, int $duration = 300): array
+    {
+        $lock = $envelope->lock;
+
+        if (!$lock) {
+            throw new \Exception('Envelope is not locked');
+        }
+
+        if ($lock->lock_token !== $lockToken) {
+            throw new \Exception('Invalid lock token');
+        }
+
+        // Extend the lock
+        $lock->lock_duration_seconds = $duration;
+        $lock->locked_until = now()->addSeconds($duration);
+        $lock->save();
+
+        return $this->getLock($envelope->fresh(['lock']));
+    }
+
+    /**
+     * Delete envelope lock.
+     *
+     * @param  Envelope  $envelope
+     * @param  string|null  $lockToken
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteLock(Envelope $envelope, ?string $lockToken = null): bool
+    {
+        $lock = $envelope->lock;
+
+        if (!$lock) {
+            return true; // Already unlocked
+        }
+
+        // If lock token is provided, validate it
+        if ($lockToken && $lock->lock_token !== $lockToken) {
+            throw new \Exception('Invalid lock token');
+        }
+
+        return $lock->delete();
+    }
 }
