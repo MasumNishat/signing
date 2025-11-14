@@ -37,7 +37,7 @@ This document tracks completed tasks organized by implementation phases. It help
 **Status:** IN PROGRESS
 **Estimated Duration:** 5.5 weeks (220 hours)
 **Start Date:** 2025-11-14
-**Completion:** ~10% (3 of 32 tasks)
+**Completion:** ~12% (4 of 32 tasks, migrations in progress)
 
 ### Phase 1 Task Groups
 - [x] 1.1 Project Setup (3 of 7 tasks completed)
@@ -48,11 +48,12 @@ This document tracks completed tasks organized by implementation phases. It help
   - [ ] T1.1.5: Setup Docker development environment
   - [ ] T1.1.6: Initialize Git repository and branching strategy
   - [ ] T1.1.7: Setup CI/CD pipeline (GitHub Actions)
-- [~] 1.2 Database Architecture (1 of 10 tasks, ~9% complete)
-  - [~] T1.2.1: Create all 66 database migrations (6 of 66 tables - 9%)
-    - [x] plans, billing_plans, accounts, permission_profiles ✅
-    - [x] users (updated), user_addresses ✅
-    - [ ] 60 remaining tables (envelopes, templates, billing, etc.)
+- [~] 1.2 Database Architecture (1 of 10 tasks, ~14% complete)
+  - [~] T1.2.1: Create all 66 database migrations (9 of 66 tables - 14%)
+    - [x] Core tables: plans, billing_plans, accounts, permission_profiles ✅
+    - [x] User tables: users (updated), user_addresses ✅
+    - [x] Envelope tables: envelopes, envelope_documents, envelope_recipients ✅
+    - [ ] 57 remaining tables (10 envelope tables, templates, billing, etc.)
   - [ ] T1.2.2: Create migrations for core tables
   - [ ] T1.2.3: Create migrations for envelope tables (13 tables)
   - [ ] T1.2.4: Create migrations for template tables
@@ -72,16 +73,17 @@ This document tracks completed tasks organized by implementation phases. It help
 - ✅ Passport 13.4.0 installed with OAuth migrations
 - ✅ Custom directory structure created
 - ✅ BaseController implemented
-- ✅ **Core database migrations created (6 tables)** 🆕
+- ✅ **Core database migrations created (9 tables)** 🆕
   - Foundation: plans, billing_plans
   - Core: accounts, permission_profiles, users, user_addresses
-  - Migration count: 15 total (6 new + 1 updated + 8 existing)
+  - Envelopes: envelopes, envelope_documents, envelope_recipients
+  - Migration count: 18 total (9 new + 1 updated + 8 existing)
 - ⚠️ External services required: PostgreSQL, Redis
 
 ### Next Tasks
 Continue with:
-- **T1.2.1 (continued):** Create remaining 60 database migrations
-  - Priority: Envelope tables (13 tables) - core DocuSign feature
+- **T1.2.1 (continued):** Create remaining 57 database migrations
+  - Priority: Remaining envelope tables (10 tables) - tabs, custom_fields, attachments, etc.
   - Then: Templates (5), Billing (6), Connect (4), etc.
 - `docs/04-DATABASE-SCHEMA.dbml` - Complete database schema reference
 - `docs/06-CLAUDE-PROMPTS.md` - Database migration prompts
