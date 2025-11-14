@@ -48,8 +48,8 @@ This document tracks completed tasks organized by implementation phases. It help
   - [ ] T1.1.5: Setup Docker development environment
   - [ ] T1.1.6: Initialize Git repository and branching strategy
   - [ ] T1.1.7: Setup CI/CD pipeline (GitHub Actions)
-- [~] 1.2 Database Architecture (1 of 10 tasks, ~50% complete) 🎯 HALFWAY!
-  - [~] T1.2.1: Create all 66 database migrations (33 of 66 tables - 50%)
+- [~] 1.2 Database Architecture (1 of 10 tasks, ~56% complete) 🚀
+  - [~] T1.2.1: Create all 66 database migrations (37 of 66 tables - 56%)
     - [x] Core tables: plans, billing_plans, accounts, permission_profiles ✅
     - [x] User tables: users (updated), user_addresses ✅
     - [x] Envelope module COMPLETE (14 tables) ✅
@@ -61,11 +61,13 @@ This document tracks completed tasks organized by implementation phases. It help
     - [x] Uploads: chunked_uploads ✅
     - [x] Templates module COMPLETE (3 tables) ✅
       - templates, favorite_templates, shared_access
-    - [x] Billing module COMPLETE (4 tables + billing_plans from core) ✅
-      - billing_charges, billing_invoices, billing_invoice_items, billing_payments
+    - [x] Billing module COMPLETE (5 tables) ✅
+      - billing_plans, billing_charges, billing_invoices, billing_invoice_items, billing_payments
+    - [x] Connect/Webhooks module COMPLETE (4 tables) ✅
+      - connect_configurations, connect_logs, connect_failures, connect_oauth_config
     - [x] Supporting tables (4 tables) ✅
       - recipients, captive_recipients, identity_verification_workflows, consumer_disclosures
-    - [ ] 33 remaining tables (connect, branding, bulk operations, etc.)
+    - [ ] 29 remaining tables (branding, bulk operations, logging, etc.)
   - [ ] T1.2.2: Create migrations for core tables
   - [ ] T1.2.3: Create migrations for envelope tables (13 tables)
   - [ ] T1.2.4: Create migrations for template tables
@@ -85,26 +87,27 @@ This document tracks completed tasks organized by implementation phases. It help
 - ✅ Passport 13.4.0 installed with OAuth migrations
 - ✅ Custom directory structure created
 - ✅ BaseController implemented
-- ✅ **Database migrations: 50% COMPLETE - HALFWAY MILESTONE! 🎯** (33 of 66 tables)
+- ✅ **Database migrations: 56% COMPLETE** (37 of 66 tables)
   - Foundation: plans, billing_plans
   - Core: accounts, permission_profiles, users, user_addresses
   - Envelopes module: 14 tables ✅ (envelopes, documents, recipients, tabs, workflow, etc.)
   - Templates module: 3 tables ✅ (templates, favorites, shared_access)
-  - Billing module: 4 tables ✅ (charges, invoices, invoice_items, payments)
+  - Billing module: 5 tables ✅ (plans, charges, invoices, invoice_items, payments)
+  - Connect/Webhooks: 4 tables ✅ (configurations, logs, failures, oauth_config)
   - Organization: folders, envelope_folders
   - Supporting: recipients, captive_recipients, identity_verification, consumer_disclosures
   - Uploads: chunked_uploads
-  - Migration count: 35 total (27 new + 1 updated + 3 Laravel + 5 Passport)
-  - Database completion: 33 of 66 tables (50%)
+  - Migration count: 39 total (31 new + 1 updated + 3 Laravel + 5 Passport)
+  - Database completion: 37 of 66 tables (56%)
 - ⚠️ External services required: PostgreSQL, Redis
 
 ### Next Tasks
 Continue with:
-- **T1.2.1 (continued):** Create remaining 33 database migrations (50% remaining)
-  - Next Priority: Connect/webhooks module (4 tables) - event integrations
-  - Then: Branding module (2 tables)
+- **T1.2.1 (continued):** Create remaining 29 database migrations (44% remaining)
+  - Next Priority: Branding module (2 tables)
   - Then: Bulk operations (3 tables)
-  - Then: Supporting tables (~24 remaining)
+  - Then: Logging & diagnostics (2 tables)
+  - Then: Supporting tables (~22 remaining)
 - `docs/04-DATABASE-SCHEMA.dbml` - Complete database schema reference
 - `docs/06-CLAUDE-PROMPTS.md` - Database migration prompts
 
