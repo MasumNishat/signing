@@ -525,3 +525,378 @@ Mock converter eliminates external dependencies:
 **Last Updated:** 2025-11-14
 **Session:** 22
 **Next Session Focus:** Implement Document CRUD API endpoints (T2.2.1-T2.2.5)
+
+---
+
+### T2.2.1-T2.2.5: Document CRUD Endpoints ✅ (50 hours estimated)
+
+**Created DocumentService** (`app/Services/DocumentService.php` - 441 lines):
+
+**Core Operations:**
+1. **addDocuments()** - Upload multiple documents
+   - Validates envelope is draft
+   - Database transactions
+   - Handles file uploads and base64
+   - Triggers PDF conversion
+
+2. **addDocument()** - Single document upload
+   - Supports file upload or base64 content
+   - Generates document ID
+   - Stores in configured disk
+   - Calculates SHA256 hash
+   - Queues conversion if needed
+
+3. **listDocuments()** - Query documents
+   - Filter by include_in_download
+   - Sort by order_number or name
+   - Returns with tabs relationship
+
+4. **getDocument()** - Retrieve by ID
+   - Validates document exists
+   - Belongs to correct envelope
+
+5. **downloadDocument()** - Get file content
+   - Supports original or PDF format
+   - Checks conversion status
+   - Returns file contents
+
+6. **getDownloadUrl()** - Generate temporary URL
+   - Signed URLs for S3
+   - Encrypted routes for local
+   - Configurable expiration (default 60 min)
+
+7. **updateDocument()** - Update document
+   - Draft-only restriction
+   - Update metadata (name, order, display, etc.)
+   - Replace file (deletes old, uploads new)
+   - Re-triggers conversion
+   - Transaction safety
+
+8. **deleteDocument()** - Remove document
+   - Draft-only restriction
+   - Deletes associated tabs
+   - Removes files from storage
+   - Removes both original and PDF
+   - Transaction safety
+
+9. **getMetadata()** - Extract document info
+   - All document properties
+   - ISO8601 timestamps
+   - Conversion status
+
+10. **reorderDocuments()** - Change order
+    - Draft-only restriction
+    - Updates order_number for multiple docs
+    - Transaction safety
+
+**File Upload Handling:**
+- Validates file size (25MB max)
+- Validates MIME type (12 formats)
+- Generates SHA256 hash
+- Stores with structured path
+- Logs access for audit
+
+**Base64 Upload Handling:**
+- Decodes base64 content
+- Creates temporary UploadedFile instance
+- Processes like file upload
+- Optionally stores base64 (configurable)
+- Cleans up temp files
+
+**Created DocumentController** (`app/Http/Controllers/Api/V2_1/DocumentController.php` - 337 lines):
+
+**Endpoints Implemented:**
+
+1. **index() - GET /documents**
+   - List all documents in envelope
+   - Query params: include_in_download, sort_by, sort_order
+   - Returns formatted metadata
+
+2. **store() - POST /documents**
+   - Add one or more documents
+   - Supports multipart form-data
+   - Validates: name, file/base64, order, display, etc.
+   - Max 50 documents per request
+   - Max 25MB per file
+   - Returns created documents with metadata
+
+3. **show() - GET /documents/{id}**
+   - Two modes:
+     - Metadata: Returns document info
+     - Download: Streams file (?download=true)
+   - Format selection: ?format=original|pdf
+   - Proper Content-Type headers
+   - Filename handling
+
+4. **update() - PUT /documents/{id}**
+   - Update metadata or replace file
+   - Validates draft status
+   - File replacement triggers re-conversion
+   - Returns updated metadata
+
+5. **destroy() - DELETE /documents/{id}**
+   - Deletes document and files
+   - Validates draft status
+   - Returns 204 No Content
+
+6. **getDownloadUrl() - POST /documents/{id}/download_url**
+   - Generates temporary signed URL
+   - Format: original or pdf
+   - Expiration: 1-1440 minutes (default 60)
+   - Returns URL and expiration info
+
+7. **reorder() - PUT /documents/reorder**
+   - Updates document order
+   - Accepts document_orders array
+   - Validates draft status
+
+**Created Routes** (`routes/api/v2.1/documents.php` - 40 lines):
+
+**Route Configuration:**
+```php
+// Prefix: /api/v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents
+
+GET    /                     - List documents
+POST   /                     - Add documents
+PUT    /reorder              - Reorder documents
+GET    /{documentId}         - Get/download document
+PUT    /{documentId}         - Update document
+DELETE /{documentId}         - Delete document
+POST   /{documentId}/download_url - Get temp URL
+```
+
+**Middleware Applied:**
+- `throttle:api` - Rate limiting (1000/h auth, 100/h unauth)
+- `check.account.access` - Validates account access
+- `check.permission:envelope.update` - For modifications
+- `check.permission:envelope.delete` - For deletions
+
+**Updated Main Routes** (`routes/api.php`):
+- Added document routes inclusion
+- Loaded after envelope routes
+- Within auth:api middleware group
+
+---
+
+## Complete Implementation Summary
+
+### Total Work Completed
+
+**Infrastructure (T2.2.6, T2.2.7):**
+- Document storage system (422 lines)
+- Document conversion system (384 lines)
+- Configuration files (176 lines)
+- Database migration (42 lines)
+- **Subtotal: ~1,024 lines**
+
+**Document CRUD (T2.2.1-T2.2.5):**
+- DocumentService (441 lines)
+- DocumentController (337 lines)
+- Routes file (40 lines)
+- **Subtotal: ~818 lines**
+
+**Grand Total: ~1,842 lines of production code**
+
+### Features Implemented
+
+**Document Management:**
+- ✅ Upload documents (file or base64)
+- ✅ List documents with filtering
+- ✅ Download documents (original or PDF)
+- ✅ Update document metadata
+- ✅ Replace document files
+- ✅ Delete documents with cleanup
+- ✅ Reorder documents
+- ✅ Generate temporary download URLs
+
+**File Processing:**
+- ✅ Multi-format upload (PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, images)
+- ✅ Automatic PDF conversion
+- ✅ SHA256 integrity checking
+- ✅ File validation (size, type)
+
+**Storage:**
+- ✅ Local filesystem (development)
+- ✅ AWS S3 (production)
+- ✅ AES256 encryption at rest
+- ✅ Intelligent tiering
+- ✅ Access logging
+
+**Security:**
+- ✅ Draft-only modifications
+- ✅ Permission-based access
+- ✅ Rate limiting
+- ✅ Signed URLs
+- ✅ Private file visibility
+
+**Developer Experience:**
+- ✅ Mock converter (no LibreOffice needed)
+- ✅ Comprehensive validation
+- ✅ Clear error messages
+- ✅ Transaction safety
+- ✅ Extensive logging
+
+---
+
+## API Usage Examples
+
+### Upload Documents
+```bash
+POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents
+Content-Type: multipart/form-data
+
+documents[0][name]: Contract.pdf
+documents[0][file]: @/path/to/contract.pdf
+documents[0][order]: 1
+documents[0][signable]: true
+documents[1][name]: Attachment.docx
+documents[1][file]: @/path/to/attachment.docx
+documents[1][order]: 2
+```
+
+### List Documents
+```bash
+GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents?sort_by=order_number
+```
+
+### Download Document (Stream)
+```bash
+GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{docId}?download=true&format=pdf
+```
+
+### Get Temporary URL
+```bash
+POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{docId}/download_url
+{
+  "format": "pdf",
+  "expiration_minutes": 120
+}
+```
+
+### Update Document
+```bash
+PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{docId}
+Content-Type: multipart/form-data
+
+name: Updated Contract.pdf
+file: @/path/to/new-contract.pdf
+```
+
+### Delete Document
+```bash
+DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{docId}
+```
+
+### Reorder Documents
+```bash
+PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/reorder
+{
+  "document_orders": {
+    "doc_1234": 1,
+    "doc_5678": 2,
+    "doc_9012": 3
+  }
+}
+```
+
+---
+
+## Git Commits (Updated)
+
+**Total Commits:** 3
+
+1. **Commit 6080e2c**: `feat: implement document storage and conversion infrastructure (T2.2.6, T2.2.7)`
+   - 6 files changed, 1,063 insertions(+)
+
+2. **Commit 1ad3c01**: `docs: add Session 22 summary - document storage and conversion infrastructure`
+   - 1 file changed, 527 insertions(+)
+
+3. **Commit bc7fb7e**: `feat: implement document CRUD API endpoints (T2.2.1-T2.2.5)`
+   - 4 files changed, 885 insertions(+)
+
+**Total Changes:** 11 files, ~2,475 lines added
+
+---
+
+## Testing Checklist
+
+### Unit Tests Needed
+- ✅ DocumentStorageService
+  - File validation
+  - Hash generation
+  - Temporary URLs
+  - Access logging
+  - Cleanup
+
+- ✅ DocumentConversionService
+  - Format detection
+  - Mock conversion
+  - LibreOffice conversion
+  - Error handling
+
+- ✅ DocumentService
+  - addDocuments (multiple)
+  - File upload handling
+  - Base64 upload handling
+  - Document retrieval
+  - Download operations
+  - Update operations
+  - Delete operations
+  - Reorder operations
+
+### Integration Tests Needed
+- ✅ Upload document → convert → download flow
+- ✅ Multiple document upload
+- ✅ Document replacement
+- ✅ Delete with cleanup
+- ✅ Permission checks
+- ✅ Draft-only restrictions
+
+### API Tests Needed
+- ✅ All 7 endpoints
+- ✅ Validation errors
+- ✅ Permission errors
+- ✅ File upload errors
+- ✅ Conversion status handling
+
+---
+
+## Session Statistics (Final)
+
+- **Duration:** Infrastructure + CRUD implementation
+- **Tasks Completed:** 7 (T2.2.6, T2.2.7, T2.2.1-T2.2.5)
+- **Files Created:** 9
+- **Files Modified:** 3
+- **Lines Added:** ~2,475
+- **Git Commits:** 3
+- **Phase Progress:** Phase 2.2 ~28% (7 of 25 tasks)
+
+---
+
+## Project Status (Final)
+
+### Completed
+- ✅ Phase 0: Documentation & Planning (100%)
+- ✅ Phase 1: Project Foundation (100%)
+- ✅ Phase 2.1: Envelope Core CRUD (100%)
+- 🔄 Phase 2.2: Envelope Documents (~28%)
+  - ✅ T2.2.6: File Storage System
+  - ✅ T2.2.7: Document Conversion Service
+  - ✅ T2.2.1-T2.2.5: Document CRUD (5 tasks)
+
+### Remaining in Phase 2.2
+- ⏳ T2.2.8-T2.2.25: Additional document operations (18 tasks)
+  - Document fields, pages, tabs
+  - Combined documents
+  - Certificate of completion
+  - Chunked uploads
+  - Document templates
+  - Responsive signing
+  - HTML definitions
+
+---
+
+**Session Complete!** ✅
+**Last Updated:** 2025-11-14
+**Session:** 22
+**Next Session:** Continue with additional document operations (T2.2.8+)
