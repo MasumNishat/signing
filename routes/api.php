@@ -66,6 +66,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Envelope Routes
         require __DIR__.'/api/v2.1/envelopes.php';
 
+        // Document Routes (Envelope Documents)
+        require __DIR__.'/api/v2.1/documents.php';
+
         // Template Routes
         require __DIR__.'/api/v2.1/templates.php';
 
