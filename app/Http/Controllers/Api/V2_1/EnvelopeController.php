@@ -680,4 +680,191 @@ class EnvelopeController extends BaseController
             return $this->error($e->getMessage(), 400);
         }
     }
+
+    /**
+     * Get envelope audit events.
+     *
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function getAuditEvents(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $auditEvents = $this->envelopeService->getAuditEvents($envelope);
+
+        $formattedEvents = $auditEvents->map(function ($event) {
+            return [
+                'eventType' => $event->event_type,
+                'eventTimestamp' => $event->event_timestamp->toIso8601String(),
+                'userId' => (string) ($event->user_id ?? ''),
+                'userName' => $event->user_name ?? '',
+                'userEmail' => $event->user_email ?? '',
+                'metadata' => $event->metadata ? json_decode($event->metadata, true) : null,
+            ];
+        });
+
+        return $this->success(['auditEvents' => $formattedEvents], 'Audit events retrieved successfully');
+    }
+
+    /**
+     * Get envelope workflow.
+     *
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function getWorkflow(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $workflow = $this->envelopeService->getWorkflow($envelope);
+
+        if (!$workflow) {
+            return $this->error('Envelope does not have a workflow configured', 404);
+        }
+
+        return $this->success($workflow, 'Workflow retrieved successfully');
+    }
+
+    /**
+     * Update envelope workflow.
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function updateWorkflow(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Validate request
+        $validator = Validator::make($request->all(), [
+            'workflowStatus' => 'nullable|string|in:in_progress,paused,completed',
+            'scheduledSending.resumeDate' => 'nullable|date',
+            'workflowSteps' => 'nullable|array',
+            'workflowSteps.*.action' => 'nullable|string|in:sign,approve,view,certify',
+            'workflowSteps.*.itemId' => 'nullable|string',
+            'workflowSteps.*.recipientId' => 'nullable|string',
+            'workflowSteps.*.status' => 'nullable|string|in:pending,in_progress,completed,failed',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $updatedEnvelope = $this->envelopeService->updateWorkflow(
+                $envelope,
+                $validator->validated()
+            );
+
+            $workflow = $this->envelopeService->getWorkflow($updatedEnvelope);
+
+            return $this->success($workflow, 'Workflow updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get envelope correction view URL (placeholder).
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function getCorrectView(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // In a real implementation, this would generate a URL for the correction UI
+        $url = config('app.url') . "/envelopes/{$envelope->envelope_id}/correct";
+
+        return $this->success([
+            'url' => $url,
+            'expiresIn' => 300, // 5 minutes
+        ], 'Correction view URL generated successfully');
+    }
+
+    /**
+     * Get envelope sender view URL (placeholder).
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function getSenderView(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // In a real implementation, this would generate a URL for the sender UI
+        $url = config('app.url') . "/envelopes/{$envelope->envelope_id}/sender";
+
+        return $this->success([
+            'url' => $url,
+            'expiresIn' => 300, // 5 minutes
+        ], 'Sender view URL generated successfully');
+    }
+
+    /**
+     * Get envelope recipient view URL (placeholder).
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function getRecipientView(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Validate recipient information
+        $validator = Validator::make($request->all(), [
+            'recipientId' => 'required|string',
+            'returnUrl' => 'nullable|url',
+            'authenticationMethod' => 'nullable|string|in:none,email,password,phone,knowledge',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        // In a real implementation, this would generate a URL for the recipient signing UI
+        $recipientId = $request->input('recipientId');
+        $url = config('app.url') . "/envelopes/{$envelope->envelope_id}/recipients/{$recipientId}/sign";
+
+        return $this->success([
+            'url' => $url,
+            'expiresIn' => 300, // 5 minutes
+        ], 'Recipient view URL generated successfully');
+    }
 }

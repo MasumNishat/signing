@@ -731,4 +731,141 @@ class EnvelopeService
 
         return $lock->delete();
     }
+
+    /**
+     * Get envelope audit events.
+     *
+     * @param  Envelope  $envelope
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAuditEvents(Envelope $envelope)
+    {
+        return $envelope->auditEvents()
+            ->orderBy('event_timestamp', 'desc')
+            ->get();
+    }
+
+    /**
+     * Log an audit event for an envelope.
+     *
+     * @param  Envelope  $envelope
+     * @param  string  $eventType
+     * @param  User|null  $user
+     * @param  array  $metadata
+     * @return \App\Models\EnvelopeAuditEvent
+     */
+    public function logAuditEvent(Envelope $envelope, string $eventType, ?User $user = null, array $metadata = [])
+    {
+        $auditEvent = new \App\Models\EnvelopeAuditEvent();
+        $auditEvent->envelope_id = $envelope->id;
+        $auditEvent->event_type = $eventType;
+        $auditEvent->event_timestamp = now();
+
+        if ($user) {
+            $auditEvent->user_id = $user->id;
+            $auditEvent->user_name = $user->first_name . ' ' . $user->last_name;
+            $auditEvent->user_email = $user->email;
+        }
+
+        $auditEvent->metadata = !empty($metadata) ? json_encode($metadata) : null;
+        $auditEvent->save();
+
+        return $auditEvent;
+    }
+
+    /**
+     * Get envelope workflow.
+     *
+     * @param  Envelope  $envelope
+     * @return array|null
+     */
+    public function getWorkflow(Envelope $envelope): ?array
+    {
+        $workflow = $envelope->workflow;
+
+        if (!$workflow) {
+            return null;
+        }
+
+        $steps = $envelope->workflowSteps()
+            ->orderBy('order', 'asc')
+            ->get()
+            ->map(function ($step) {
+                return [
+                    'action' => $step->action,
+                    'itemId' => (string) $step->item_id,
+                    'recipientId' => (string) $step->recipient_id,
+                    'status' => $step->status,
+                    'triggeredDateTime' => $step->triggered_date_time?->toIso8601String(),
+                    'completedDateTime' => $step->completed_date_time?->toIso8601String(),
+                ];
+            })
+            ->toArray();
+
+        return [
+            'workflowStatus' => $workflow->workflow_status,
+            'scheduledSending' => [
+                'resumeDate' => $workflow->scheduled_sending_resume_date?->toIso8601String(),
+            ],
+            'workflowSteps' => $steps,
+        ];
+    }
+
+    /**
+     * Update envelope workflow.
+     *
+     * @param  Envelope  $envelope
+     * @param  array  $data
+     * @return Envelope
+     */
+    public function updateWorkflow(Envelope $envelope, array $data): Envelope
+    {
+        DB::beginTransaction();
+
+        try {
+            // Get or create workflow
+            $workflow = $envelope->workflow;
+            if (!$workflow) {
+                $workflow = new \App\Models\EnvelopeWorkflow();
+                $workflow->envelope_id = $envelope->id;
+            }
+
+            // Update workflow status
+            if (isset($data['workflowStatus'])) {
+                $workflow->workflow_status = $data['workflowStatus'];
+            }
+
+            // Update scheduled sending
+            if (isset($data['scheduledSending']['resumeDate'])) {
+                $workflow->scheduled_sending_resume_date = new \DateTime($data['scheduledSending']['resumeDate']);
+            }
+
+            $workflow->save();
+
+            // Update workflow steps if provided
+            if (isset($data['workflowSteps'])) {
+                // Delete existing steps
+                $envelope->workflowSteps()->delete();
+
+                // Create new steps
+                foreach ($data['workflowSteps'] as $index => $stepData) {
+                    $step = new \App\Models\EnvelopeWorkflowStep();
+                    $step->envelope_id = $envelope->id;
+                    $step->action = $stepData['action'] ?? 'sign';
+                    $step->item_id = $stepData['itemId'] ?? null;
+                    $step->recipient_id = $stepData['recipientId'] ?? null;
+                    $step->status = $stepData['status'] ?? 'pending';
+                    $step->order = $index + 1;
+                    $step->save();
+                }
+            }
+
+            DB::commit();
+
+            return $envelope->fresh(['workflow', 'workflowSteps']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
 }

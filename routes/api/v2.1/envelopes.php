@@ -105,4 +105,31 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
     Route::delete('{envelopeId}/lock', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'deleteLock'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
         ->name('lock.delete');
+
+    // Audit events
+    Route::get('{envelopeId}/audit_events', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getAuditEvents'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('audit_events.get');
+
+    // Workflow
+    Route::get('{envelopeId}/workflow', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getWorkflow'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('workflow.get');
+
+    Route::put('{envelopeId}/workflow', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'updateWorkflow'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('workflow.update');
+
+    // Views
+    Route::post('{envelopeId}/views/correct', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getCorrectView'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('views.correct');
+
+    Route::post('{envelopeId}/views/sender', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getSenderView'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('views.sender');
+
+    Route::post('{envelopeId}/views/recipient', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getRecipientView'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('views.recipient');
 });
