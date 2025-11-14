@@ -97,7 +97,14 @@ This document tracks completed tasks organized by implementation phases. It help
   - [x] T1.2.8: Configure database indexing (done in migrations) ✅
   - [x] T1.2.9: Setup backup procedures ✅
   - [x] T1.2.10: Test constraints and relationships ✅
-- [ ] 1.3 Authentication & Authorization (0 of 12 tasks)
+- [x] 1.3 Authentication & Authorization (7 of 7 tasks, 100% complete) ✅🎉
+  - [x] T1.3.1: OAuth 2.0 Authentication (Passport) ✅
+  - [x] T1.3.2: JWT Token Management (Passport built-in) ✅
+  - [x] T1.3.3: Authentication Middleware (4 middleware) ✅
+  - [x] T1.3.4: Role-Based Access Control (6 roles, 36 permissions) ✅
+  - [x] T1.3.5: Permission Management System (API endpoints) ✅
+  - [x] T1.3.6: API Key Management (Full CRUD + rotation) ✅
+  - [x] T1.3.7: Rate Limiting Middleware (7 limiters) ✅
 - [ ] 1.4 Core API Structure (0 of 10 tasks)
 - [ ] 1.5 Testing Infrastructure (0 of 6 tasks)
 
@@ -139,14 +146,29 @@ This document tracks completed tasks organized by implementation phases. It help
   - Testing: test-database-constraints.sh, test-seeders.sh
   - Documentation: scripts/README.md with complete usage guide
   - Features: Automated backups, constraint validation, seeder testing
+- ✅ **Authentication & Authorization: COMPLETE** (Phase 1.3, 7 tasks) 🎉✅
+  - OAuth 2.0: Passport with 3 grant types (authorization_code, client_credentials, refresh_token)
+  - Token lifetimes: 1h access, 14d refresh, 6mo personal
+  - OAuth scopes: 26 scopes covering all API features
+  - Middleware: ApiKeyAuthentication, CheckApiScope, CheckAccountAccess, CheckPermission
+  - RBAC: 6 roles (SuperAdmin, AccountAdmin, Manager, Sender, Signer, Viewer)
+  - Permissions: 36 granular permissions across all modules
+  - Permission Management: Full CRUD API for permission profiles
+  - API Keys: Generate, rotate, revoke, scope-based access
+  - Rate Limiting: 7 limiters (API: 1000/h auth, 100/h unauth; Burst: 20/s; Login: 5/min; etc.)
+  - Models: Account, Plan, PermissionProfile, ApiKey, UserAddress, UserAuthorization
+  - Enums: Permission (36), UserRole (6)
+  - Services: PermissionService
+  - Policies: UserPolicy, AccountPolicy, ApiKeyPolicy
+  - Routes: Auth, Permissions, Permission Profiles, User Permissions, API Keys
 - ⚠️ External services required: PostgreSQL, Redis
 
 ### Next Tasks
 **Phase 1.2 Database Architecture: 100% COMPLETE!** 🎉
+**Phase 1.3 Authentication & Authorization: 100% COMPLETE!** 🎉
 
 Continue with Phase 1 remaining tasks:
-- **T1.3:** Authentication & Authorization (12 tasks) - NEXT PRIORITY
-- **T1.4:** Core API Structure (10 tasks)
+- **T1.4:** Core API Structure (10 tasks) - NEXT PRIORITY
 - **T1.5:** Testing Infrastructure (6 tasks)
 - **T1.1:** Complete remaining project setup (4 tasks)
 
