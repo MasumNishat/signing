@@ -239,6 +239,22 @@ When working with Claude Code:
 3. Claude will know which documents to reference
 4. Claude will update this file after completing work
 
+
+### IMPORTANT: Session Summaries
+
+**AFTER EVERY CHAT SESSION, YOU MUST:**
+
+1. **Create a session summary** in `docs/summary/SESSION-XX-<description>.md`
+2. **Include comprehensive details:**
+   - Tasks completed
+   - Files created/modified (with line counts)
+   - Code highlights and technical decisions
+   - Git commits made
+   - Next steps
+3. **Update CLAUDE.md** with current progress
+4. **Commit the summary** to git before ending the session
+
+**This is mandatory for maintaining project context across sessions.**
 ---
 
 ## Phase Completion Template
