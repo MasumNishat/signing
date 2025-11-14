@@ -228,7 +228,7 @@ Begin Phase 2: Envelopes Module (⭐ MOST CRITICAL - 125 endpoints, 30% of API):
 **Completion:** ~5% (Core CRUD endpoints implemented)
 
 ### Phase 2 Task Groups
-- 🔄 2.1 Envelope Core CRUD (7 of 20 tasks completed, ~35%)
+- 🔄 2.1 Envelope Core CRUD (15 of 20 tasks completed, ~75%)
   - [x] T2.1.1: Create Envelope Model and Relationships ✅
   - [x] T2.1.2: Implement Envelope Service Layer ✅
   - [x] T2.1.3: Create Envelope Controller ✅
@@ -240,7 +240,11 @@ Begin Phase 2: Envelopes Module (⭐ MOST CRITICAL - 125 endpoints, 30% of API):
   - [x] T2.1.9: POST /envelopes/{id}/send - Send Envelope ✅
   - [x] T2.1.10: POST /envelopes/{id}/void - Void Envelope ✅
   - [x] T2.1.11: GET /envelopes/statistics - Envelope Statistics ✅
-  - [ ] T2.1.12-T2.1.20: Additional envelope operations (pending)
+  - [x] T2.1.12: GET/PUT /envelopes/{id}/notification - Notification Settings ✅
+  - [x] T2.1.13: GET/PUT /envelopes/{id}/email_settings - Email Settings ✅
+  - [x] T2.1.14: Custom Fields CRUD - GET/POST/PUT/DELETE ✅
+  - [x] T2.1.15: Envelope Lock - GET/POST/PUT/DELETE ✅
+  - [ ] T2.1.16-T2.1.20: Additional envelope operations (audit events, workflow, views)
 - [ ] 2.2 Envelope Documents (25 tasks, 200 hours)
 - [ ] 2.3 Envelope Recipients (30 tasks, 240 hours)
 - [ ] 2.4 Envelope Tabs (25 tasks, 200 hours)
@@ -325,13 +329,79 @@ Begin Phase 2: Envelopes Module (⭐ MOST CRITICAL - 125 endpoints, 30% of API):
 ### Git Commits (Session 18)
 - feat: implement Envelope Model and Service Layer (T2.1.1-T2.1.2) (commit: f144a73)
 - feat: implement Envelope Controller and API routes (T2.1.3) (commit: fb25ed5)
+- docs: add Phase 2.1 progress and SESSION-18 summary (commit: 2746a6b)
+
+### Current Session Progress (Session 19)
+- ✅ **Envelope Notification Settings** (T2.1.12)
+  - GET/PUT /envelopes/{id}/notification endpoints
+  - Reminder settings: enabled, delay, frequency
+  - Expiration settings: enabled, after, warn
+  - Service methods: getNotificationSettings(), updateNotificationSettings()
+
+- ✅ **Envelope Email Settings** (T2.1.13)
+  - GET/PUT /envelopes/{id}/email_settings endpoints
+  - Reply email address/name override
+  - BCC email addresses support
+  - Service methods: getEmailSettings(), updateEmailSettings()
+
+- ✅ **Envelope Custom Fields** (T2.1.14)
+  - GET /envelopes/{id}/custom_fields - Retrieve custom fields
+  - POST /envelopes/{id}/custom_fields - Create custom fields
+  - PUT /envelopes/{id}/custom_fields - Update custom fields
+  - DELETE /envelopes/{id}/custom_fields - Delete custom fields
+  - Supports text and list custom fields
+  - Service methods: getCustomFields(), updateCustomFields(), deleteCustomFields()
+  - Database transactions for data integrity
+
+- ✅ **Envelope Lock Management** (T2.1.15)
+  - GET /envelopes/{id}/lock - Get lock status
+  - POST /envelopes/{id}/lock - Create lock
+  - PUT /envelopes/{id}/lock - Update lock duration
+  - DELETE /envelopes/{id}/lock - Release lock
+  - Lock token validation (UUID-based)
+  - Lock duration: 60-3600 seconds (default 300s)
+  - Service methods: getLock(), createLock(), updateLock(), deleteLock()
+  - Prevents concurrent editing
+
+### Session 19 Deliverables
+- ✅ app/Services/EnvelopeService.php (+315 lines, now 735 lines total)
+  - 12 new methods for notification, email, custom fields, and lock management
+- ✅ app/Http/Controllers/Api/V2_1/EnvelopeController.php (+234 lines, now 684 lines total)
+  - 16 new endpoint methods
+- ✅ routes/api/v2.1/envelopes.php (+32 lines, now 109 lines total)
+  - 16 new routes (notification, email settings, custom fields, lock)
+
+### Git Commits (Session 19)
+- feat: implement envelope notification, email, custom fields, and lock endpoints (commit: c94d560)
+
+### Total Envelope API Endpoints: 24
+1. GET    /envelopes/statistics
+2. GET    /envelopes
+3. POST   /envelopes
+4. GET    /envelopes/{id}
+5. PUT    /envelopes/{id}
+6. DELETE /envelopes/{id}
+7. POST   /envelopes/{id}/send
+8. POST   /envelopes/{id}/void
+9. GET    /envelopes/{id}/notification
+10. PUT    /envelopes/{id}/notification
+11. GET    /envelopes/{id}/email_settings
+12. PUT    /envelopes/{id}/email_settings
+13. GET    /envelopes/{id}/custom_fields
+14. POST   /envelopes/{id}/custom_fields
+15. PUT    /envelopes/{id}/custom_fields
+16. DELETE /envelopes/{id}/custom_fields
+17. GET    /envelopes/{id}/lock
+18. POST   /envelopes/{id}/lock
+19. PUT    /envelopes/{id}/lock
+20. DELETE /envelopes/{id}/lock
 
 ### Next Steps
-Complete remaining Phase 2.1 tasks (T2.1.12-T2.1.20):
-- Envelope status change notifications
-- Envelope correction
-- Envelope transfer rules
-- Envelope purge
+Complete remaining Phase 2.1 tasks (T2.1.16-T2.1.20):
+- Envelope audit events
+- Envelope workflow management
+- Envelope views (correct, sender, recipient)
+- Envelope templates
 - Additional envelope metadata operations
 
 OR
