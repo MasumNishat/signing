@@ -69,6 +69,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Document Routes (Envelope Documents)
         require __DIR__.'/api/v2.1/documents.php';
 
+        // Chunked Upload Routes
+        require __DIR__.'/api/v2.1/chunked_uploads.php';
+
         // Template Routes
         require __DIR__.'/api/v2.1/templates.php';
 
