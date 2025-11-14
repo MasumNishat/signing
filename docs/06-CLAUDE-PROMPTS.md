@@ -31,12 +31,18 @@ Each prompt contains:
 I'm starting Phase 1 of the DocuSign eSignature API project. Please:
 
 1. Read CLAUDE.md to understand project status
-2. Read docs/02-TASK-LIST.md lines 15-90 for Phase 1 overview
-3. Read docs/03-DETAILED-TASK-BREAKDOWN.md lines 45-400 for detailed task information
+2. Read docs/02-TASK-LIST.md for Phase 1 overview (Foundation & Core Infrastructure)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md for detailed task information
 4. Read docs/05-IMPLEMENTATION-GUIDELINES.md sections 1-3 for architecture and coding standards
 5. Confirm you understand Phase 1 objectives and are ready to start with task T1.1.1
 
 Technology stack: Laravel 12+, PostgreSQL 16+, Redis, Horizon
+
+IMPORTANT CONTEXT:
+- Total project scope: 419 API endpoints
+- Total duration: 68-80 weeks solo (or 15-20 weeks with team of 5)
+- Phase 1 is foundational for all subsequent phases
+- Phase 2 (Envelopes) is THE MOST CRITICAL module with 125 endpoints
 ```
 
 ---
@@ -236,148 +242,540 @@ After completion, update CLAUDE.md marking T1.3.1 as complete
 
 ---
 
-## Phase 2: Account Management Module
+## Phase 2: Envelopes Module ⭐ MOST CRITICAL
 
 ### Session Starter Prompt
 
 ```
-I'm starting Phase 2 of the DocuSign eSignature API project. Please:
+I'm starting Phase 2 of the DocuSign eSignature API project - THE MOST CRITICAL MODULE. Please:
 
 1. Read CLAUDE.md to verify Phase 1 is complete
-2. Read docs/02-TASK-LIST.md lines 91-180 for Phase 2 overview
-3. Read docs/03-DETAILED-TASK-BREAKDOWN.md lines 650-900 for Account Management details
-4. Read docs/01-FEATURE-LIST.md lines 30-90 for Account Management features
-5. Confirm you understand Phase 2 objectives and are ready to start with task T2.1.1
+2. Read docs/02-TASK-LIST.md Phase 2 section (Envelopes Module)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 2 section for Envelope implementation details
+4. Read docs/04-DATABASE-SCHEMA.dbml envelope-related tables (13 tables)
+5. Read docs/01-FEATURE-LIST.md Envelopes category (125 endpoints)
+6. Confirm you understand Phase 2 objectives and are ready to start with task T2.1.1
 
-Phase 2 focuses on: Account CRUD operations, Settings Management, Password Rules, Tab Settings
+CRITICAL IMPORTANCE:
+- Phase 2 implements 125 endpoints (30% of entire API)
+- This is THE CORE FEATURE of DocuSign - creating and managing documents for digital signatures
+- Most other modules depend on Envelopes being implemented
+- Estimated duration: 14 weeks (560 hours)
+- Must be completed before Templates, Bulk Envelopes, and many other features
+
+Phase 2 focuses on:
+- Envelope CRUD operations (create, read, update, delete, list)
+- Envelope Documents (upload, convert, store, retrieve)
+- Envelope Recipients (signers, CC, certified delivery, routing)
+- Envelope Tabs (30+ tab types: signatures, text, dates, checkboxes, etc.)
+- Envelope Workflows (routing, conditional logic, notifications)
+- Envelope Status Management (sent, delivered, completed, voided)
+- Envelope Audit Trail
 ```
 
 ---
 
-### T2.1.1: Create Account Model and Migrations
+### T2.1.1: Create Envelope Model and Relationships
 
 ```
-Implement task T2.1.1: Create Account Model and Migrations
+Implement task T2.1.1: Create Envelope Model and Relationships
 
 Context:
-- Read docs/04-DATABASE-SCHEMA.dbml lines 15-80 (accounts table)
+- Read docs/04-DATABASE-SCHEMA.dbml envelope-related tables (13 tables including envelopes, envelope_documents, envelope_recipients, envelope_tabs, etc.)
+- Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 2 section for T2.1.1 details
 - Read docs/05-IMPLEMENTATION-GUIDELINES.md section 4.2 (Model Best Practices)
 - Depends on: Phase 1 completed
 
 Requirements:
-1. Create Account model: php artisan make:model Account
-2. Implement model based on DBML schema
-3. Add these relationships:
-   - hasMany: users
-   - belongsTo: plan
-   - hasOne: accountSettings
-   - hasMany: brands
+1. Create Envelope model: php artisan make:model Envelope
+2. Create related models:
+   - EnvelopeDocument
+   - EnvelopeRecipient
+   - EnvelopeTab
+   - EnvelopeCustomField
+   - EnvelopeAuditEvent
+   - EnvelopeWorkflow
+   - EnvelopeAttachment
+3. Add relationships to Envelope model:
+   - hasMany: documents, recipients, customFields, auditEvents, attachments
+   - hasOne: workflow, lock
+   - belongsTo: account, sender (user)
+   - hasManyThrough: tabs (through recipients)
 4. Add soft deletes
-5. Add fillable fields
-6. Add casts for boolean and datetime fields
-7. Add scopes: active(), suspended(), closed()
-8. Add accessors: getIsActiveAttribute()
-9. Implement model events in boot()
+5. Add fillable fields from DBML schema
+6. Add casts for:
+   - status => EnvelopeStatusEnum
+   - sent_date_time, completed_date_time, etc. => datetime
+   - is_signature_provided => boolean
+7. Add scopes: byStatus(), bySender(), byDateRange(), active()
+8. Add accessors: getIsCompleteAttribute(), getCanEditAttribute()
+9. Implement model events:
+   - creating: generate envelope_id
+   - updated: create audit event
+   - statusChanged: trigger notifications
 
 Deliverables:
-- app/Models/Account.php created
+- app/Models/Envelope.php created
+- app/Models/EnvelopeDocument.php created
+- app/Models/EnvelopeRecipient.php created
+- app/Models/EnvelopeTab.php created
+- Additional envelope-related models created
 - All relationships defined
-- Proper attributes configuration
+- Status enum created
 - Model events implemented
 
 Testing:
-1. Create tests/Unit/Models/AccountTest.php
-2. Test relationships
-3. Test scopes
-4. Test accessors
+1. Create tests/Unit/Models/EnvelopeTest.php
+2. Test all relationships
+3. Test status transitions
+4. Test scopes and accessors
 5. Test model events
+6. Test envelope_id generation
 
 After completion, update CLAUDE.md marking T2.1.1 as complete
 ```
 
 ---
 
-### T2.1.2: Implement POST /v2.1/accounts
+### T2.1.2: Implement POST /v2.1/accounts/{accountId}/envelopes (Create Envelope)
 
 ```
-Implement task T2.1.2: Implement POST /v2.1/accounts (Create Account)
+Implement task T2.1.2: Implement POST /v2.1/accounts/{accountId}/envelopes (Create Envelope)
 
 Context:
-- Read docs/openapi.json lines 172-1398 for endpoint specification
-- Read docs/03-DETAILED-TASK-BREAKDOWN.md lines 700-750
+- Read docs/openapi.json search for "POST.*envelopes" endpoint specification
+- Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 2, T2.1.2 section
 - Read docs/05-IMPLEMENTATION-GUIDELINES.md section 5 (API Design Principles)
+- Read docs/04-DATABASE-SCHEMA.dbml envelope tables
 - Depends on: T2.1.1 completed
 
+CRITICAL: This is THE MOST IMPORTANT endpoint in the entire API - creating envelopes with documents and recipients for signing.
+
 Requirements:
-1. Create AccountController: php artisan make:controller Api/V2_1/AccountController
-2. Create CreateAccountRequest for validation
-3. Create AccountCreationService in app/Services/Account/
-4. Create AccountRepository in app/Repositories/Eloquent/
-5. Implement account creation workflow:
-   - Validate request data
-   - Create account record
-   - Create initial user
-   - Assign admin permission profile
-   - Setup default settings
-   - Send welcome email (queue job)
-   - Return account resource
-6. Create AccountResource for API response
+1. Create EnvelopeController: php artisan make:controller Api/V2_1/EnvelopeController
+2. Create CreateEnvelopeRequest for validation:
+   - Validate emailSubject, emailBlurb
+   - Validate documents array (documentId, name, documentBase64 or fileExtension + remoteUrl)
+   - Validate recipients object (signers, carbonCopies, certifiedDeliveries, etc.)
+   - Validate tabs for each recipient
+   - Validate status (created or sent)
+3. Create EnvelopeCreationService in app/Services/Envelope/
+4. Create EnvelopeRepository in app/Repositories/Eloquent/
+5. Implement envelope creation workflow:
+   a. Validate request data
+   b. Generate unique envelope_id
+   c. Create envelope record with status='created'
+   d. Process and store documents:
+      - Decode base64 documents
+      - Store in configured storage (S3 or local)
+      - Convert non-PDF documents to PDF (queue job)
+      - Store document hashes for integrity
+   e. Create recipient records:
+      - Extract signers, carbonCopies, etc.
+      - Set routing_order
+      - Set authentication requirements
+   f. Create tab records for each recipient:
+      - signHereTabs, initialHereTabs, dateSignedTabs
+      - textTabs, checkboxTabs, radioGroupTabs
+      - Calculate and validate tab positions
+   g. If status='sent':
+      - Change envelope status to 'sent'
+      - Queue notification emails to recipients
+      - Set sent_date_time
+   h. Create audit event
+   i. Return envelope resource
+6. Create EnvelopeResource for API response
+7. Create DocumentStorageService for file handling
+8. Create RecipientNotificationJob for email sending
+
+Request Example:
+```json
+{
+  "emailSubject": "Please sign this document",
+  "emailBlurb": "Attached is the contract for your review and signature",
+  "status": "sent",
+  "documents": [
+    {
+      "documentId": "1",
+      "name": "Contract.pdf",
+      "documentBase64": "JVBERi0xLjQKJeLj..."
+    }
+  ],
+  "recipients": {
+    "signers": [
+      {
+        "email": "john.doe@example.com",
+        "name": "John Doe",
+        "recipientId": "1",
+        "routingOrder": "1",
+        "tabs": {
+          "signHereTabs": [
+            {
+              "xPosition": "100",
+              "yPosition": "150",
+              "documentId": "1",
+              "pageNumber": "1"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+```
 
 Deliverables:
-- app/Http/Controllers/Api/V2_1/AccountController.php
-- app/Http/Requests/Api/V2_1/CreateAccountRequest.php
-- app/Services/Account/AccountCreationService.php
-- app/Repositories/Eloquent/AccountRepository.php
-- app/Http/Resources/AccountResource.php
-- Route registered in routes/api/v2.1/accounts.php
+- app/Http/Controllers/Api/V2_1/EnvelopeController.php
+- app/Http/Requests/Api/V2_1/CreateEnvelopeRequest.php
+- app/Services/Envelope/EnvelopeCreationService.php
+- app/Services/Envelope/DocumentStorageService.php
+- app/Repositories/Eloquent/EnvelopeRepository.php
+- app/Http/Resources/EnvelopeResource.php
+- app/Jobs/ConvertDocumentToPdfJob.php
+- app/Jobs/SendRecipientNotificationJob.php
+- Route registered in routes/api/v2.1/envelopes.php
 
 Testing:
-1. Create tests/Feature/Api/V2_1/AccountControllerTest.php
-2. Test successful account creation
-3. Test validation errors
-4. Test duplicate email
-5. Test permission checks
-6. Test database transactions
+1. Create tests/Feature/Api/V2_1/EnvelopeControllerTest.php
+2. Test successful envelope creation with status='created'
+3. Test successful envelope creation with status='sent' (verify emails queued)
+4. Test with multiple documents
+5. Test with multiple recipients (signers, CC)
+6. Test with multiple tab types
+7. Test validation errors:
+   - Missing required fields
+   - Invalid document format
+   - Invalid tab positions
+   - Invalid recipient email
+8. Test permission checks (user must belong to account)
+9. Test database transactions (rollback on failure)
+10. Test document storage (verify files saved)
+11. Test document conversion queue (for non-PDF files)
 
 Expected test coverage: 95%+
 
 After completion, update CLAUDE.md marking T2.1.2 as complete
+
+IMPLEMENTATION NOTES:
+- Use database transactions to ensure atomicity
+- Validate document size limits (configurable, default 25MB per document)
+- Support multiple document formats: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX
+- Generate unique envelope_id in format: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+- Store documents with encryption at rest
+- Log all envelope creation events for audit trail
+- Handle errors gracefully with proper rollback
 ```
 
 ---
 
-## Phase 3: Permission & Authorization Module
+## Phase 3: Templates Module
 
 ### Session Starter Prompt
 
 ```
 I'm starting Phase 3 of the DocuSign eSignature API project. Please:
 
-1. Read CLAUDE.md to verify Phase 2 is complete
-2. Read docs/02-TASK-LIST.md lines 181-230 for Phase 3 overview
-3. Read docs/03-DETAILED-TASK-BREAKDOWN.md lines 950-1100 for Permission details
-4. Read docs/04-DATABASE-SCHEMA.dbml lines 280-350 for permission tables
-5. Confirm you understand Phase 3 objectives
+1. Read CLAUDE.md to verify Phase 2 (Envelopes) is complete
+2. Read docs/02-TASK-LIST.md Phase 3 section (Templates Module)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 3 section
+4. Read docs/04-DATABASE-SCHEMA.dbml template-related tables
+5. Read docs/01-FEATURE-LIST.md Templates category (50 endpoints)
+6. Confirm you understand Phase 3 objectives
 
-Phase 3 focuses on: Permission Profiles, User Authorization, Shared Access Management
+Phase 3 Overview:
+- Duration: 7 weeks (280 hours)
+- Endpoints: 50
+- Dependencies: Phase 2 (Envelopes) must be complete
+
+Phase 3 focuses on:
+- Template CRUD operations (create, read, update, delete, list)
+- Template Documents (reusable document definitions)
+- Template Recipients (roles, not specific people)
+- Template Tabs (pre-positioned fields)
+- Creating Envelopes from Templates
+- Template matching and bulk sending
+- Template locking and version control
+
+KEY CONCEPT: Templates are reusable envelope definitions. Instead of specifying actual recipients,
+templates define ROLES (e.g., "Signer 1", "Manager", "HR Representative"). When creating an envelope
+from a template, users map these roles to actual people.
 ```
 
 ---
 
-## Phase 4: Branding Module
+## Phase 4: Bulk Envelopes
 
 ### Session Starter Prompt
 
 ```
 I'm starting Phase 4 of the DocuSign eSignature API project. Please:
 
-1. Read CLAUDE.md to verify Phase 3 is complete
-2. Read docs/02-TASK-LIST.md lines 231-280 for Phase 4 overview
-3. Read docs/03-DETAILED-TASK-BREAKDOWN.md lines 1100-1250 for Branding details
-4. Read docs/04-DATABASE-SCHEMA.dbml lines 500-650 for branding tables
-5. Read docs/01-FEATURE-LIST.md lines 100-150 for Branding features
+1. Read CLAUDE.md to verify Phase 2 (Envelopes) is complete
+2. Read docs/02-TASK-LIST.md Phase 4 section (Bulk Envelopes)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 4 section
+4. Read docs/04-DATABASE-SCHEMA.dbml bulk send tables
+5. Read docs/01-FEATURE-LIST.md BulkEnvelopes category (12 endpoints)
 
-Phase 4 focuses on: Brand Profiles, Brand Logos, Brand Resources, Watermarks
+Phase 4 Overview:
+- Duration: 3 weeks (120 hours)
+- Endpoints: 12
+- Dependencies: Phase 2 (Envelopes) must be complete
+
+Phase 4 focuses on:
+- Bulk Send Lists (CSV upload of recipients)
+- Bulk Send Batches (send same envelope to many recipients)
+- Bulk Send Status tracking
+- Bulk recipient validation
+- Queued bulk send jobs
+```
+
+---
+
+## Phase 5: Connect (Webhooks)
+
+### Session Starter Prompt
+
+```
+I'm starting Phase 5 of the DocuSign eSignature API project. Please:
+
+1. Read CLAUDE.md to verify Phase 2 (Envelopes) is complete
+2. Read docs/02-TASK-LIST.md Phase 5 section (Connect/Webhooks)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 5 section
+4. Read docs/04-DATABASE-SCHEMA.dbml connect-related tables
+5. Read docs/01-FEATURE-LIST.md Connect category (19 endpoints)
+
+Phase 5 Overview:
+- Duration: 4 weeks (160 hours)
+- Endpoints: 19
+- Dependencies: Phase 2 (Envelopes) must be complete
+
+Phase 5 focuses on:
+- Webhook Configuration (Connect configs)
+- Event Publishing (envelope events trigger webhooks)
+- Webhook Delivery (reliable delivery with retries)
+- Event Logs and Monitoring
+- OAuth configuration for webhooks
+- Failure handling and retry logic
+```
+
+---
+
+## Phase 6: Branding
+
+### Session Starter Prompt
+
+```
+I'm starting Phase 6 of the DocuSign eSignature API project. Please:
+
+1. Read CLAUDE.md to verify Phase 1 is complete
+2. Read docs/02-TASK-LIST.md Phase 6 section (Branding)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 6 section
+4. Read docs/04-DATABASE-SCHEMA.dbml branding tables
+5. Read docs/01-FEATURE-LIST.md Branding category (17 endpoints)
+
+Phase 6 Overview:
+- Duration: 4 weeks (160 hours)
+- Endpoints: 17
+- Dependencies: Phase 1 complete
+
+Phase 6 focuses on:
+- Brand Profiles (company branding)
+- Brand Logos (custom logos for emails and envelopes)
+- Brand Resources (images, colors, fonts)
+- Email Branding (custom email templates)
+- Watermarks
+```
+
+---
+
+## Phase 7: Billing Module
+
+### Session Starter Prompt
+
+```
+I'm starting Phase 7 of the DocuSign eSignature API project. Please:
+
+1. Read CLAUDE.md to verify Phase 1 is complete
+2. Read docs/02-TASK-LIST.md Phase 7 section (Billing)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 7 section
+4. Read docs/04-DATABASE-SCHEMA.dbml billing tables
+5. Read docs/01-FEATURE-LIST.md Billing category (26 endpoints)
+
+Phase 7 Overview:
+- Duration: 5 weeks (200 hours)
+- Endpoints: 26
+- Dependencies: Phase 1 complete
+
+Phase 7 focuses on:
+- Invoice Management (generate, list, retrieve)
+- Billing Plans (subscription management)
+- Payment Processing (payment methods, charges)
+- Usage Tracking (API calls, envelopes sent, storage)
+- Billing History and Reports
+```
+
+---
+
+## Phase 8: Workspaces & Folders
+
+### Session Starter Prompt
+
+```
+I'm starting Phase 8 of the DocuSign eSignature API project. Please:
+
+1. Read CLAUDE.md to verify Phase 2 (Envelopes) is complete
+2. Read docs/02-TASK-LIST.md Phase 8 section (Workspaces & Folders)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 8 section
+4. Read docs/04-DATABASE-SCHEMA.dbml workspace and folder tables
+5. Read docs/01-FEATURE-LIST.md Workspaces (16 endpoints) and Folders (15 endpoints)
+
+Phase 8 Overview:
+- Duration: 4 weeks (160 hours)
+- Endpoints: 31 (Workspaces: 16, Folders: 15)
+- Dependencies: Phase 2 complete
+
+Phase 8 focuses on:
+- Workspace Management (collaborative document workspaces)
+- Workspace Folders (organize files within workspaces)
+- Workspace Files (upload, download, version control)
+- Envelope Folders (organize envelopes)
+- Folder permissions and sharing
+```
+
+---
+
+## Phase 9: PowerForms
+
+### Session Starter Prompt
+
+```
+I'm starting Phase 9 of the DocuSign eSignature API project. Please:
+
+1. Read CLAUDE.md to verify Phase 2 & 3 (Envelopes & Templates) are complete
+2. Read docs/02-TASK-LIST.md Phase 9 section (PowerForms)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 9 section
+4. Read docs/04-DATABASE-SCHEMA.dbml powerform tables
+5. Read docs/01-FEATURE-LIST.md PowerForms category (8 endpoints)
+
+Phase 9 Overview:
+- Duration: 3 weeks (120 hours)
+- Endpoints: 8
+- Dependencies: Phase 2 & 3 complete
+
+Phase 9 focuses on:
+- PowerForm Management (public forms for signing)
+- PowerForm Templates (base templates for forms)
+- PowerForm Submissions (track form submissions)
+- Anonymous signing via public links
+- PowerForm analytics
+```
+
+---
+
+## Phase 10: Advanced Features
+
+### Session Starter Prompt
+
+```
+I'm starting Phase 10 of the DocuSign eSignature API project. Please:
+
+1. Read CLAUDE.md to verify previous phases are complete
+2. Read docs/02-TASK-LIST.md Phase 10 section (Advanced Features)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 10 section
+4. Read docs/04-DATABASE-SCHEMA.dbml relevant tables
+5. Read docs/01-FEATURE-LIST.md for multiple categories
+
+Phase 10 Overview:
+- Duration: 6 weeks (240 hours)
+- Endpoints: 45+
+- Multiple categories
+
+Phase 10 focuses on:
+- Custom Tabs (user-defined tab types)
+- Notary (electronic notarization features)
+- Seals & Signatures (signature management, signature providers)
+- ChunkedUploads (large file upload support)
+- Groups (user groups and permissions)
+- Organization Settings (org-wide configurations)
+```
+
+---
+
+## Phase 11: Reporting & Logs
+
+### Session Starter Prompt
+
+```
+I'm starting Phase 11 of the DocuSign eSignature API project. Please:
+
+1. Read CLAUDE.md to verify Phase 1 is complete
+2. Read docs/02-TASK-LIST.md Phase 11 section (Reporting & Logs)
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 11 section
+4. Read docs/04-DATABASE-SCHEMA.dbml log and settings tables
+5. Read docs/01-FEATURE-LIST.md Diagnostics, Accounts (settings), Users (settings)
+
+Phase 11 Overview:
+- Duration: 4 weeks (160 hours)
+- Endpoints: 15+
+- Dependencies: Phase 1 complete
+
+Phase 11 focuses on:
+- Diagnostics & Health Checks
+- Request Logs (API request logging and analysis)
+- Account Settings Management (100+ settings)
+- User Settings Management
+- System monitoring and alerting
+```
+
+---
+
+## Phase 12: Testing, Optimization & Deployment
+
+### Session Starter Prompt
+
+```
+I'm starting Phase 12 - the FINAL phase of the DocuSign eSignature API project. Please:
+
+1. Read CLAUDE.md to verify all previous phases (1-11) are complete
+2. Read docs/02-TASK-LIST.md Phase 12 section
+3. Read docs/03-DETAILED-TASK-BREAKDOWN.md Phase 12 section
+4. Read docs/05-IMPLEMENTATION-GUIDELINES.md all sections
+
+Phase 12 Overview:
+- Duration: 8 weeks (320 hours)
+- Focus: Quality, Performance, Security, Deployment
+- This is the final phase before production
+
+Phase 12 focuses on:
+1. Comprehensive Testing (4 weeks)
+   - End-to-end integration tests
+   - Load testing and stress testing
+   - Security penetration testing
+   - User acceptance testing
+   - Test all 419 endpoints
+   - Achieve 85%+ overall code coverage
+
+2. Performance Optimization (2 weeks)
+   - Database query optimization
+   - Caching strategy implementation
+   - CDN configuration
+   - API response time optimization
+   - Queue optimization
+
+3. Security Audit (1 week)
+   - Security review of all endpoints
+   - Vulnerability scanning
+   - OAuth security review
+   - Data encryption audit
+   - Compliance verification (SOC 2, GDPR)
+
+4. Deployment & Documentation (1 week)
+   - Production environment setup
+   - CI/CD pipeline finalization
+   - API documentation generation
+   - User guides and tutorials
+   - Monitoring and alerting setup
+   - Disaster recovery procedures
 ```
 
 ---
@@ -666,7 +1064,34 @@ Read docs/05-IMPLEMENTATION-GUIDELINES.md section [SECTION] for [TOPIC]
 
 ---
 
-**Document Version:** 1.0
+**Document Version:** 2.0
 **Last Updated:** 2025-11-14
-**Total Prompts:** 25+
-**Coverage:** All 12 project phases
+**Total Prompts:** 40+ (covering all 12 phases)
+**Coverage:** Complete scope - 419 API endpoints
+**Project Duration:** 68-80 weeks solo (15-20 weeks with team of 5)
+
+## Summary of Updates (v2.0)
+
+### Scope Correction
+- Updated from incomplete 90-endpoint scope to complete 419-endpoint scope
+- Phase 2 now correctly focuses on Envelopes (125 endpoints) - THE MOST CRITICAL MODULE
+- All phase descriptions updated with accurate endpoint counts and durations
+
+### Key Changes
+1. **Phase 1:** Maintained as Foundation (220 hours, 5.5 weeks)
+2. **Phase 2:** Changed from "Account Management" to "Envelopes Module" - THE CORE FEATURE
+   - 125 endpoints (30% of entire API)
+   - 560 hours (14 weeks)
+   - Detailed prompts for envelope creation, documents, recipients, tabs
+3. **Phase 3:** Changed to "Templates Module" (50 endpoints, 7 weeks)
+4. **Phase 4:** "Bulk Envelopes" (12 endpoints, 3 weeks)
+5. **Phase 5:** "Connect/Webhooks" (19 endpoints, 4 weeks)
+6. **Phase 6-12:** Added comprehensive prompts for all remaining phases
+
+### Critical Context Added
+All prompts now include:
+- Correct endpoint counts per phase
+- Accurate time estimates (68-80 weeks solo)
+- Phase dependencies
+- References to correct documentation sections
+- Emphasis on Envelopes as the most critical module
