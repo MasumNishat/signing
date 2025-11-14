@@ -48,12 +48,18 @@ This document tracks completed tasks organized by implementation phases. It help
   - [ ] T1.1.5: Setup Docker development environment
   - [ ] T1.1.6: Initialize Git repository and branching strategy
   - [ ] T1.1.7: Setup CI/CD pipeline (GitHub Actions)
-- [~] 1.2 Database Architecture (1 of 10 tasks, ~14% complete)
-  - [~] T1.2.1: Create all 66 database migrations (9 of 66 tables - 14%)
+- [~] 1.2 Database Architecture (1 of 10 tasks, ~33% complete)
+  - [~] T1.2.1: Create all 66 database migrations (22 of 66 tables - 33%)
     - [x] Core tables: plans, billing_plans, accounts, permission_profiles ✅
     - [x] User tables: users (updated), user_addresses ✅
-    - [x] Envelope tables: envelopes, envelope_documents, envelope_recipients ✅
-    - [ ] 57 remaining tables (10 envelope tables, templates, billing, etc.)
+    - [x] Envelope module COMPLETE (14 tables) ✅
+      - envelopes, envelope_documents, envelope_recipients, envelope_tabs
+      - envelope_custom_fields, envelope_attachments, envelope_locks
+      - envelope_audit_events, envelope_views, envelope_workflow
+      - envelope_workflow_steps, envelope_transfer_rules, envelope_purge_configurations
+    - [x] Organization: folders, envelope_folders ✅
+    - [x] Uploads: chunked_uploads ✅
+    - [ ] 44 remaining tables (templates, billing, connect, etc.)
   - [ ] T1.2.2: Create migrations for core tables
   - [ ] T1.2.3: Create migrations for envelope tables (13 tables)
   - [ ] T1.2.4: Create migrations for template tables
@@ -73,18 +79,26 @@ This document tracks completed tasks organized by implementation phases. It help
 - ✅ Passport 13.4.0 installed with OAuth migrations
 - ✅ Custom directory structure created
 - ✅ BaseController implemented
-- ✅ **Core database migrations created (9 tables)** 🆕
+- ✅ **Envelope module migrations COMPLETE (14 tables)** 🎉
   - Foundation: plans, billing_plans
   - Core: accounts, permission_profiles, users, user_addresses
-  - Envelopes: envelopes, envelope_documents, envelope_recipients
-  - Migration count: 18 total (9 new + 1 updated + 8 existing)
+  - Envelopes core: envelopes, envelope_documents, envelope_recipients
+  - Envelopes extended: envelope_tabs, envelope_custom_fields, envelope_attachments
+  - Envelopes workflow: envelope_locks, envelope_audit_events, envelope_views, envelope_workflow, envelope_workflow_steps
+  - Organization: folders, envelope_folders
+  - Transfer & maintenance: envelope_transfer_rules, envelope_purge_configurations
+  - Uploads: chunked_uploads
+  - Migration count: 24 total (16 new + 1 updated + 3 Laravel + 5 Passport)
+  - Database completion: 22 of 66 tables (33%)
 - ⚠️ External services required: PostgreSQL, Redis
 
 ### Next Tasks
 Continue with:
-- **T1.2.1 (continued):** Create remaining 57 database migrations
-  - Priority: Remaining envelope tables (10 tables) - tabs, custom_fields, attachments, etc.
-  - Then: Templates (5), Billing (6), Connect (4), etc.
+- **T1.2.1 (continued):** Create remaining 44 database migrations (67% complete)
+  - Next Priority: Templates module (5 tables)
+  - Then: Billing module (6 tables)
+  - Then: Connect/webhooks module (4 tables)
+  - Then: Supporting tables (~29 remaining)
 - `docs/04-DATABASE-SCHEMA.dbml` - Complete database schema reference
 - `docs/06-CLAUDE-PROMPTS.md` - Database migration prompts
 
