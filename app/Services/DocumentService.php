@@ -471,4 +471,283 @@ class DocumentService
             throw $e;
         }
     }
+
+    /**
+     * Get all fields (tabs) for a specific document
+     *
+     * @param EnvelopeDocument $document
+     * @param array $options Filter options
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getDocumentFields(EnvelopeDocument $document, array $options = [])
+    {
+        $query = $document->tabs();
+
+        // Filter by field type
+        if (isset($options['type'])) {
+            $query->where('type', $options['type']);
+        }
+
+        // Filter by page
+        if (isset($options['page_number'])) {
+            $query->where('page_number', $options['page_number']);
+        }
+
+        // Filter by recipient
+        if (isset($options['recipient_id'])) {
+            $query->where('recipient_id', $options['recipient_id']);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * Add fields (tabs) to a document
+     *
+     * @param EnvelopeDocument $document
+     * @param array $fields Array of field data
+     * @return array Created tabs
+     * @throws BusinessLogicException
+     */
+    public function addDocumentFields(EnvelopeDocument $document, array $fields): array
+    {
+        if (!$document->envelope->isDraft()) {
+            throw new BusinessLogicException('Fields can only be added to draft envelopes');
+        }
+
+        $createdTabs = [];
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($fields as $fieldData) {
+                $tab = $document->tabs()->create([
+                    'envelope_id' => $document->envelope_id,
+                    'document_id' => $document->id,
+                    'recipient_id' => $fieldData['recipient_id'] ?? null,
+                    'tab_id' => $fieldData['tab_id'] ?? 'tab_' . Str::uuid()->toString(),
+                    'type' => $fieldData['type'],
+                    'tab_label' => $fieldData['tab_label'] ?? null,
+                    'value' => $fieldData['value'] ?? null,
+                    'required' => $fieldData['required'] ?? false,
+                    'locked' => $fieldData['locked'] ?? false,
+                    'page_number' => $fieldData['page_number'],
+                    'x_position' => $fieldData['x_position'],
+                    'y_position' => $fieldData['y_position'],
+                    'width' => $fieldData['width'] ?? 100,
+                    'height' => $fieldData['height'] ?? 20,
+                ]);
+
+                $createdTabs[] = $tab;
+            }
+
+            DB::commit();
+
+            return $createdTabs;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to add document fields', [
+                'document_id' => $document->document_id,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Update a document field (tab)
+     *
+     * @param EnvelopeDocument $document
+     * @param string $tabId
+     * @param array $data Update data
+     * @return \App\Models\EnvelopeTab
+     * @throws BusinessLogicException
+     */
+    public function updateDocumentField(EnvelopeDocument $document, string $tabId, array $data)
+    {
+        if (!$document->envelope->isDraft()) {
+            throw new BusinessLogicException('Fields can only be updated in draft envelopes');
+        }
+
+        $tab = $document->tabs()->where('tab_id', $tabId)->first();
+
+        if (!$tab) {
+            throw new BusinessLogicException('Field not found');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $tab->update(array_filter([
+                'tab_label' => $data['tab_label'] ?? null,
+                'value' => $data['value'] ?? null,
+                'required' => $data['required'] ?? null,
+                'locked' => $data['locked'] ?? null,
+                'page_number' => $data['page_number'] ?? null,
+                'x_position' => $data['x_position'] ?? null,
+                'y_position' => $data['y_position'] ?? null,
+                'width' => $data['width'] ?? null,
+                'height' => $data['height'] ?? null,
+            ], function ($value) {
+                return $value !== null;
+            }));
+
+            DB::commit();
+
+            return $tab->fresh();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Delete a document field (tab)
+     *
+     * @param EnvelopeDocument $document
+     * @param string $tabId
+     * @return bool
+     * @throws BusinessLogicException
+     */
+    public function deleteDocumentField(EnvelopeDocument $document, string $tabId): bool
+    {
+        if (!$document->envelope->isDraft()) {
+            throw new BusinessLogicException('Fields can only be deleted from draft envelopes');
+        }
+
+        $tab = $document->tabs()->where('tab_id', $tabId)->first();
+
+        if (!$tab) {
+            throw new BusinessLogicException('Field not found');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $tab->delete();
+            DB::commit();
+            return true;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    /**
+     * Get document pages information
+     *
+     * @param EnvelopeDocument $document
+     * @return array
+     */
+    public function getDocumentPages(EnvelopeDocument $document): array
+    {
+        // For now, return basic page information
+        // In a real implementation, this would extract actual page data from the PDF
+        $pages = [];
+
+        for ($i = 1; $i <= ($document->pages ?? 1); $i++) {
+            $pages[] = [
+                'page_number' => $i,
+                'width' => 612, // Standard letter size in points (8.5" * 72)
+                'height' => 792, // Standard letter size in points (11" * 72)
+                'dpi' => 72,
+            ];
+        }
+
+        return $pages;
+    }
+
+    /**
+     * Delete specific pages from a document
+     *
+     * @param EnvelopeDocument $document
+     * @param array $pageNumbers Pages to delete
+     * @return EnvelopeDocument
+     * @throws BusinessLogicException
+     */
+    public function deleteDocumentPages(EnvelopeDocument $document, array $pageNumbers): EnvelopeDocument
+    {
+        if (!$document->envelope->isDraft()) {
+            throw new BusinessLogicException('Pages can only be deleted from draft envelopes');
+        }
+
+        // This is a placeholder implementation
+        // In production, this would:
+        // 1. Load the PDF
+        // 2. Remove specified pages
+        // 3. Save the modified PDF
+        // 4. Update the document record
+        // 5. Update tabs that reference deleted pages
+
+        throw new BusinessLogicException('Page deletion is not yet implemented');
+    }
+
+    /**
+     * Get combined PDF of all documents in an envelope
+     *
+     * @param Envelope $envelope
+     * @param array $options Combination options
+     * @return string PDF content
+     * @throws BusinessLogicException
+     */
+    public function getCombinedDocuments(Envelope $envelope, array $options = []): string
+    {
+        $documents = $envelope->documents()
+            ->where('include_in_download', true)
+            ->orderBy('order_number')
+            ->get();
+
+        if ($documents->isEmpty()) {
+            throw new BusinessLogicException('No documents to combine');
+        }
+
+        // Check if all documents are converted
+        foreach ($documents as $document) {
+            if ($document->conversion_status !== 'completed') {
+                throw new BusinessLogicException('Not all documents have been converted to PDF');
+            }
+        }
+
+        // This is a placeholder implementation
+        // In production, this would use a PDF library to:
+        // 1. Load each PDF
+        // 2. Combine them in order
+        // 3. Add certificate of completion if requested
+        // 4. Return the combined PDF content
+
+        // For now, return the first document's PDF
+        $firstDocument = $documents->first();
+        return $this->storage->getDocument($firstDocument->pdf_path, $envelope->envelope_id);
+    }
+
+    /**
+     * Get certificate of completion for an envelope
+     *
+     * @param Envelope $envelope
+     * @return string PDF content
+     * @throws BusinessLogicException
+     */
+    public function getCertificateOfCompletion(Envelope $envelope): string
+    {
+        if ($envelope->status !== 'completed') {
+            throw new BusinessLogicException('Certificate is only available for completed envelopes');
+        }
+
+        // This is a placeholder implementation
+        // In production, this would generate a PDF certificate containing:
+        // 1. Envelope information
+        // 2. List of signers and signatures
+        // 3. Timestamps of all actions
+        // 4. Audit trail summary
+
+        // For now, generate a simple text-based certificate
+        $certificate = "CERTIFICATE OF COMPLETION\n\n";
+        $certificate .= "Envelope ID: {$envelope->envelope_id}\n";
+        $certificate .= "Subject: {$envelope->email_subject}\n";
+        $certificate .= "Status: {$envelope->status}\n";
+        $certificate .= "Completed: {$envelope->completed_at}\n\n";
+        $certificate .= "This envelope was completed on {$envelope->completed_at}.\n";
+
+        return $certificate;
+    }
 }

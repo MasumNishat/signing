@@ -24,6 +24,16 @@ Route::prefix('accounts/{accountId}/envelopes/{envelopeId}/documents')->group(fu
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
         ->name('documents.store');
 
+    // Combined documents (must be before /{documentId} to avoid conflict)
+    Route::get('/combined', [DocumentController::class, 'getCombined'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('documents.combined');
+
+    // Certificate of completion (must be before /{documentId} to avoid conflict)
+    Route::get('/certificate', [DocumentController::class, 'getCertificate'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('documents.certificate');
+
     // Reorder documents
     Route::put('/reorder', [DocumentController::class, 'reorder'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
@@ -48,4 +58,30 @@ Route::prefix('accounts/{accountId}/envelopes/{envelopeId}/documents')->group(fu
     Route::post('/{documentId}/download_url', [DocumentController::class, 'getDownloadUrl'])
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('documents.download_url');
+
+    // Document fields (tabs) operations
+    Route::get('/{documentId}/fields', [DocumentController::class, 'getFields'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('documents.fields.index');
+
+    Route::post('/{documentId}/fields', [DocumentController::class, 'addFields'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('documents.fields.store');
+
+    Route::put('/{documentId}/fields/{tabId}', [DocumentController::class, 'updateField'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('documents.fields.update');
+
+    Route::delete('/{documentId}/fields/{tabId}', [DocumentController::class, 'deleteField'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.delete'])
+        ->name('documents.fields.destroy');
+
+    // Document pages operations
+    Route::get('/{documentId}/pages', [DocumentController::class, 'getPages'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('documents.pages.index');
+
+    Route::delete('/{documentId}/pages', [DocumentController::class, 'deletePages'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('documents.pages.destroy');
 });

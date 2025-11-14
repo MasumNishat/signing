@@ -354,4 +354,375 @@ class DocumentController extends BaseController
             return $this->error($e->getMessage(), 400);
         }
     }
+
+    /**
+     * Get all fields (tabs) for a document
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/fields
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function getFields(
+        Request $request,
+        string $accountId,
+        string $envelopeId,
+        string $documentId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $fields = $this->documentService->getDocumentFields($document, [
+            'type' => $request->query('type'),
+            'page_number' => $request->query('page_number'),
+            'recipient_id' => $request->query('recipient_id'),
+        ]);
+
+        return $this->success([
+            'document_id' => $document->document_id,
+            'fields' => $fields->map(function ($tab) {
+                return [
+                    'tab_id' => $tab->tab_id,
+                    'type' => $tab->type,
+                    'tab_label' => $tab->tab_label,
+                    'value' => $tab->value,
+                    'required' => $tab->required,
+                    'locked' => $tab->locked,
+                    'page_number' => $tab->page_number,
+                    'x_position' => $tab->x_position,
+                    'y_position' => $tab->y_position,
+                    'width' => $tab->width,
+                    'height' => $tab->height,
+                    'recipient_id' => $tab->recipient_id,
+                ];
+            }),
+        ], 'Document fields retrieved successfully');
+    }
+
+    /**
+     * Add fields (tabs) to a document
+     *
+     * POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/fields
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function addFields(
+        Request $request,
+        string $accountId,
+        string $envelopeId,
+        string $documentId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $validator = Validator::make($request->all(), [
+            'fields' => 'required|array|min:1',
+            'fields.*.tab_id' => 'nullable|string|max:100',
+            'fields.*.type' => 'required|string|max:50',
+            'fields.*.tab_label' => 'nullable|string|max:255',
+            'fields.*.value' => 'nullable|string',
+            'fields.*.required' => 'nullable|boolean',
+            'fields.*.locked' => 'nullable|boolean',
+            'fields.*.page_number' => 'required|integer|min:1',
+            'fields.*.x_position' => 'required|integer|min:0',
+            'fields.*.y_position' => 'required|integer|min:0',
+            'fields.*.width' => 'nullable|integer|min:1',
+            'fields.*.height' => 'nullable|integer|min:1',
+            'fields.*.recipient_id' => 'nullable|exists:envelope_recipients,id',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $fields = $this->documentService->addDocumentFields(
+                $document,
+                $request->input('fields', [])
+            );
+
+            return $this->created([
+                'document_id' => $document->document_id,
+                'fields' => array_map(function ($tab) {
+                    return [
+                        'tab_id' => $tab->tab_id,
+                        'type' => $tab->type,
+                        'tab_label' => $tab->tab_label,
+                        'page_number' => $tab->page_number,
+                        'x_position' => $tab->x_position,
+                        'y_position' => $tab->y_position,
+                    ];
+                }, $fields),
+            ], 'Document fields added successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Update a document field (tab)
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/fields/{tabId}
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @param string $tabId
+     * @return JsonResponse
+     */
+    public function updateField(
+        Request $request,
+        string $accountId,
+        string $envelopeId,
+        string $documentId,
+        string $tabId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $validator = Validator::make($request->all(), [
+            'tab_label' => 'nullable|string|max:255',
+            'value' => 'nullable|string',
+            'required' => 'nullable|boolean',
+            'locked' => 'nullable|boolean',
+            'page_number' => 'nullable|integer|min:1',
+            'x_position' => 'nullable|integer|min:0',
+            'y_position' => 'nullable|integer|min:0',
+            'width' => 'nullable|integer|min:1',
+            'height' => 'nullable|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $tab = $this->documentService->updateDocumentField(
+                $document,
+                $tabId,
+                $request->all()
+            );
+
+            return $this->success([
+                'tab_id' => $tab->tab_id,
+                'type' => $tab->type,
+                'tab_label' => $tab->tab_label,
+                'value' => $tab->value,
+                'required' => $tab->required,
+                'locked' => $tab->locked,
+                'page_number' => $tab->page_number,
+                'x_position' => $tab->x_position,
+                'y_position' => $tab->y_position,
+                'width' => $tab->width,
+                'height' => $tab->height,
+            ], 'Document field updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Delete a document field (tab)
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/fields/{tabId}
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @param string $tabId
+     * @return JsonResponse
+     */
+    public function deleteField(
+        string $accountId,
+        string $envelopeId,
+        string $documentId,
+        string $tabId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        try {
+            $this->documentService->deleteDocumentField($document, $tabId);
+
+            return $this->noContent('Document field deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get document pages information
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/pages
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function getPages(
+        string $accountId,
+        string $envelopeId,
+        string $documentId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $pages = $this->documentService->getDocumentPages($document);
+
+        return $this->success([
+            'document_id' => $document->document_id,
+            'total_pages' => count($pages),
+            'pages' => $pages,
+        ], 'Document pages retrieved successfully');
+    }
+
+    /**
+     * Delete specific pages from a document
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/pages
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function deletePages(
+        Request $request,
+        string $accountId,
+        string $envelopeId,
+        string $documentId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $validator = Validator::make($request->all(), [
+            'page_numbers' => 'required|array|min:1',
+            'page_numbers.*' => 'required|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $this->documentService->deleteDocumentPages(
+                $document,
+                $request->input('page_numbers', [])
+            );
+
+            return $this->success(null, 'Document pages deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get combined PDF of all documents
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/combined
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|JsonResponse
+     */
+    public function getCombined(
+        Request $request,
+        string $accountId,
+        string $envelopeId
+    ) {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $content = $this->documentService->getCombinedDocuments($envelope);
+
+            $filename = 'envelope_' . $envelope->envelope_id . '_combined.pdf';
+
+            return response()->streamDownload(function () use ($content) {
+                echo $content;
+            }, $filename, [
+                'Content-Type' => 'application/pdf',
+            ]);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get certificate of completion
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/certificate
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|JsonResponse
+     */
+    public function getCertificate(
+        string $accountId,
+        string $envelopeId
+    ) {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $content = $this->documentService->getCertificateOfCompletion($envelope);
+
+            $filename = 'envelope_' . $envelope->envelope_id . '_certificate.txt';
+
+            return response()->streamDownload(function () use ($content) {
+                echo $content;
+            }, $filename, [
+                'Content-Type' => 'text/plain',
+            ]);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
 }
