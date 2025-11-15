@@ -132,6 +132,43 @@ Route::middleware(['throttle:api', 'check.account.access'])->group(function () {
                     ->middleware('check.permission:update_users')
                     ->name('assign-profile');
             });
+
+            // User Authorization Routes (7 endpoints)
+
+            // GET /accounts/{accountId}/users/{userId}/authorizations - Principal authorizations
+            Route::get('authorizations', [\App\Http\Controllers\Api\V2_1\UserAuthorizationController::class, 'indexPrincipal'])
+                ->middleware('check.permission:view_users')
+                ->name('authorizations.index');
+
+            // POST /accounts/{accountId}/users/{userId}/authorizations - Create/update bulk
+            Route::post('authorizations', [\App\Http\Controllers\Api\V2_1\UserAuthorizationController::class, 'storeBulk'])
+                ->middleware('check.permission:manage_users')
+                ->name('authorizations.store_bulk');
+
+            // GET /accounts/{accountId}/users/{userId}/authorizations/agent - Agent authorizations
+            Route::get('authorizations/agent', [\App\Http\Controllers\Api\V2_1\UserAuthorizationController::class, 'indexAgent'])
+                ->middleware('check.permission:view_users')
+                ->name('authorizations.agent');
+
+            // POST /accounts/{accountId}/users/{userId}/authorization - Create single
+            Route::post('authorization', [\App\Http\Controllers\Api\V2_1\UserAuthorizationController::class, 'store'])
+                ->middleware('check.permission:manage_users')
+                ->name('authorization.store');
+
+            // GET /accounts/{accountId}/users/{userId}/authorization/{authorizationId}
+            Route::get('authorization/{authorizationId}', [\App\Http\Controllers\Api\V2_1\UserAuthorizationController::class, 'show'])
+                ->middleware('check.permission:view_users')
+                ->name('authorization.show');
+
+            // PUT /accounts/{accountId}/users/{userId}/authorization/{authorizationId}
+            Route::put('authorization/{authorizationId}', [\App\Http\Controllers\Api\V2_1\UserAuthorizationController::class, 'update'])
+                ->middleware('check.permission:manage_users')
+                ->name('authorization.update');
+
+            // DELETE /accounts/{accountId}/users/{userId}/authorization/{authorizationId}
+            Route::delete('authorization/{authorizationId}', [\App\Http\Controllers\Api\V2_1\UserAuthorizationController::class, 'destroy'])
+                ->middleware('check.permission:manage_users')
+                ->name('authorization.destroy');
         });
     });
 
