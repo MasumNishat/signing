@@ -230,4 +230,13 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
     Route::get('{envelopeId}/consumer_disclosure/{langCode?}', [\App\Http\Controllers\Api\V2_1\EnvelopeConsumerDisclosureController::class, 'getEnvelopeDisclosure'])
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('consumer_disclosure.get');
+
+    // Envelope Correction & Resend
+    Route::post('{envelopeId}/correct', [\App\Http\Controllers\Api\V2_1\EnvelopeCorrectionController::class, 'correct'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('correct');
+
+    Route::post('{envelopeId}/resend', [\App\Http\Controllers\Api\V2_1\EnvelopeCorrectionController::class, 'resend'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.send'])
+        ->name('resend');
 });
