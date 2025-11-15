@@ -111,6 +111,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Bulk Send Routes
         require __DIR__.'/api/v2.1/bulk.php';
 
+        // Folder Routes
+        require __DIR__.'/api/v2.1/folders.php';
+
         // Settings & Diagnostics Routes
         require __DIR__.'/api/v2.1/settings.php';
         require __DIR__.'/api/v2.1/diagnostics.php';

@@ -313,6 +313,15 @@ class Envelope extends Model
     }
 
     /**
+     * Get the folders this envelope is in.
+     */
+    public function folders()
+    {
+        return $this->belongsToMany(Folder::class, 'envelope_folders', 'envelope_id', 'folder_id')
+            ->withTimestamps();
+    }
+
+    /**
      * Scope a query to only include envelopes with a specific status.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
