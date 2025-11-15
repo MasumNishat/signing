@@ -130,6 +130,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Document Generation Routes
         require __DIR__.'/api/v2.1/document_generation.php';
 
+        // Mobile Routes
+        require __DIR__.'/api/v2.1/mobile.php';
+
         // Additional route files will be added as features are implemented
     });
 });
