@@ -608,3 +608,226 @@ d66da8e - feat: implement Identity Verification Module (Phase 5.2) - 1 endpoint
 **Phase 5.2 Status:** ✅ COMPLETE (1/1 endpoint)
 **Phase 5 Status:** ✅ COMPLETE (21/21 endpoints) 🎉
 **Overall Progress:** 178/419 endpoints (42.5%)
+
+---
+
+## Phase 6: Folders & Organization Module
+
+### Tasks Completed
+
+1. **Model Development** ✅
+   - Created Folder model (237 lines)
+   - Auto-generated UUIDs
+   - Hierarchical folder structure (parent/child)
+   - Folder types: normal, inbox, sentitems, draft, trash, recyclebin, custom
+   - Item count and subfolder tracking
+   - System folder identification
+
+2. **Service Layer** ✅
+   - Created FolderService (320 lines)
+   - getFolders() - List with hierarchy and filters
+   - getFolder() - Get specific folder
+   - getFolderItems() - Get envelopes with advanced filtering
+   - moveEnvelopesToFolder() - Batch envelope moving
+   - createFolder() - Create new folders
+   - updateFolder() - Update folder details (protect system folders)
+   - deleteFolder() - Delete folders (protect system folders)
+   - createDefaultFolders() - Create system folders
+   - Recursive subfolder loading
+
+3. **Controller Development** ✅
+   - Created FolderController (200 lines)
+   - 4 endpoints with comprehensive filters
+   - Hierarchical folder responses
+   - Envelope filtering (date, status, owner, search)
+
+4. **Routes Configuration** ✅
+   - Created folders.php (40 lines)
+   - Updated api.php to include folder routes
+
+5. **Database Migration Updates** ✅
+   - Added 7 new fields to folders table
+   - parent_folder_id (self-referencing for hierarchy)
+   - filter, uri
+   - item_count, sub_folder_count, has_sub_folders
+   - error_details
+
+6. **Model Updates** ✅
+   - Envelope model: Added folders() relationship (many-to-many via envelope_folders pivot)
+
+### Files Created (Phase 6)
+
+1. **app/Models/Folder.php** (237 lines)
+2. **app/Services/FolderService.php** (320 lines)
+3. **app/Http/Controllers/Api/V2_1/FolderController.php** (200 lines)
+4. **routes/api/v2.1/folders.php** (40 lines)
+
+**Total new lines:** ~800
+
+### Files Modified (Phase 6)
+
+1. **database/migrations/2025_11_14_161327_create_folders_table.php** (added 7 fields)
+2. **app/Models/Envelope.php** (added folders() relationship)
+3. **routes/api.php** (added folder route include)
+
+**Total modified:** 3 files
+
+### Folder Types
+
+1. **System Folders** (auto-created, protected):
+   - Inbox - Incoming envelopes
+   - Sent Items - Sent envelopes
+   - Drafts - Draft envelopes
+   - Trash - Deleted envelopes
+   - Recycle Bin - Permanently deleted items
+
+2. **Custom Folders**:
+   - User-created folders
+   - Can be nested (parent/child hierarchy)
+   - Can be moved/renamed/deleted
+   - Track item count automatically
+
+### API Endpoints (Phase 6)
+
+```
+GET /api/v2.1/accounts/{accountId}/folders
+  ?count=100
+  &include=folders
+  &include_items=true
+  &start_position=0
+  &sub_folder_depth=2
+  &template=false
+  &user_filter=123
+
+GET /api/v2.1/accounts/{accountId}/folders/{folderId}
+  ?from_date=2025-01-01
+  &to_date=2025-12-31
+  &search_text=contract
+  &status=completed
+  &owner_name=John
+  &owner_email=john@example.com
+  &start_position=0
+  &count=50
+
+PUT /api/v2.1/accounts/{accountId}/folders/{folderId}
+  Body: { "envelopeIds": ["uuid1", "uuid2", "uuid3"] }
+
+GET /api/v2.1/accounts/{accountId}/search_folders/{searchFolderId}
+```
+
+### Technical Highlights (Phase 6)
+
+1. **Hierarchical Folder Structure**
+```php
+public function parent(): BelongsTo
+{
+    return $this->belongsTo(Folder::class, 'parent_folder_id');
+}
+
+public function children()
+{
+    return $this->hasMany(Folder::class, 'parent_folder_id');
+}
+```
+
+2. **System Folder Protection**
+```php
+public function isSystemFolder(): bool
+{
+    return in_array($this->folder_type, [
+        self::TYPE_INBOX,
+        self::TYPE_SENT_ITEMS,
+        self::TYPE_DRAFT,
+        self::TYPE_TRASH,
+        self::TYPE_RECYCLE_BIN,
+    ]);
+}
+
+// In deleteFolder()
+if ($folder->isSystemFolder()) {
+    throw new \Exception("Cannot delete system folder");
+}
+```
+
+3. **Automatic Item Count Tracking**
+```php
+public function updateItemCount(): void
+{
+    $this->item_count = $this->envelopes()->count();
+    $this->save();
+}
+
+// Called after moving envelopes
+$folder->updateItemCount();
+```
+
+4. **Batch Envelope Moving**
+```php
+foreach ($envelopeIds as $envelopeId) {
+    $envelope->folders()->detach(); // Remove from all folders
+    $envelope->folders()->attach($folder->id); // Add to new folder
+}
+```
+
+5. **Recursive Folder Loading**
+```php
+private function loadSubFolders(Collection $folders, int $depth, int $currentDepth = 1): void
+{
+    if ($currentDepth >= $depth) return;
+    
+    foreach ($folders as $folder) {
+        if ($folder->children) {
+            $this->loadSubFolders($folder->children, $depth, $currentDepth + 1);
+        }
+    }
+}
+```
+
+### Git Commits (Phase 6)
+
+```
+aba0ddb - feat: implement Folders & Organization Module (Phase 6) - 4 endpoints
+```
+
+**Commit Details:**
+- 7 files changed
+- 877 insertions(+)
+- 4 new files created
+
+---
+
+## Session 34 Complete Statistics
+
+### All Modules Implemented
+- **Phase 5.1:** Signatures & Seals (20 endpoints)
+- **Phase 5.2:** Identity Verification (1 endpoint)
+- **Phase 6:** Folders & Organization (4 endpoints)
+- **Total Session:** 25 endpoints
+
+### Combined Session 34 Metrics
+- **Total Endpoints:** 25
+- **Models Created:** 6 (Signature, SignatureImage, SignatureProvider, Seal, IdentityVerificationWorkflow, Folder)
+- **Services Created:** 3 (SignatureService, IdentityVerificationService, FolderService)
+- **Controllers Created:** 3 (SignatureController, IdentityVerificationController, FolderController)
+- **Routes Created:** 3 files
+- **Total Lines:** ~2,900
+- **Session Duration:** Single extended session (3 phases)
+
+### Git Commits (All Session 34)
+1. `0179643` - Signatures & Seals Module (20 endpoints) - Phase 5.1
+2. `d66da8e` - Identity Verification Module (1 endpoint) - Phase 5.2  
+3. `c2c67e0` - Documentation updates
+4. `aba0ddb` - Folders & Organization Module (4 endpoints) - Phase 6
+
+**Total commits:** 4
+
+### Updated Cumulative Progress
+- **Total Endpoints:** 182 (157 + 25)
+- **Total Phases Complete:** 6 (Phases 1-6)
+- **Completion:** ~43.4% of 419 total endpoints
+
+**Session Status:** ✅ COMPLETE
+**Phase 5.1 Status:** ✅ COMPLETE (20/20 endpoints)
+**Phase 5.2 Status:** ✅ COMPLETE (1/1 endpoint)
+**Phase 6 Status:** ✅ COMPLETE (4/4 endpoints) 🎉
+**Overall Progress:** 182/419 endpoints (43.4%)
