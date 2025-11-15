@@ -75,6 +75,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Tab Routes (Envelope Form Fields)
         require __DIR__.'/api/v2.1/tabs.php';
 
+        // Workflow Routes (Envelope Routing & Workflows)
+        require __DIR__.'/api/v2.1/workflows.php';
+
         // Chunked Upload Routes
         require __DIR__.'/api/v2.1/chunked_uploads.php';
 
