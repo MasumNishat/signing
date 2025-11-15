@@ -217,4 +217,17 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
     Route::put('{envelopeId}/documents/{documentId}/recipients', [\App\Http\Controllers\Api\V2_1\DocumentVisibilityController::class, 'updateDocumentRecipients'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
         ->name('documents.recipients.update');
+
+    // Consumer Disclosure
+    Route::get('{envelopeId}/recipients/{recipientId}/consumer_disclosure', [\App\Http\Controllers\Api\V2_1\EnvelopeConsumerDisclosureController::class, 'getRecipientDisclosure'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.consumer_disclosure.get');
+
+    Route::post('{envelopeId}/recipients/{recipientId}/consumer_disclosure', [\App\Http\Controllers\Api\V2_1\EnvelopeConsumerDisclosureController::class, 'acceptDisclosure'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.consumer_disclosure.accept');
+
+    Route::get('{envelopeId}/consumer_disclosure/{langCode?}', [\App\Http\Controllers\Api\V2_1\EnvelopeConsumerDisclosureController::class, 'getEnvelopeDisclosure'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('consumer_disclosure.get');
 });
