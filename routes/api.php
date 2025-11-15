@@ -31,8 +31,8 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
             ->name('refresh');
 
         // OAuth 2.0 Routes
-        Route::get('authorize', [OAuthController::class, 'authorize'])->name('oauth.authorize');
-        Route::post('authorize', [OAuthController::class, 'authorizePost'])->name('oauth.authorize.post');
+        Route::get('authorize', [OAuthController::class, 'authorizeOAuth'])->name('oauth.authorize');
+        Route::post('authorize', [OAuthController::class, 'approveOAuth'])->name('oauth.authorize.post');
         Route::post('token', [OAuthController::class, 'token'])
             ->middleware('throttle:oauth-token')
             ->name('oauth.token');

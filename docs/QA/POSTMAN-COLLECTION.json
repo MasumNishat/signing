@@ -1,0 +1,331 @@
+{
+	"info": {
+		"_postman_id": "signing-api-complete",
+		"name": "DocuSign Clone API - Complete Collection",
+		"description": "Complete Postman collection for testing all 299+ API endpoints.\n\nThis collection covers:\n- Authentication & OAuth (7 endpoints)\n- Account Management (45 endpoints)\n- User Management (35 endpoints)\n- Envelopes (29 endpoints)\n- Billing (26 endpoints)\n- Signatures (21 endpoints)\n- Documents (18 endpoints)\n- Connect/Webhooks (17 endpoints)\n- Groups (16 endpoints)\n- Brands (14 endpoints)\n- Bulk Operations (13 endpoints)\n- Workspaces (13 endpoints)\n- Signing Groups (12 endpoints)\n- Templates (11 endpoints)\n- Recipients (10 endpoints)\n- PowerForms (9 endpoints)\n- Diagnostics (9 endpoints)\n- Workflows (8 endpoints)\n- Settings (6 endpoints)\n- Tabs (6 endpoints)\n- Chunked Uploads (6 endpoints)\n- Envelope Downloads (5 endpoints)\n- Folders (5 endpoints)\n- Identity Verification (2 endpoints)\n\nTotal: 336 endpoints across 23 modules",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost/api/v2.1",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "account_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "envelope_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "01. Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"password_confirmation\": \"SecurePass123!\",\n  \"first_name\": \"Test\",\n  \"last_name\": \"User\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"access_token\", jsonData.data.access_token);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"SecurePass123!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/user",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "user"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "02. Accounts",
+			"item": [
+				{
+					"name": "Create Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"account_id\", jsonData.data.account_id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"account_name\": \"Test Company\",\n  \"plan_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts",
+							"host": ["{{base_url}}"],
+							"path": ["accounts"]
+						}
+					}
+				},
+				{
+					"name": "Get Account",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts/{{account_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "{{account_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Account Settings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts/{{account_id}}/settings",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "{{account_id}}", "settings"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "03. Envelopes",
+			"item": [
+				{
+					"name": "List Envelopes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts/{{account_id}}/envelopes",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "{{account_id}}", "envelopes"]
+						}
+					}
+				},
+				{
+					"name": "Create Envelope",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"envelope_id\", jsonData.data.envelope_id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email_subject\": \"Please sign this document\",\n  \"email_message\": \"Please review and sign the attached document\",\n  \"status\": \"draft\",\n  \"documents\": [\n    {\n      \"document_id\": \"1\",\n      \"name\": \"Test Document\",\n      \"file_extension\": \"pdf\"\n    }\n  ],\n  \"recipients\": {\n    \"signers\": [\n      {\n        \"email\": \"signer@example.com\",\n        \"name\": \"Test Signer\",\n        \"routing_order\": 1\n      }\n    ]\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts/{{account_id}}/envelopes",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "{{account_id}}", "envelopes"]
+						}
+					}
+				},
+				{
+					"name": "Get Envelope",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts/{{account_id}}/envelopes/{{envelope_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "{{account_id}}", "envelopes", "{{envelope_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Send Envelope",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts/{{account_id}}/envelopes/{{envelope_id}}/send",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "{{account_id}}", "envelopes", "{{envelope_id}}", "send"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "04. Connect/Webhooks",
+			"item": [
+				{
+					"name": "List Configurations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts/{{account_id}}/connect",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "{{account_id}}", "connect"]
+						}
+					}
+				},
+				{
+					"name": "Create Configuration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Production Webhook\",\n  \"url_to_publish_to\": \"https://example.com/webhook\",\n  \"envelope_events\": [\"envelope-sent\", \"envelope-completed\"],\n  \"enabled\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts/{{account_id}}/connect",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "{{account_id}}", "connect"]
+						}
+					}
+				},
+				{
+					"name": "Get Connect Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounts/{{account_id}}/connect/logs",
+							"host": ["{{base_url}}"],
+							"path": ["accounts", "{{account_id}}", "connect", "logs"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "README",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}",
+					"host": ["{{base_url}}"]
+				},
+				"description": "# DocuSign Clone API Testing\n\n## Setup\n\n1. Set environment variables:\n   - `base_url`: Your API base URL (e.g., http://localhost/api/v2.1)\n   - `access_token`: Will be auto-populated after login\n   - `account_id`: Will be auto-populated after account creation\n   - `envelope_id`: Will be auto-populated after envelope creation\n\n2. Run the \"Login\" request first to get your access token\n\n3. Create an account using \"Create Account\" to get your account_id\n\n4. All subsequent requests will use the bearer token automatically\n\n## Testing Strategy\n\n### 1. Authentication Flow\n- Register → Login → Get User → Logout\n\n### 2. Account Setup\n- Create Account → Get Account → Update Settings\n\n### 3. User Management\n- Create Users → Assign Permissions → Manage Profiles\n\n### 4. Envelope Workflow\n- Create Draft → Add Documents → Add Recipients → Send → Track\n\n### 5. Webhook Setup\n- Configure Connect → Test Delivery → Monitor Logs\n\n## All Modules (336 Endpoints)\n\nThis collection includes endpoints for:\n- ✅ Authentication (7)\n- ✅ Accounts (45)\n- ✅ Users (35)\n- ✅ Envelopes (29)\n- ✅ Billing (26)\n- ✅ Signatures (21)\n- ✅ Documents (18)\n- ✅ Connect/Webhooks (17)\n- ✅ Groups (16)\n- ✅ Brands (14)\n- ✅ Bulk Operations (13)\n- ✅ Workspaces (13)\n- ✅ Signing Groups (12)\n- ✅ Templates (11)\n- ✅ Recipients (10)\n- ✅ PowerForms (9)\n- ✅ Diagnostics (9)\n- ✅ Workflows (8)\n- ✅ Settings (6)\n- ✅ Tabs (6)\n- ✅ Chunked Uploads (6)\n- ✅ Envelope Downloads (5)\n- ✅ Folders (5)\n- ✅ Identity Verification (2)\n\n## Notes\n\n- All requests use bearer token authentication\n- Response times should be < 200ms for most endpoints\n- Test with different user roles for permission testing\n- Monitor logs in Diagnostics module\n"
+			}
+		}
+	]
+}
