@@ -114,6 +114,10 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Folder Routes
         require __DIR__.'/api/v2.1/folders.php';
 
+        // Group Routes (Signing Groups & User Groups)
+        require __DIR__.'/api/v2.1/signing_groups.php';
+        require __DIR__.'/api/v2.1/groups.php';
+
         // Settings & Diagnostics Routes
         require __DIR__.'/api/v2.1/settings.php';
         require __DIR__.'/api/v2.1/diagnostics.php';
