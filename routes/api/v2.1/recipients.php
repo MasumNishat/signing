@@ -14,6 +14,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('accounts/{accountId}/envelopes/{envelopeId}/recipients')->group(function () {
+    // Bulk operations (must be before individual routes)
+    Route::put('/bulk', [RecipientController::class, 'bulkUpdate'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('recipients.bulk.update');
+
+    Route::delete('/bulk', [RecipientController::class, 'bulkDelete'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.delete'])
+        ->name('recipients.bulk.delete');
+
     // List all recipients
     Route::get('/', [RecipientController::class, 'index'])
         ->middleware(['throttle:api', 'check.account.access'])
@@ -43,4 +52,9 @@ Route::prefix('accounts/{accountId}/envelopes/{envelopeId}/recipients')->group(f
     Route::post('/{recipientId}/resend', [RecipientController::class, 'resend'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
         ->name('recipients.resend');
+
+    // Generate signing URL
+    Route::post('/{recipientId}/signing_url', [RecipientController::class, 'signingUrl'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.signing_url');
 });

@@ -434,4 +434,209 @@ class RecipientService
             ->where('routing_order', $currentOrder)
             ->get();
     }
+
+    /**
+     * Bulk update recipients
+     *
+     * @param Envelope $envelope
+     * @param array $updates Array of [recipient_id => data]
+     * @return array Updated recipients
+     * @throws BusinessLogicException
+     */
+    public function bulkUpdateRecipients(Envelope $envelope, array $updates): array
+    {
+        if (!in_array($envelope->status, ['draft', 'sent'])) {
+            throw new BusinessLogicException('Recipients can only be updated in draft or sent envelopes');
+        }
+
+        $updatedRecipients = [];
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($updates as $recipientId => $data) {
+                $recipient = $this->getRecipient($envelope, $recipientId);
+
+                // Skip if already signed
+                if (!$recipient->hasSigned()) {
+                    $this->updateRecipient($recipient, $data);
+                    $updatedRecipients[] = $recipient->fresh();
+                }
+            }
+
+            DB::commit();
+
+            return $updatedRecipients;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to bulk update recipients', [
+                'envelope_id' => $envelope->envelope_id,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Bulk delete recipients
+     *
+     * @param Envelope $envelope
+     * @param array $recipientIds
+     * @return int Number of deleted recipients
+     * @throws BusinessLogicException
+     */
+    public function bulkDeleteRecipients(Envelope $envelope, array $recipientIds): int
+    {
+        if (!$envelope->isDraft()) {
+            throw new BusinessLogicException('Recipients can only be deleted from draft envelopes');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $count = 0;
+            foreach ($recipientIds as $recipientId) {
+                $recipient = $envelope->recipients()
+                    ->where('recipient_id', $recipientId)
+                    ->first();
+
+                if ($recipient && !$recipient->hasSigned()) {
+                    $this->deleteRecipient($recipient);
+                    $count++;
+                }
+            }
+
+            DB::commit();
+
+            return $count;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to bulk delete recipients', [
+                'envelope_id' => $envelope->envelope_id,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Generate signing URL for recipient
+     *
+     * @param EnvelopeRecipient $recipient
+     * @param array $options URL options (return_url, authentication, etc.)
+     * @return array URL data
+     * @throws BusinessLogicException
+     */
+    public function generateSigningUrl(EnvelopeRecipient $recipient, array $options = []): array
+    {
+        if ($recipient->hasSigned()) {
+            throw new BusinessLogicException('Recipient has already signed');
+        }
+
+        if ($recipient->hasDeclined()) {
+            throw new BusinessLogicException('Recipient has declined');
+        }
+
+        // Generate secure token
+        $token = $this->generateSecureToken($recipient);
+
+        // Build signing URL
+        $baseUrl = config('app.url');
+        $signingUrl = sprintf(
+            '%s/signing/%s/%s',
+            $baseUrl,
+            $recipient->envelope->envelope_id,
+            $token
+        );
+
+        // Add return URL if specified
+        if (isset($options['return_url'])) {
+            $signingUrl .= '?return_url=' . urlencode($options['return_url']);
+        }
+
+        // Calculate expiration (default 30 days)
+        $expiresIn = $options['expires_in'] ?? 2592000; // 30 days in seconds
+        $expiresAt = now()->addSeconds($expiresIn);
+
+        // Store token in database (in production, use cache or database)
+        // For now, we'll just return the URL
+
+        Log::info('Signing URL generated', [
+            'recipient_id' => $recipient->recipient_id,
+            'envelope_id' => $recipient->envelope->envelope_id,
+            'expires_at' => $expiresAt->toIso8601String(),
+        ]);
+
+        return [
+            'url' => $signingUrl,
+            'token' => $token,
+            'expires_at' => $expiresAt->toIso8601String(),
+            'expires_in' => $expiresIn,
+            'recipient_id' => $recipient->recipient_id,
+            'recipient_name' => $recipient->name,
+            'recipient_email' => $recipient->email,
+        ];
+    }
+
+    /**
+     * Generate secure token for recipient signing
+     *
+     * @param EnvelopeRecipient $recipient
+     * @return string
+     */
+    protected function generateSecureToken(EnvelopeRecipient $recipient): string
+    {
+        $data = sprintf(
+            '%s:%s:%s:%d',
+            $recipient->envelope->envelope_id,
+            $recipient->recipient_id,
+            $recipient->email,
+            time()
+        );
+
+        return hash_hmac('sha256', $data, config('app.key'));
+    }
+
+    /**
+     * Verify recipient access (for signing)
+     *
+     * @param EnvelopeRecipient $recipient
+     * @param array $authData Authentication data (access_code, etc.)
+     * @return bool
+     * @throws BusinessLogicException
+     */
+    public function verifyRecipientAccess(EnvelopeRecipient $recipient, array $authData = []): bool
+    {
+        // Check if recipient can currently act (based on routing order)
+        $workflowService = app(WorkflowService::class);
+        if (!$workflowService->canRecipientAct($recipient)) {
+            throw new BusinessLogicException('It is not your turn to sign yet. Please wait for previous recipients to complete.');
+        }
+
+        // Verify access code if required
+        if ($recipient->access_code && !empty($recipient->access_code)) {
+            if (!isset($authData['access_code']) || $authData['access_code'] !== $recipient->access_code) {
+                throw new BusinessLogicException('Invalid access code');
+            }
+        }
+
+        // Verify ID lookup if required (placeholder)
+        if ($recipient->require_id_lookup) {
+            // In production, this would integrate with ID verification service
+            Log::info('ID lookup verification required', [
+                'recipient_id' => $recipient->recipient_id,
+            ]);
+        }
+
+        // Verify phone authentication if required (placeholder)
+        if ($recipient->phone_authentication_number) {
+            // In production, this would send SMS code and verify
+            Log::info('Phone authentication required', [
+                'recipient_id' => $recipient->recipient_id,
+                'phone' => $recipient->phone_authentication_number,
+            ]);
+        }
+
+        return true;
+    }
 }

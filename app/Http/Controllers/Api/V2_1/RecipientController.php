@@ -297,4 +297,142 @@ class RecipientController extends BaseController
             return $this->error($e->getMessage(), 400);
         }
     }
+
+    /**
+     * Bulk update recipients
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/bulk
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return JsonResponse
+     */
+    public function bulkUpdate(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $validator = Validator::make($request->all(), [
+            'recipients' => 'required|array|min:1',
+            'recipients.*.recipient_id' => 'required|string',
+            'recipients.*.name' => 'nullable|string|max:255',
+            'recipients.*.email' => 'nullable|email|max:255',
+            'recipients.*.routing_order' => 'nullable|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            // Convert array to associative array [recipient_id => data]
+            $updates = [];
+            foreach ($request->input('recipients') as $recipientData) {
+                $recipientId = $recipientData['recipient_id'];
+                unset($recipientData['recipient_id']);
+                $updates[$recipientId] = $recipientData;
+            }
+
+            $updatedRecipients = $this->recipientService->bulkUpdateRecipients($envelope, $updates);
+
+            return $this->success([
+                'envelope_id' => $envelope->envelope_id,
+                'updated_count' => count($updatedRecipients),
+                'recipients' => array_map(function ($recipient) {
+                    return $this->recipientService->getMetadata($recipient);
+                }, $updatedRecipients),
+            ], 'Recipients updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Bulk delete recipients
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/bulk
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return JsonResponse
+     */
+    public function bulkDelete(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $validator = Validator::make($request->all(), [
+            'recipient_ids' => 'required|array|min:1',
+            'recipient_ids.*' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $deletedCount = $this->recipientService->bulkDeleteRecipients(
+                $envelope,
+                $request->input('recipient_ids')
+            );
+
+            return $this->success([
+                'envelope_id' => $envelope->envelope_id,
+                'deleted_count' => $deletedCount,
+            ], 'Recipients deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Generate signing URL for recipient
+     *
+     * POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/signing_url
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function signingUrl(Request $request, string $accountId, string $envelopeId, string $recipientId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $validator = Validator::make($request->all(), [
+            'return_url' => 'nullable|url|max:500',
+            'expires_in' => 'nullable|integer|min:300|max:2592000', // 5 min to 30 days
+            'authentication' => 'nullable|array',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $urlData = $this->recipientService->generateSigningUrl($recipient, [
+                'return_url' => $request->input('return_url'),
+                'expires_in' => $request->input('expires_in', 2592000),
+            ]);
+
+            return $this->success($urlData, 'Signing URL generated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
 }
