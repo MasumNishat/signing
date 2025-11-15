@@ -133,6 +133,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Mobile Routes
         require __DIR__.'/api/v2.1/mobile.php';
 
+        // Notary Routes
+        require __DIR__.'/api/v2.1/notary.php';
+
         // Additional route files will be added as features are implemented
     });
 });
