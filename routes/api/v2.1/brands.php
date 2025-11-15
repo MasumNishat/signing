@@ -51,6 +51,16 @@ Route::prefix('accounts/{accountId}/brands')->name('brands.')->group(function ()
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.delete'])
         ->name('destroy');
 
+    // Bulk delete brands
+    Route::delete('/', [BrandController::class, 'destroyBulk'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.delete'])
+        ->name('destroy_bulk');
+
+    // Export brand
+    Route::get('/{brandId}/file', [BrandController::class, 'exportBrand'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.view'])
+        ->name('export');
+
     /*
     |--------------------------------------------------------------------------
     | Brand Logo Management
@@ -67,6 +77,11 @@ Route::prefix('accounts/{accountId}/brands')->name('brands.')->group(function ()
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.view'])
         ->name('logos.show');
 
+    // Update/Put logo
+    Route::put('/{brandId}/logos/{logoType}', [BrandController::class, 'updateLogo'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.manage'])
+        ->name('logos.update');
+
     // Delete logo
     Route::delete('/{brandId}/logos/{logoType}', [BrandController::class, 'deleteLogo'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.manage'])
@@ -78,18 +93,28 @@ Route::prefix('accounts/{accountId}/brands')->name('brands.')->group(function ()
     |--------------------------------------------------------------------------
     */
 
+    // List resources (must come before specific resource routes)
+    Route::get('/{brandId}/resources', [BrandController::class, 'listResources'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.view'])
+        ->name('resources.index');
+
     // Upload resource
     Route::post('/{brandId}/resources', [BrandController::class, 'uploadResource'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.manage'])
         ->name('resources.upload');
 
     // Get resource
-    Route::get('/{brandId}/resources/{resourceType}', [BrandController::class, 'getResource'])
+    Route::get('/{brandId}/resources/{resourceContentType}', [BrandController::class, 'getResource'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.view'])
         ->name('resources.show');
 
+    // Update/Put resource
+    Route::put('/{brandId}/resources/{resourceContentType}', [BrandController::class, 'uploadResource'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.manage'])
+        ->name('resources.update');
+
     // Delete resource
-    Route::delete('/{brandId}/resources/{resourceType}', [BrandController::class, 'deleteResource'])
+    Route::delete('/{brandId}/resources/{resourceContentType}', [BrandController::class, 'deleteResource'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:brands.manage'])
         ->name('resources.destroy');
 
