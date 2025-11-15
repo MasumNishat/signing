@@ -127,6 +127,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         require __DIR__.'/api/v2.1/settings.php';
         require __DIR__.'/api/v2.1/diagnostics.php';
 
+        // Document Generation Routes
+        require __DIR__.'/api/v2.1/document_generation.php';
+
         // Additional route files will be added as features are implemented
     });
 });
