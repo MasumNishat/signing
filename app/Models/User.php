@@ -126,6 +126,38 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the contacts for the user.
+     */
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class);
+    }
+
+    /**
+     * Get the custom settings for the user.
+     */
+    public function customSettings()
+    {
+        return $this->hasMany(UserCustomSetting::class);
+    }
+
+    /**
+     * Get the profile for the user.
+     */
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    /**
+     * Get the settings for the user.
+     */
+    public function settings()
+    {
+        return $this->hasOne(UserSetting::class);
+    }
+
+    /**
      * Determine if the user is active.
      */
     public function isActive(): bool
