@@ -156,14 +156,14 @@ Route::middleware(['throttle:api'])->group(function () {
             ->middleware('check.permission:manage_account')
             ->name('settings.password_rules.update');
 
-        // Tab Settings
-        Route::get('settings/tab_settings', [AccountController::class, 'getTabSettings'])
+        // Tab Settings (OpenAPI expects /settings/tabs)
+        Route::get('settings/tabs', [AccountController::class, 'getTabSettings'])
             ->middleware('check.permission:view_account')
-            ->name('settings.tab_settings.show');
+            ->name('settings.tabs.show');
 
-        Route::put('settings/tab_settings', [AccountController::class, 'updateTabSettings'])
+        Route::put('settings/tabs', [AccountController::class, 'updateTabSettings'])
             ->middleware('check.permission:manage_account')
-            ->name('settings.tab_settings.update');
+            ->name('settings.tabs.update');
 
         // Permission Profiles
         Route::prefix('permission-profiles')->name('permission-profiles.')->group(function () {
@@ -173,6 +173,23 @@ Route::middleware(['throttle:api'])->group(function () {
             Route::put('/{profileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'update'])->name('update');
             Route::delete('/{profileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'destroy'])->name('destroy');
         });
+
+        // ==================== Favorite Templates ====================
+
+        // Get favorite templates for current user
+        Route::get('favorite_templates', [\App\Http\Controllers\Api\V2_1\FavoriteTemplateController::class, 'index'])
+            ->middleware('check.permission:view_templates')
+            ->name('favorite_templates.index');
+
+        // Add template to favorites
+        Route::put('favorite_templates', [\App\Http\Controllers\Api\V2_1\FavoriteTemplateController::class, 'store'])
+            ->middleware('check.permission:manage_templates')
+            ->name('favorite_templates.store');
+
+        // Remove template from favorites
+        Route::delete('favorite_templates', [\App\Http\Controllers\Api\V2_1\FavoriteTemplateController::class, 'destroy'])
+            ->middleware('check.permission:manage_templates')
+            ->name('favorite_templates.destroy');
 
         // API Keys
         Route::prefix('api-keys')->name('api-keys.')->group(function () {
