@@ -254,4 +254,136 @@ class AccountService
 
         return $users->concat($contacts)->unique('email');
     }
+
+    // ==================== eNote Configuration ====================
+
+    /**
+     * Get eNote configuration.
+     */
+    public function getEnoteConfiguration(int $accountId): ?\App\Models\EnoteConfiguration
+    {
+        return \App\Models\EnoteConfiguration::where('account_id', $accountId)->first();
+    }
+
+    /**
+     * Update eNote configuration.
+     */
+    public function updateEnoteConfiguration(int $accountId, array $data): \App\Models\EnoteConfiguration
+    {
+        $enote = \App\Models\EnoteConfiguration::updateOrCreate(
+            ['account_id' => $accountId],
+            $data
+        );
+
+        return $enote;
+    }
+
+    /**
+     * Delete eNote configuration.
+     */
+    public function deleteEnoteConfiguration(int $accountId): bool
+    {
+        return \App\Models\EnoteConfiguration::where('account_id', $accountId)->delete() > 0;
+    }
+
+    // ==================== Envelope Purge Configuration ====================
+
+    /**
+     * Get envelope purge configuration.
+     */
+    public function getEnvelopePurgeConfiguration(int $accountId): ?\App\Models\EnvelopePurgeConfiguration
+    {
+        return \App\Models\EnvelopePurgeConfiguration::where('account_id', $accountId)->first();
+    }
+
+    /**
+     * Update envelope purge configuration.
+     */
+    public function updateEnvelopePurgeConfiguration(int $accountId, array $data): \App\Models\EnvelopePurgeConfiguration
+    {
+        $purge = \App\Models\EnvelopePurgeConfiguration::updateOrCreate(
+            ['account_id' => $accountId],
+            $data
+        );
+
+        return $purge;
+    }
+
+    // ==================== Notification Defaults ====================
+
+    /**
+     * Get notification defaults.
+     */
+    public function getNotificationDefaults(int $accountId): ?\App\Models\NotificationDefault
+    {
+        return \App\Models\NotificationDefault::where('account_id', $accountId)->first();
+    }
+
+    /**
+     * Update notification defaults.
+     */
+    public function updateNotificationDefaults(int $accountId, array $data): \App\Models\NotificationDefault
+    {
+        $notification = \App\Models\NotificationDefault::updateOrCreate(
+            ['account_id' => $accountId],
+            $data
+        );
+
+        return $notification;
+    }
+
+    // ==================== Password Rules ====================
+
+    /**
+     * Get password rules for account.
+     */
+    public function getPasswordRules(int $accountId): ?\App\Models\PasswordRule
+    {
+        return \App\Models\PasswordRule::where('account_id', $accountId)->first();
+    }
+
+    /**
+     * Update password rules.
+     */
+    public function updatePasswordRules(int $accountId, array $data): \App\Models\PasswordRule
+    {
+        $rules = \App\Models\PasswordRule::updateOrCreate(
+            ['account_id' => $accountId],
+            $data
+        );
+
+        return $rules;
+    }
+
+    /**
+     * Get password rules for current user's account.
+     */
+    public function getCurrentUserPasswordRules(): ?\App\Models\PasswordRule
+    {
+        $accountId = auth()->user()->account_id;
+        return $this->getPasswordRules($accountId);
+    }
+
+    // ==================== Tab Settings ====================
+
+    /**
+     * Get tab settings.
+     */
+    public function getTabSettings(int $accountId): ?\App\Models\TabSetting
+    {
+        return \App\Models\TabSetting::where('account_id', $accountId)->first();
+    }
+
+    /**
+     * Update tab settings.
+     */
+    public function updateTabSettings(int $accountId, array $data): \App\Models\TabSetting
+    {
+        $settings = \App\Models\TabSetting::updateOrCreate(
+            ['account_id' => $accountId],
+            $data
+        );
+
+        return $settings;
+    }
 }

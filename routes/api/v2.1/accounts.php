@@ -87,6 +87,57 @@ Route::middleware(['throttle:api'])->group(function () {
             ->middleware('check.permission:view_account')
             ->name('recipient_names');
 
+        // ==================== Configuration & Settings ====================
+
+        // eNote Configuration
+        Route::get('enote_configuration', [AccountController::class, 'getEnoteConfiguration'])
+            ->middleware('check.permission:view_account')
+            ->name('enote_configuration.show');
+
+        Route::put('enote_configuration', [AccountController::class, 'updateEnoteConfiguration'])
+            ->middleware('check.permission:manage_account')
+            ->name('enote_configuration.update');
+
+        Route::delete('enote_configuration', [AccountController::class, 'deleteEnoteConfiguration'])
+            ->middleware('check.permission:manage_account')
+            ->name('enote_configuration.destroy');
+
+        // Envelope Purge Configuration
+        Route::get('settings/envelope_purge_configuration', [AccountController::class, 'getEnvelopePurgeConfiguration'])
+            ->middleware('check.permission:view_account')
+            ->name('settings.envelope_purge.show');
+
+        Route::put('settings/envelope_purge_configuration', [AccountController::class, 'updateEnvelopePurgeConfiguration'])
+            ->middleware('check.permission:manage_account')
+            ->name('settings.envelope_purge.update');
+
+        // Notification Defaults
+        Route::get('settings/notification_defaults', [AccountController::class, 'getNotificationDefaults'])
+            ->middleware('check.permission:view_account')
+            ->name('settings.notification_defaults.show');
+
+        Route::put('settings/notification_defaults', [AccountController::class, 'updateNotificationDefaults'])
+            ->middleware('check.permission:manage_account')
+            ->name('settings.notification_defaults.update');
+
+        // Password Rules (Account-level)
+        Route::get('settings/password_rules', [AccountController::class, 'getPasswordRules'])
+            ->middleware('check.permission:view_account')
+            ->name('settings.password_rules.show');
+
+        Route::put('settings/password_rules', [AccountController::class, 'updatePasswordRules'])
+            ->middleware('check.permission:manage_account')
+            ->name('settings.password_rules.update');
+
+        // Tab Settings
+        Route::get('settings/tab_settings', [AccountController::class, 'getTabSettings'])
+            ->middleware('check.permission:view_account')
+            ->name('settings.tab_settings.show');
+
+        Route::put('settings/tab_settings', [AccountController::class, 'updateTabSettings'])
+            ->middleware('check.permission:manage_account')
+            ->name('settings.tab_settings.update');
+
         // Permission Profiles
         Route::prefix('permission-profiles')->name('permission-profiles.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'index'])->name('index');
@@ -107,4 +158,10 @@ Route::middleware(['throttle:api'])->group(function () {
             Route::delete('/{keyId}', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'destroy'])->name('destroy');
         });
     });
+});
+
+// Password Rules (Current User) - No accountId required
+Route::middleware(['auth:api', 'throttle:api'])->group(function () {
+    Route::get('current_user/password_rules', [AccountController::class, 'getCurrentUserPasswordRules'])
+        ->name('current_user.password_rules');
 });
