@@ -200,4 +200,21 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
     Route::delete('{envelopeId}/attachments/{attachmentId}', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'destroySingle'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.delete'])
         ->name('attachments.destroy_single');
+
+    // Document visibility
+    Route::get('{envelopeId}/document_visibility', [\App\Http\Controllers\Api\V2_1\DocumentVisibilityController::class, 'index'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('document_visibility.index');
+
+    Route::put('{envelopeId}/document_visibility', [\App\Http\Controllers\Api\V2_1\DocumentVisibilityController::class, 'update'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('document_visibility.update');
+
+    Route::get('{envelopeId}/documents/{documentId}/recipients', [\App\Http\Controllers\Api\V2_1\DocumentVisibilityController::class, 'getDocumentRecipients'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('documents.recipients.index');
+
+    Route::put('{envelopeId}/documents/{documentId}/recipients', [\App\Http\Controllers\Api\V2_1\DocumentVisibilityController::class, 'updateDocumentRecipients'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('documents.recipients.update');
 });
