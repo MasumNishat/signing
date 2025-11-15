@@ -506,4 +506,335 @@ class RecipientController extends BaseController
             return $this->handleException($e);
         }
     }
+
+    /**
+     * Get consumer disclosure for recipient
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/consumer_disclosure/{langCode}
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @param string $langCode
+     * @return JsonResponse
+     */
+    public function getConsumerDisclosure(
+        string $accountId,
+        string $envelopeId,
+        string $recipientId,
+        string $langCode = 'en'
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $disclosure = $this->recipientService->getConsumerDisclosure($recipient, $langCode);
+
+            return $this->success($disclosure, 'Consumer disclosure retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 404);
+        }
+    }
+
+    /**
+     * Generate identity proof token for recipient
+     *
+     * POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/identity_proof_token
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function identityProofToken(
+        string $accountId,
+        string $envelopeId,
+        string $recipientId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $tokenData = $this->recipientService->generateIdentityProofToken($recipient);
+
+            return $this->success($tokenData, 'Identity proof token generated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get recipient signature image
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/signature_image
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function getSignatureImage(
+        string $accountId,
+        string $envelopeId,
+        string $recipientId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $imageData = $this->recipientService->getRecipientImage($recipient, 'signature');
+
+            if (!$imageData) {
+                return $this->error('Signature image not found', 404);
+            }
+
+            return $this->success($imageData, 'Signature image retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 404);
+        }
+    }
+
+    /**
+     * Update recipient signature image
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/signature_image
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function updateSignatureImage(
+        Request $request,
+        string $accountId,
+        string $envelopeId,
+        string $recipientId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'image_base64' => 'required_without:image_file|string',
+            'image_file' => 'required_without:image_base64|file|image|max:5120', // 5MB max
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $imageData = $this->recipientService->updateRecipientImage(
+                $recipient,
+                'signature',
+                $request->all()
+            );
+
+            return $this->success($imageData, 'Signature image updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get recipient initials image
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/initials_image
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function getInitialsImage(
+        string $accountId,
+        string $envelopeId,
+        string $recipientId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $imageData = $this->recipientService->getRecipientImage($recipient, 'initials');
+
+            if (!$imageData) {
+                return $this->error('Initials image not found', 404);
+            }
+
+            return $this->success($imageData, 'Initials image retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 404);
+        }
+    }
+
+    /**
+     * Update recipient initials image
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/initials_image
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function updateInitialsImage(
+        Request $request,
+        string $accountId,
+        string $envelopeId,
+        string $recipientId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'image_base64' => 'required_without:image_file|string',
+            'image_file' => 'required_without:image_base64|file|image|max:5120', // 5MB max
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $imageData = $this->recipientService->updateRecipientImage(
+                $recipient,
+                'initials',
+                $request->all()
+            );
+
+            return $this->success($imageData, 'Initials image updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Update recipient tabs
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function updateTabs(
+        Request $request,
+        string $accountId,
+        string $envelopeId,
+        string $recipientId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'tabs' => 'required|array|min:1',
+            'tabs.*.tab_id' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $updatedTabs = $this->recipientService->updateRecipientTabs(
+                $recipient,
+                $request->input('tabs')
+            );
+
+            return $this->success([
+                'recipient_id' => $recipient->recipient_id,
+                'updated_count' => count($updatedTabs),
+                'tabs' => $updatedTabs,
+            ], 'Recipient tabs updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Delete recipient tabs
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function deleteTabs(
+        Request $request,
+        string $accountId,
+        string $envelopeId,
+        string $recipientId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'tab_ids' => 'required|array|min:1',
+            'tab_ids.*' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $deletedCount = $this->recipientService->deleteRecipientTabs(
+                $recipient,
+                $request->input('tab_ids')
+            );
+
+            return $this->success([
+                'recipient_id' => $recipient->recipient_id,
+                'deleted_count' => $deletedCount,
+            ], 'Recipient tabs deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
 }

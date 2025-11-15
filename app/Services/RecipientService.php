@@ -639,4 +639,253 @@ class RecipientService
 
         return true;
     }
+
+    /**
+     * Get consumer disclosure for recipient
+     *
+     * @param EnvelopeRecipient $recipient
+     * @param string $langCode Language code (e.g., 'en', 'es')
+     * @return array
+     */
+    public function getConsumerDisclosure(EnvelopeRecipient $recipient, string $langCode = 'en'): array
+    {
+        $account = $recipient->envelope->account;
+
+        // Get account's consumer disclosure for the language
+        $disclosure = $account->consumerDisclosures()
+            ->where('language_code', $langCode)
+            ->first();
+
+        if (!$disclosure) {
+            // Fall back to default language
+            $disclosure = $account->consumerDisclosures()
+                ->where('language_code', 'en')
+                ->first();
+        }
+
+        return [
+            'account_id' => $account->account_id,
+            'recipient_id' => $recipient->recipient_id,
+            'language_code' => $disclosure->language_code ?? 'en',
+            'esign_text' => $disclosure->esign_text ?? 'Electronic Record and Signature Disclosure',
+            'esign_agreement' => $disclosure->esign_agreement ?? true,
+            'must_agree_to_esign' => $disclosure->must_agree_to_esign ?? true,
+            'pdf_id' => $disclosure->pdf_id ?? null,
+            'withdrawal_address_1' => $disclosure->withdrawal_address_1 ?? null,
+            'withdrawal_address_2' => $disclosure->withdrawal_address_2 ?? null,
+            'withdrawal_email' => $disclosure->withdrawal_email ?? null,
+            'withdrawal_phone' => $disclosure->withdrawal_phone ?? null,
+            'custom_disclosure_text' => $disclosure->custom_disclosure_text ?? null,
+        ];
+    }
+
+    /**
+     * Generate identity proof token for recipient
+     *
+     * @param EnvelopeRecipient $recipient
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function generateIdentityProofToken(EnvelopeRecipient $recipient): array
+    {
+        if (!$recipient->require_id_lookup) {
+            throw new BusinessLogicException('Identity verification is not required for this recipient');
+        }
+
+        // Generate token for identity verification session
+        $token = hash_hmac('sha256', sprintf(
+            '%s:%s:%d',
+            $recipient->recipient_id,
+            $recipient->email,
+            time()
+        ), config('app.key'));
+
+        // In production, this would create a session with ID verification provider
+        Log::info('Identity proof token generated', [
+            'recipient_id' => $recipient->recipient_id,
+            'envelope_id' => $recipient->envelope->envelope_id,
+        ]);
+
+        return [
+            'token' => $token,
+            'recipient_id' => $recipient->recipient_id,
+            'recipient_name' => $recipient->name,
+            'recipient_email' => $recipient->email,
+            'verification_url' => config('app.url') . '/verify/' . $token,
+            'expires_at' => now()->addHours(24)->toIso8601String(),
+            'id_check_configuration' => $recipient->id_check_configuration_name ?? 'default',
+        ];
+    }
+
+    /**
+     * Get recipient signature image
+     *
+     * @param EnvelopeRecipient $recipient
+     * @param string $imageType 'signature' or 'initials'
+     * @return array|null
+     */
+    public function getRecipientImage(EnvelopeRecipient $recipient, string $imageType = 'signature'): ?array
+    {
+        // In production, this would retrieve from storage or signature service
+        $columnName = $imageType === 'signature' ? 'signature_image_uri' : 'initials_image_uri';
+
+        if (empty($recipient->$columnName)) {
+            return null;
+        }
+
+        return [
+            'recipient_id' => $recipient->recipient_id,
+            'image_type' => $imageType,
+            'image_uri' => $recipient->$columnName,
+            'content_type' => 'image/png',
+            'created_at' => $recipient->signed_date_time?->toIso8601String(),
+        ];
+    }
+
+    /**
+     * Update recipient signature/initials image
+     *
+     * @param EnvelopeRecipient $recipient
+     * @param string $imageType 'signature' or 'initials'
+     * @param array $data Image data (base64 or file)
+     * @return array
+     */
+    public function updateRecipientImage(EnvelopeRecipient $recipient, string $imageType, array $data): array
+    {
+        DB::beginTransaction();
+
+        try {
+            // In production, this would:
+            // 1. Validate image format and size
+            // 2. Store image in secure storage (S3, etc.)
+            // 3. Generate thumbnail if needed
+            // 4. Update recipient record
+
+            $columnName = $imageType === 'signature' ? 'signature_image_uri' : 'initials_image_uri';
+
+            // Placeholder: generate storage path
+            $storagePath = sprintf(
+                'signatures/%s/%s/%s.png',
+                $recipient->envelope->account->account_id,
+                $recipient->recipient_id,
+                $imageType
+            );
+
+            $recipient->$columnName = $storagePath;
+            $recipient->save();
+
+            DB::commit();
+
+            Log::info('Recipient image updated', [
+                'recipient_id' => $recipient->recipient_id,
+                'image_type' => $imageType,
+                'storage_path' => $storagePath,
+            ]);
+
+            return [
+                'recipient_id' => $recipient->recipient_id,
+                'image_type' => $imageType,
+                'image_uri' => $storagePath,
+                'content_type' => 'image/png',
+                'updated_at' => $recipient->updated_at->toIso8601String(),
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to update recipient image', [
+                'recipient_id' => $recipient->recipient_id,
+                'image_type' => $imageType,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Update recipient tabs
+     *
+     * @param EnvelopeRecipient $recipient
+     * @param array $tabs Array of tab data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updateRecipientTabs(EnvelopeRecipient $recipient, array $tabs): array
+    {
+        if ($recipient->hasSigned()) {
+            throw new BusinessLogicException('Cannot update tabs for recipient who has already signed');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $tabService = app(\App\Services\TabService::class);
+            $updatedTabs = [];
+
+            foreach ($tabs as $tabData) {
+                if (!isset($tabData['tab_id'])) {
+                    continue;
+                }
+
+                $tab = $recipient->tabs()
+                    ->where('tab_id', $tabData['tab_id'])
+                    ->first();
+
+                if ($tab) {
+                    $tab = $tabService->updateTab($tab, $tabData);
+                    $updatedTabs[] = $tab;
+                }
+            }
+
+            DB::commit();
+
+            return array_map(function ($tab) use ($tabService) {
+                return $tabService->getMetadata($tab);
+            }, $updatedTabs);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to update recipient tabs', [
+                'recipient_id' => $recipient->recipient_id,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * Delete recipient tabs
+     *
+     * @param EnvelopeRecipient $recipient
+     * @param array $tabIds Array of tab IDs to delete
+     * @return int Number of deleted tabs
+     * @throws BusinessLogicException
+     */
+    public function deleteRecipientTabs(EnvelopeRecipient $recipient, array $tabIds): int
+    {
+        if ($recipient->hasSigned()) {
+            throw new BusinessLogicException('Cannot delete tabs for recipient who has already signed');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $count = $recipient->tabs()
+                ->whereIn('tab_id', $tabIds)
+                ->delete();
+
+            DB::commit();
+
+            Log::info('Recipient tabs deleted', [
+                'recipient_id' => $recipient->recipient_id,
+                'deleted_count' => $count,
+            ]);
+
+            return $count;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to delete recipient tabs', [
+                'recipient_id' => $recipient->recipient_id,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
 }
