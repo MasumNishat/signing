@@ -105,8 +105,15 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Signature Routes
         require __DIR__.'/api/v2.1/signatures.php';
 
+        // Identity Verification Routes
+        require __DIR__.'/api/v2.1/identity_verification.php';
+
         // Bulk Send Routes
         require __DIR__.'/api/v2.1/bulk.php';
+
+        // Settings & Diagnostics Routes
+        require __DIR__.'/api/v2.1/settings.php';
+        require __DIR__.'/api/v2.1/diagnostics.php';
 
         // Additional route files will be added as features are implemented
     });
