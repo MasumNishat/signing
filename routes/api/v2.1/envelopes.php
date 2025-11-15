@@ -141,4 +141,33 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
     Route::post('{envelopeId}/responsive_html_preview', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'generateResponsiveHtmlPreview'])
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('responsive_html_preview.generate');
+
+    // Attachments
+    Route::get('{envelopeId}/attachments', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'index'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('attachments.index');
+
+    Route::post('{envelopeId}/attachments', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'store'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('attachments.store');
+
+    Route::put('{envelopeId}/attachments', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'update'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('attachments.update');
+
+    Route::delete('{envelopeId}/attachments', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'destroy'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.delete'])
+        ->name('attachments.destroy');
+
+    Route::get('{envelopeId}/attachments/{attachmentId}', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'show'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('attachments.show');
+
+    Route::put('{envelopeId}/attachments/{attachmentId}', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'updateSingle'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('attachments.update_single');
+
+    Route::delete('{envelopeId}/attachments/{attachmentId}', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'destroySingle'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.delete'])
+        ->name('attachments.destroy_single');
 });
