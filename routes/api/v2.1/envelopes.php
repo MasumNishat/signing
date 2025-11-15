@@ -14,6 +14,27 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(function () {
 
+    // Envelope transfer rules (must come before {envelopeId} routes)
+    Route::get('transfer_rules', [\App\Http\Controllers\Api\V2_1\EnvelopeTransferRuleController::class, 'index'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('transfer_rules.index');
+
+    Route::post('transfer_rules', [\App\Http\Controllers\Api\V2_1\EnvelopeTransferRuleController::class, 'store'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.manage'])
+        ->name('transfer_rules.store');
+
+    Route::put('transfer_rules', [\App\Http\Controllers\Api\V2_1\EnvelopeTransferRuleController::class, 'bulkUpdate'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.manage'])
+        ->name('transfer_rules.bulk_update');
+
+    Route::put('transfer_rules/{ruleId}', [\App\Http\Controllers\Api\V2_1\EnvelopeTransferRuleController::class, 'update'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.manage'])
+        ->name('transfer_rules.update');
+
+    Route::delete('transfer_rules/{ruleId}', [\App\Http\Controllers\Api\V2_1\EnvelopeTransferRuleController::class, 'destroy'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.manage'])
+        ->name('transfer_rules.destroy');
+
     // Envelope statistics (must come before {envelopeId} route)
     Route::get('statistics', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'statistics'])
         ->middleware(['throttle:api', 'check.account.access'])
