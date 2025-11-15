@@ -92,6 +92,8 @@ class Envelope extends Model
         'sender_user_id',
         'sender_name',
         'sender_email',
+        'folder_id',
+        'bulk_batch_id',
         'created_date_time',
         'sent_date_time',
         'delivered_date_time',
@@ -220,6 +222,14 @@ class Envelope extends Model
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class, 'account_id');
+    }
+
+    /**
+     * Get the bulk send batch this envelope belongs to
+     */
+    public function bulkBatch(): BelongsTo
+    {
+        return $this->belongsTo(BulkSendBatch::class, 'bulk_batch_id');
     }
 
     /**
