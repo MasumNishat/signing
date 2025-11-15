@@ -48,7 +48,7 @@ class EnvelopeTab extends Model
     public const STATUS_DECLINED = 'declined';
 
     protected $fillable = [
-        'envelope_id', 'document_id', 'recipient_id', 'tab_id', 'type',
+        'envelope_id', 'template_id', 'document_id', 'recipient_id', 'tab_id', 'type',
         'tab_label', 'value', 'required', 'locked', 'page_number',
         'x_position', 'y_position', 'width', 'height',
         'anchor_string', 'anchor_x_offset', 'anchor_y_offset',
@@ -97,6 +97,11 @@ class EnvelopeTab extends Model
     public function envelope(): BelongsTo
     {
         return $this->belongsTo(Envelope::class, 'envelope_id');
+    }
+
+    public function template(): BelongsTo
+    {
+        return $this->belongsTo(Template::class, 'template_id');
     }
 
     public function document(): BelongsTo

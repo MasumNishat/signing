@@ -31,7 +31,9 @@ enum Permission: string
     case MANAGE_TEMPLATES = 'can_manage_templates';
     case CREATE_TEMPLATES = 'can_create_templates';
     case VIEW_TEMPLATES = 'can_view_templates';
+    case UPDATE_TEMPLATES = 'can_update_templates';
     case DELETE_TEMPLATES = 'can_delete_templates';
+    case SHARE_TEMPLATES = 'can_share_templates';
 
     // Brand Management
     case MANAGE_BRANDING = 'can_manage_branding';
@@ -98,7 +100,9 @@ enum Permission: string
             self::MANAGE_TEMPLATES => 'Manage Templates',
             self::CREATE_TEMPLATES => 'Create Templates',
             self::VIEW_TEMPLATES => 'View Templates',
+            self::UPDATE_TEMPLATES => 'Update Templates',
             self::DELETE_TEMPLATES => 'Delete Templates',
+            self::SHARE_TEMPLATES => 'Share Templates',
             self::MANAGE_BRANDING => 'Manage Branding',
             self::VIEW_BRANDING => 'View Branding',
             self::MANAGE_BILLING => 'Manage Billing',

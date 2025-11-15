@@ -39,6 +39,7 @@ class EnvelopeRecipient extends Model
 
     protected $fillable = [
         'envelope_id',
+        'template_id',
         'recipient_id',
         'recipient_type',
         'role_name',
@@ -98,6 +99,11 @@ class EnvelopeRecipient extends Model
     public function envelope(): BelongsTo
     {
         return $this->belongsTo(Envelope::class, 'envelope_id');
+    }
+
+    public function template(): BelongsTo
+    {
+        return $this->belongsTo(Template::class, 'template_id');
     }
 
     /**

@@ -11,10 +11,12 @@ use Illuminate\Support\Str;
 /**
  * EnvelopeDocument Model
  *
- * Represents a document attached to an envelope.
+ * Represents a document attached to an envelope or template.
+ * Note: Either envelope_id OR template_id must be set (not both).
  *
  * @property int $id
- * @property int $envelope_id
+ * @property int|null $envelope_id
+ * @property int|null $template_id
  * @property string $document_id
  * @property string $name
  * @property string|null $document_base64
@@ -36,7 +38,8 @@ use Illuminate\Support\Str;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
- * @property-read Envelope $envelope
+ * @property-read Envelope|null $envelope
+ * @property-read Template|null $template
  * @property-read \Illuminate\Database\Eloquent\Collection|EnvelopeTab[] $tabs
  */
 class EnvelopeDocument extends Model
@@ -47,6 +50,7 @@ class EnvelopeDocument extends Model
 
     protected $fillable = [
         'envelope_id',
+        'template_id',
         'document_id',
         'name',
         'document_base64',
@@ -97,8 +101,29 @@ class EnvelopeDocument extends Model
         return $this->belongsTo(Envelope::class, 'envelope_id');
     }
 
+    public function template(): BelongsTo
+    {
+        return $this->belongsTo(Template::class, 'template_id');
+    }
+
     public function tabs(): HasMany
     {
         return $this->hasMany(EnvelopeTab::class, 'document_id');
+    }
+
+    /**
+     * Check if document belongs to an envelope
+     */
+    public function isEnvelopeDocument(): bool
+    {
+        return $this->envelope_id !== null;
+    }
+
+    /**
+     * Check if document belongs to a template
+     */
+    public function isTemplateDocument(): bool
+    {
+        return $this->template_id !== null;
     }
 }
