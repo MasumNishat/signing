@@ -74,13 +74,19 @@ class ValidateOpenApiCommand extends Command
         foreach (Route::getRoutes() as $route) {
             $uri = $route->uri();
 
-            // Skip non-API routes
-            if (!str_starts_with($uri, 'api/v2.1/')) {
+            // Skip non-API routes (only include api/* routes)
+            if (!str_starts_with($uri, 'api/')) {
+                continue;
+            }
+
+            // Skip OAuth routes (not in OpenAPI spec)
+            if (str_starts_with($uri, 'api/oauth/')) {
                 continue;
             }
 
             // Normalize path to match OpenAPI format
             // Convert: api/v2.1/accounts/{accountId} => /v2.1/accounts/{accountId}
+            // Convert: api/service_information => /service_information
             $path = '/' . str_replace('api/', '', $uri);
 
             $method = strtolower($route->methods()[0]);
