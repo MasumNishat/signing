@@ -32,24 +32,24 @@ Route::prefix('accounts/{accountId}')->group(function () {
         ->name('bulk_send.batches.index');
 
     // Get bulk send batch
-    Route::get('/bulk_send_batch/{batchId}', [BulkSendController::class, 'getBatch'])
+    Route::get('/bulk_send_batch/{bulkSendBatchId}', [BulkSendController::class, 'getBatch'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:bulk_send.view'])
         ->name('bulk_send.batches.show');
 
     // Update bulk send batch
-    Route::put('/bulk_send_batch/{batchId}', [BulkSendController::class, 'updateBatch'])
+    Route::put('/bulk_send_batch/{bulkSendBatchId}', [BulkSendController::class, 'updateBatch'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:bulk_send.manage'])
         ->name('bulk_send.batches.update');
 
     // Get batch envelopes
-    Route::get('/bulk_send_batch/{batchId}/envelopes', [BulkSendController::class, 'getBatchEnvelopes'])
+    Route::get('/bulk_send_batch/{bulkSendBatchId}/envelopes', [BulkSendController::class, 'getBatchEnvelopes'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:bulk_send.view'])
         ->name('bulk_send.batches.envelopes');
 
     // Perform batch action (pause, resume, cancel, resend_failed)
-    Route::put('/bulk_send_batch/{batchId}/{action}', [BulkSendController::class, 'performBatchAction'])
+    Route::put('/bulk_send_batch/{bulkSendBatchId}/{bulkAction}', [BulkSendController::class, 'performBatchAction'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:bulk_send.manage'])
-        ->where('action', 'pause|resume|cancel|resend_failed')
+        ->where('bulkAction', 'pause|resume|cancel|resend_failed')
         ->name('bulk_send.batches.action');
 
     /*
@@ -69,27 +69,27 @@ Route::prefix('accounts/{accountId}')->group(function () {
         ->name('bulk_send.lists.store');
 
     // Get bulk send list
-    Route::get('/bulk_send_lists/{listId}', [BulkSendController::class, 'getList'])
+    Route::get('/bulk_send_lists/{bulkSendListId}', [BulkSendController::class, 'getList'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:bulk_send.view'])
         ->name('bulk_send.lists.show');
 
     // Update bulk send list
-    Route::put('/bulk_send_lists/{listId}', [BulkSendController::class, 'updateList'])
+    Route::put('/bulk_send_lists/{bulkSendListId}', [BulkSendController::class, 'updateList'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:bulk_send.manage'])
         ->name('bulk_send.lists.update');
 
     // Delete bulk send list
-    Route::delete('/bulk_send_lists/{listId}', [BulkSendController::class, 'deleteList'])
+    Route::delete('/bulk_send_lists/{bulkSendListId}', [BulkSendController::class, 'deleteList'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:bulk_send.delete'])
         ->name('bulk_send.lists.destroy');
 
     // Send bulk envelopes using list
-    Route::post('/bulk_send_lists/{listId}/send', [BulkSendController::class, 'sendBulkEnvelopes'])
+    Route::post('/bulk_send_lists/{bulkSendListId}/send', [BulkSendController::class, 'sendBulkEnvelopes'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:bulk_send.send'])
         ->name('bulk_send.lists.send');
 
     // Test bulk send (validate without sending)
-    Route::post('/bulk_send_lists/{listId}/test', [BulkSendController::class, 'testBulkSend'])
+    Route::post('/bulk_send_lists/{bulkSendListId}/test', [BulkSendController::class, 'testBulkSend'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:bulk_send.view'])
         ->name('bulk_send.lists.test');
 });
