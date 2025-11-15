@@ -17,12 +17,14 @@ return new class extends Migration
             $table->string('provider_id', 100)->unique();
             $table->string('provider_name');
             $table->integer('priority')->default(0);
+            $table->boolean('is_required')->default(false);
 
             $table->timestamps();
 
             // Indexes
             $table->index('account_id');
             $table->index('provider_id');
+            $table->index('priority');
         });
     }
 

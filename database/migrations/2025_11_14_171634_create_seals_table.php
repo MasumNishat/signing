@@ -16,13 +16,15 @@ return new class extends Migration
             $table->foreignId('account_id')->constrained('accounts')->cascadeOnDelete();
             $table->string('seal_id', 100)->unique();
             $table->string('seal_name');
-            $table->string('status', 50)->default('active');
+            $table->string('seal_identifier')->nullable();
+            $table->string('status', 50)->default('active')->comment('active, inactive');
 
             $table->timestamps();
 
             // Indexes
             $table->index('account_id');
             $table->index('seal_id');
+            $table->index('status');
         });
     }
 
