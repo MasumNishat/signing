@@ -40,6 +40,19 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('statistics');
 
+    // Envelope search endpoints (must come before {envelopeId} route)
+    Route::post('search', [\App\Http\Controllers\Api\V2_1\EnvelopeSearchController::class, 'search'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('search');
+
+    Route::get('search_folders', [\App\Http\Controllers\Api\V2_1\EnvelopeSearchController::class, 'searchFolders'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('search_folders');
+
+    Route::get('search_status', [\App\Http\Controllers\Api\V2_1\EnvelopeSearchController::class, 'searchStatus'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('search_status');
+
     // List envelopes
     Route::get('/', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'index'])
         ->middleware(['throttle:api', 'check.account.access'])
