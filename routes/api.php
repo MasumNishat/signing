@@ -72,6 +72,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Recipient Routes (Envelope Recipients)
         require __DIR__.'/api/v2.1/recipients.php';
 
+        // Tab Routes (Envelope Form Fields)
+        require __DIR__.'/api/v2.1/tabs.php';
+
         // Chunked Upload Routes
         require __DIR__.'/api/v2.1/chunked_uploads.php';
 
