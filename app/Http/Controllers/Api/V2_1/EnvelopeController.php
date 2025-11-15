@@ -1020,4 +1020,88 @@ class EnvelopeController extends BaseController
             return $this->handleException($e);
         }
     }
+
+    /**
+     * Get document generation form fields
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/docGenFormFields
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return JsonResponse
+     */
+    public function getDocGenFormFields(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            // Get form fields from envelope's JSONB column
+            $formFields = $envelope->doc_gen_form_fields ?? [];
+
+            return $this->successResponse([
+                'envelope_id' => $envelope->envelope_id,
+                'doc_gen_form_fields' => $formFields,
+                'count' => count($formFields),
+            ], 'Document generation form fields retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * Update document generation form fields
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/docGenFormFields
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return JsonResponse
+     */
+    public function updateDocGenFormFields(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Validate envelope is in draft status
+        if (!$envelope->isDraft()) {
+            return $this->errorResponse('Document generation form fields can only be updated for draft envelopes', 400);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'doc_gen_form_fields' => 'required|array',
+            'doc_gen_form_fields.*.name' => 'required|string|max:255',
+            'doc_gen_form_fields.*.value' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Update form fields
+            $envelope->doc_gen_form_fields = $request->input('doc_gen_form_fields');
+            $envelope->save();
+
+            DB::commit();
+
+            return $this->successResponse([
+                'envelope_id' => $envelope->envelope_id,
+                'doc_gen_form_fields' => $envelope->doc_gen_form_fields,
+                'count' => count($envelope->doc_gen_form_fields),
+            ], 'Document generation form fields updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->handleException($e);
+        }
+    }
 }

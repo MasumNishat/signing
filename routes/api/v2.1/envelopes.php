@@ -261,6 +261,15 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('consumer_disclosure.get');
 
+    // Document Generation Form Fields
+    Route::get('{envelopeId}/docGenFormFields', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getDocGenFormFields'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('doc_gen_form_fields.get');
+
+    Route::put('{envelopeId}/docGenFormFields', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'updateDocGenFormFields'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('doc_gen_form_fields.update');
+
     // Envelope Correction & Resend
     Route::post('{envelopeId}/correct', [\App\Http\Controllers\Api\V2_1\EnvelopeCorrectionController::class, 'correct'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
