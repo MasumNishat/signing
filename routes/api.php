@@ -136,6 +136,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Notary Routes
         require __DIR__.'/api/v2.1/notary.php';
 
+        // Advanced Features Routes
+        require __DIR__.'/api/v2.1/advanced_features.php';
+
         // Additional route files will be added as features are implemented
     });
 });
