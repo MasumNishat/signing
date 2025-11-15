@@ -239,4 +239,13 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
     Route::post('{envelopeId}/resend', [\App\Http\Controllers\Api\V2_1\EnvelopeCorrectionController::class, 'resend'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.send'])
         ->name('resend');
+
+    // Envelope Summary
+    Route::get('{envelopeId}/summary', [\App\Http\Controllers\Api\V2_1\EnvelopeSummaryController::class, 'getSummary'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('summary');
+
+    Route::get('{envelopeId}/status_changes', [\App\Http\Controllers\Api\V2_1\EnvelopeSummaryController::class, 'getStatusChanges'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('status_changes');
 });
