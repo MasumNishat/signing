@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V2_1\TemplateCustomFieldController;
 use App\Http\Controllers\Api\V2_1\TemplateLockController;
 use App\Http\Controllers\Api\V2_1\TemplateNotificationController;
 use App\Http\Controllers\Api\V2_1\TemplateTabController;
+use App\Http\Controllers\Api\V2_1\TemplateBulkController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +47,19 @@ Route::prefix('accounts/{accountId}/templates')->name('templates.')->group(funct
     Route::delete('/{templateId}', [TemplateController::class, 'destroy'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_delete_templates'])
         ->name('destroy');
+
+    // Bulk operations (must come before {templateId} routes)
+    Route::post('/bulk_create', [TemplateBulkController::class, 'bulkCreate'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_create_templates'])
+        ->name('bulk_create');
+
+    Route::put('/bulk_update', [TemplateBulkController::class, 'bulkUpdate'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('bulk_update');
+
+    Route::delete('/bulk_delete', [TemplateBulkController::class, 'bulkDelete'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_delete_templates'])
+        ->name('bulk_delete');
 
     // Create envelope from template
     Route::post('/{templateId}/envelopes', [TemplateController::class, 'createEnvelope'])
