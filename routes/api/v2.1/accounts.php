@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V2_1\AccountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,26 +13,98 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('accounts/{accountId}')->name('accounts.')->middleware('account.access')->group(function () {
-    // Permission Profiles
-    Route::prefix('permission-profiles')->name('permission-profiles.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'index'])->name('index');
-        Route::post('/', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'store'])->name('store');
-        Route::get('/{profileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'show'])->name('show');
-        Route::put('/{profileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'update'])->name('update');
-        Route::delete('/{profileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'destroy'])->name('destroy');
-    });
+Route::middleware(['throttle:api'])->group(function () {
 
-    // API Keys
-    Route::prefix('api-keys')->name('api-keys.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'index'])->name('index');
-        Route::post('/', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'store'])->name('store');
-        Route::get('/{keyId}', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'show'])->name('show');
-        Route::put('/{keyId}', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'update'])->name('update');
-        Route::post('/{keyId}/revoke', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'revoke'])->name('revoke');
-        Route::post('/{keyId}/rotate', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'rotate'])->name('rotate');
-        Route::delete('/{keyId}', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'destroy'])->name('destroy');
-    });
+    // Account Creation (no account access check needed)
+    Route::post('accounts', [AccountController::class, 'store'])
+        ->middleware('check.permission:create_accounts')
+        ->name('accounts.store');
 
-    // Additional account routes will be implemented in Phase 2
+    // Account Provisioning (for authenticated user's account)
+    Route::get('accounts/provisioning', [AccountController::class, 'provisioning'])
+        ->middleware('auth:api')
+        ->name('accounts.provisioning');
+
+    // Account-specific routes
+    Route::prefix('accounts/{accountId}')->name('accounts.')->middleware('check.account.access')->group(function () {
+
+        // Account CRUD
+        Route::get('/', [AccountController::class, 'show'])
+            ->middleware('check.permission:view_account')
+            ->name('show');
+
+        Route::delete('/', [AccountController::class, 'destroy'])
+            ->middleware('check.permission:delete_account')
+            ->name('destroy');
+
+        // Custom Fields
+        Route::prefix('custom_fields')->name('custom_fields.')->group(function () {
+            Route::get('/', [AccountController::class, 'getCustomFields'])
+                ->middleware('check.permission:view_account')
+                ->name('index');
+
+            Route::post('/', [AccountController::class, 'createCustomField'])
+                ->middleware('check.permission:manage_account')
+                ->name('store');
+
+            Route::put('{customFieldId}', [AccountController::class, 'updateCustomField'])
+                ->middleware('check.permission:manage_account')
+                ->name('update');
+
+            Route::delete('{customFieldId}', [AccountController::class, 'deleteCustomField'])
+                ->middleware('check.permission:manage_account')
+                ->name('destroy');
+        });
+
+        // Consumer Disclosure
+        Route::get('consumer_disclosure', [AccountController::class, 'getConsumerDisclosure'])
+            ->middleware('check.permission:view_account')
+            ->name('consumer_disclosure.index');
+
+        Route::get('consumer_disclosure/{langCode}', [AccountController::class, 'getConsumerDisclosureByLanguage'])
+            ->middleware('check.permission:view_account')
+            ->name('consumer_disclosure.show');
+
+        Route::put('consumer_disclosure/{langCode}', [AccountController::class, 'updateConsumerDisclosure'])
+            ->middleware('check.permission:manage_account')
+            ->name('consumer_disclosure.update');
+
+        // Watermark
+        Route::get('watermark', [AccountController::class, 'getWatermark'])
+            ->middleware('check.permission:view_account')
+            ->name('watermark.show');
+
+        Route::put('watermark', [AccountController::class, 'updateWatermark'])
+            ->middleware('check.permission:manage_account')
+            ->name('watermark.update');
+
+        Route::put('watermark/preview', [AccountController::class, 'watermarkPreview'])
+            ->middleware('check.permission:view_account')
+            ->name('watermark.preview');
+
+        // Recipient Names
+        Route::get('recipient_names', [AccountController::class, 'getRecipientNames'])
+            ->middleware('check.permission:view_account')
+            ->name('recipient_names');
+
+        // Permission Profiles
+        Route::prefix('permission-profiles')->name('permission-profiles.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'index'])->name('index');
+            Route::post('/', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'store'])->name('store');
+            Route::get('/{profileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'show'])->name('show');
+            Route::put('/{profileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'update'])->name('update');
+            Route::delete('/{profileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'destroy'])->name('destroy');
+        });
+
+        // API Keys
+        Route::prefix('api-keys')->name('api-keys.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'index'])->name('index');
+            Route::post('/', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'store'])->name('store');
+            Route::get('/{keyId}', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'show'])->name('show');
+            Route::put('/{keyId}', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'update'])->name('update');
+            Route::post('/{keyId}/revoke', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'revoke'])->name('revoke');
+            Route::post('/{keyId}/rotate', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'rotate'])->name('rotate');
+            Route::delete('/{keyId}', [\App\Http\Controllers\Api\V2_1\ApiKeyController::class, 'destroy'])->name('destroy');
+        });
+    });
 });
