@@ -150,6 +150,11 @@ Route::middleware(['throttle:api', 'check.account.access'])->group(function () {
                 ->middleware('check.permission:view_users')
                 ->name('authorizations.agent');
 
+            // DELETE /accounts/{accountId}/users/{userId}/authorizations - Delete all authorizations
+            Route::delete('authorizations', [\App\Http\Controllers\Api\V2_1\UserAuthorizationController::class, 'destroyBulk'])
+                ->middleware('check.permission:manage_users')
+                ->name('authorizations.destroy_bulk');
+
             // POST /accounts/{accountId}/users/{userId}/authorization - Create single
             Route::post('authorization', [\App\Http\Controllers\Api\V2_1\UserAuthorizationController::class, 'store'])
                 ->middleware('check.permission:manage_users')

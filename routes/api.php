@@ -113,6 +113,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Identity Verification Routes
         require __DIR__.'/api/v2.1/identity_verification.php';
 
+        // Shared Access Routes
+        require __DIR__.'/api/v2.1/shared_access.php';
+
         // Captive Recipients Routes (Embedded Signing)
         Route::prefix('accounts/{accountId}/captive_recipients')->group(function () {
             require __DIR__.'/api/v2.1/captive_recipients.php';

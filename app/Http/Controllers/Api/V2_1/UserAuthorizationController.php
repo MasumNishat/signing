@@ -352,4 +352,34 @@ class UserAuthorizationController extends BaseController
             return $this->errorResponse('Failed to delete authorization', 500);
         }
     }
+
+    /**
+     * DELETE /accounts/{accountId}/users/{userId}/authorizations
+     * Deletes all user authorizations for a principal user (bulk delete)
+     */
+    public function destroyBulk(string $accountId, string $userId): JsonResponse
+    {
+        try {
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $user = User::where('user_name', $userId)->where('account_id', $account->id)->firstOrFail();
+
+            // Delete all authorizations where this user is the principal
+            $deleted = UserAuthorization::where('account_id', $account->id)
+                ->where('principal_user_id', $user->id)
+                ->delete();
+
+            return $this->successResponse([
+                'deleted_count' => $deleted,
+                'message' => "Deleted {$deleted} authorization(s)",
+            ], 'User authorizations deleted successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to bulk delete user authorizations', [
+                'account_id' => $accountId,
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to delete authorizations', 500);
+        }
+    }
 }

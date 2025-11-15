@@ -142,25 +142,30 @@ class CaptiveRecipientController extends BaseController
     }
 
     /**
-     * DELETE /accounts/{accountId}/captive_recipients/{recipientId}
+     * DELETE /accounts/{accountId}/captive_recipients/{recipientPart}
      *
-     * Delete a captive recipient
+     * Deletes the signature for one or more captive recipient records
+     * (removes captive recipients by recipient_part identifier)
      */
-    public function destroy(string $accountId, string $recipientId): JsonResponse
+    public function destroy(string $accountId, string $recipientPart): JsonResponse
     {
         try {
             $account = Account::where('account_id', $accountId)->firstOrFail();
 
-            $recipient = CaptiveRecipient::where('account_id', $account->id)
-                ->where('id', $recipientId)
-                ->firstOrFail();
+            // Delete all captive recipients with this recipient_part
+            $deleted = CaptiveRecipient::where('account_id', $account->id)
+                ->where('recipient_part', $recipientPart)
+                ->delete();
 
-            $recipient->delete();
+            if ($deleted === 0) {
+                return $this->notFoundResponse('No captive recipients found with the specified recipient part');
+            }
 
             return $this->successResponse([
-                'captive_recipient_id' => $recipientId,
+                'recipient_part' => $recipientPart,
+                'deleted_count' => $deleted,
                 'deleted_at' => now()->toIso8601String(),
-            ], 'Captive recipient deleted successfully');
+            ], 'Captive recipient(s) deleted successfully');
         } catch (\Exception $e) {
             return $this->handleException($e);
         }

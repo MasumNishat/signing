@@ -24,7 +24,7 @@ Route::middleware(['throttle:api', 'check.account.access'])->group(function () {
     Route::post('/', [CaptiveRecipientController::class, 'store'])
         ->middleware('check.permission:captive_recipients.create');
 
-    // Delete a captive recipient
-    Route::delete('/{recipientId}', [CaptiveRecipientController::class, 'destroy'])
+    // Delete captive recipient(s) by recipient_part
+    Route::delete('/{recipientPart}', [CaptiveRecipientController::class, 'destroy'])
         ->middleware('check.permission:captive_recipients.delete');
 });
