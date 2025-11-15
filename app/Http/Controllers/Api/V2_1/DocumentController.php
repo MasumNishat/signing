@@ -725,4 +725,66 @@ class DocumentController extends BaseController
             return $this->error($e->getMessage(), 400);
         }
     }
+
+    /**
+     * Get HTML definition for a document
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/html_definitions
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function getHtmlDefinition(
+        string $accountId,
+        string $envelopeId,
+        string $documentId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        return $this->success(
+            $this->documentService->getHtmlDefinition($document),
+            'HTML definition retrieved successfully'
+        );
+    }
+
+    /**
+     * Generate responsive HTML preview for a document
+     *
+     * POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/responsive_html_preview
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function generateResponsiveHtmlPreview(
+        Request $request,
+        string $accountId,
+        string $envelopeId,
+        string $documentId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $htmlDefinition = $request->input('html_definition', []);
+
+        return $this->success(
+            $this->documentService->generateResponsiveHtmlPreview($document, $htmlDefinition),
+            'Responsive HTML preview generated successfully'
+        );
+    }
 }

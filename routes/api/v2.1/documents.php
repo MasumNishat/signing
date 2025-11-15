@@ -84,4 +84,13 @@ Route::prefix('accounts/{accountId}/envelopes/{envelopeId}/documents')->group(fu
     Route::delete('/{documentId}/pages', [DocumentController::class, 'deletePages'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
         ->name('documents.pages.destroy');
+
+    // HTML definitions and responsive preview
+    Route::get('/{documentId}/html_definitions', [DocumentController::class, 'getHtmlDefinition'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('documents.html_definitions');
+
+    Route::post('/{documentId}/responsive_html_preview', [DocumentController::class, 'generateResponsiveHtmlPreview'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('documents.responsive_html_preview');
 });

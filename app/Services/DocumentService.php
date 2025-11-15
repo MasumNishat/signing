@@ -750,4 +750,116 @@ class DocumentService
 
         return $certificate;
     }
+
+    /**
+     * Get HTML definition for a document
+     *
+     * @param EnvelopeDocument $document
+     * @return array
+     */
+    public function getHtmlDefinition(EnvelopeDocument $document): array
+    {
+        // Placeholder implementation
+        // In production, this would return the actual HTML definition used to generate
+        // responsive HTML for the document
+
+        return [
+            'document_id' => $document->document_id,
+            'html_definition' => [
+                'source' => 'document',
+                'display_anchor_prefix' => '/sn',
+                'display_anchors' => [],
+                'display_metadata' => [],
+                'display_page_number' => 1,
+                'display_settings' => [
+                    'display_label' => $document->name,
+                    'display' => 'inline',
+                    'inline_outer_style' => '',
+                    'pre_label' => '',
+                    'scroll_to_top_button' => false,
+                    'table_style' => '',
+                ],
+                'remove_empty_tags' => 'true',
+            ],
+            'message' => 'HTML definition placeholder - full implementation requires responsive HTML processing',
+        ];
+    }
+
+    /**
+     * Generate responsive HTML preview for a document
+     *
+     * @param EnvelopeDocument $document
+     * @param array $htmlDefinition
+     * @return array
+     */
+    public function generateResponsiveHtmlPreview(EnvelopeDocument $document, array $htmlDefinition = []): array
+    {
+        // Placeholder implementation
+        // In production, this would:
+        // 1. Convert PDF to responsive HTML
+        // 2. Apply display settings from htmlDefinition
+        // 3. Generate preview URLs for different devices
+        // 4. Return HTML content and metadata
+
+        return [
+            'document_id' => $document->document_id,
+            'document_name' => $document->name,
+            'html_preview' => [
+                'html_content' => '<html><body><h1>Responsive HTML Preview</h1><p>Document: ' . $document->name . '</p></body></html>',
+                'preview_url' => route('documents.show', [
+                    'accountId' => $document->envelope->account->account_id,
+                    'envelopeId' => $document->envelope->envelope_id,
+                    'documentId' => $document->document_id,
+                ]),
+            ],
+            'message' => 'Responsive HTML preview placeholder - full implementation requires HTML conversion library',
+        ];
+    }
+
+    /**
+     * Get HTML definitions for all envelope documents
+     *
+     * @param Envelope $envelope
+     * @return array
+     */
+    public function getEnvelopeHtmlDefinitions(Envelope $envelope): array
+    {
+        $documents = $envelope->documents()->get();
+        $htmlDefinitions = [];
+
+        foreach ($documents as $document) {
+            $htmlDefinitions[] = $this->getHtmlDefinition($document);
+        }
+
+        return [
+            'envelope_id' => $envelope->envelope_id,
+            'total_documents' => $documents->count(),
+            'html_definitions' => $htmlDefinitions,
+            'message' => 'HTML definitions placeholder - full implementation requires responsive HTML processing',
+        ];
+    }
+
+    /**
+     * Generate responsive HTML preview for all envelope documents
+     *
+     * @param Envelope $envelope
+     * @param array $htmlDefinition
+     * @return array
+     */
+    public function generateEnvelopeResponsiveHtmlPreview(Envelope $envelope, array $htmlDefinition = []): array
+    {
+        $documents = $envelope->documents()->get();
+        $previews = [];
+
+        foreach ($documents as $document) {
+            $previews[] = $this->generateResponsiveHtmlPreview($document, $htmlDefinition);
+        }
+
+        return [
+            'envelope_id' => $envelope->envelope_id,
+            'total_documents' => $documents->count(),
+            'previews' => $previews,
+            'message' => 'Responsive HTML preview placeholder - full implementation requires HTML conversion library',
+        ];
+    }
 }

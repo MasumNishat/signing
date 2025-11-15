@@ -867,4 +867,62 @@ class EnvelopeController extends BaseController
             'expiresIn' => 300, // 5 minutes
         ], 'Recipient view URL generated successfully');
     }
+
+    /**
+     * Get HTML definitions for all documents in envelope
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/html_definitions
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return JsonResponse
+     */
+    public function getHtmlDefinitions(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Use DocumentService for HTML definitions
+        $documentService = app(\App\Services\DocumentService::class);
+
+        return $this->success(
+            $documentService->getEnvelopeHtmlDefinitions($envelope),
+            'HTML definitions retrieved successfully'
+        );
+    }
+
+    /**
+     * Generate responsive HTML preview for all envelope documents
+     *
+     * POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/responsive_html_preview
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return JsonResponse
+     */
+    public function generateResponsiveHtmlPreview(
+        Request $request,
+        string $accountId,
+        string $envelopeId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $htmlDefinition = $request->input('html_definition', []);
+
+        // Use DocumentService for responsive HTML preview
+        $documentService = app(\App\Services\DocumentService::class);
+
+        return $this->success(
+            $documentService->generateEnvelopeResponsiveHtmlPreview($envelope, $htmlDefinition),
+            'Responsive HTML preview generated successfully'
+        );
+    }
 }

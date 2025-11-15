@@ -132,4 +132,13 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
     Route::post('{envelopeId}/views/recipient', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getRecipientView'])
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('views.recipient');
+
+    // HTML definitions and responsive preview
+    Route::get('{envelopeId}/html_definitions', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getHtmlDefinitions'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('html_definitions.get');
+
+    Route::post('{envelopeId}/responsive_html_preview', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'generateResponsiveHtmlPreview'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('responsive_html_preview.generate');
 });
