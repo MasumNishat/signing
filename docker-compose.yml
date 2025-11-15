@@ -1,0 +1,185 @@
+# ============================================================================
+# Docker Compose Configuration for DocuSign Signing API
+# ============================================================================
+# Usage:
+#   Development: docker-compose up -d
+#   Production:  docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# ============================================================================
+
+version: '3.8'
+
+services:
+  # ==========================================================================
+  # Application Service (PHP-FPM)
+  # ==========================================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+      args:
+        INSTALL_DEV_DEPENDENCIES: "true"
+    container_name: signing-api-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    environment:
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+    networks:
+      - signing-api-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ==========================================================================
+  # Nginx Web Server
+  # ==========================================================================
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: signing-api-nginx
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8000}:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./storage/logs/nginx:/var/log/nginx
+    networks:
+      - signing-api-network
+    depends_on:
+      - app
+
+  # ==========================================================================
+  # PostgreSQL Database
+  # ==========================================================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: signing-api-postgres
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-signing_api}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - signing-api-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================================================
+  # Redis Cache & Queue
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: signing-api-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-null}
+    volumes:
+      - redis-data:/data
+    networks:
+      - signing-api-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==========================================================================
+  # Laravel Horizon (Queue Worker)
+  # ==========================================================================
+  horizon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: horizon
+      args:
+        INSTALL_DEV_DEPENDENCIES: "true"
+    container_name: signing-api-horizon
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    environment:
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - QUEUE_CONNECTION=redis
+    networks:
+      - signing-api-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      app:
+        condition: service_started
+
+  # ==========================================================================
+  # Laravel Scheduler (Cron)
+  # ==========================================================================
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: scheduler
+      args:
+        INSTALL_DEV_DEPENDENCIES: "true"
+    container_name: signing-api-scheduler
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    environment:
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+    networks:
+      - signing-api-network
+    depends_on:
+      - app
+
+  # ==========================================================================
+  # Mailpit (Mail Testing - Development Only)
+  # ==========================================================================
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: signing-api-mailpit
+    restart: unless-stopped
+    ports:
+      - "${MAILPIT_PORT:-1025}:1025"  # SMTP
+      - "${MAILPIT_UI_PORT:-8025}:8025"  # Web UI
+    networks:
+      - signing-api-network
+
+# ============================================================================
+# Networks
+# ============================================================================
+networks:
+  signing-api-network:
+    driver: bridge
+
+# ============================================================================
+# Volumes
+# ============================================================================
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local

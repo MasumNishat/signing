@@ -1,0 +1,237 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main       # Deploy to production
+      - develop    # Deploy to staging
+    tags:
+      - 'v*'       # Deploy on version tags
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  PHP_VERSION: '8.4'
+
+jobs:
+  # ===========================================================================
+  # Determine Environment
+  # ===========================================================================
+  setup:
+    name: Setup Deployment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.determine-env.outputs.environment }}
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Determine environment
+        id: determine-env
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+          else
+            echo "environment=staging" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get version
+        id: version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            echo "version=$(git describe --tags --always)" >> $GITHUB_OUTPUT
+          fi
+
+  # ===========================================================================
+  # Build Docker Image
+  # ===========================================================================
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [setup]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKER_REGISTRY }}/signing-api
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=${{ needs.setup.outputs.environment }}
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          target: production
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            INSTALL_DEV_DEPENDENCIES=false
+
+  # ===========================================================================
+  # Deploy to Staging
+  # ===========================================================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [setup, build]
+    if: needs.setup.outputs.environment == 'staging'
+    environment:
+      name: staging
+      url: https://staging-api.yourdomain.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to staging server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          script: |
+            cd /var/www/signing-api
+            docker-compose -f docker-compose.yml -f docker-compose.staging.yml pull
+            docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d
+            docker-compose exec -T app php artisan migrate --force
+            docker-compose exec -T app php artisan config:cache
+            docker-compose exec -T app php artisan route:cache
+            docker-compose exec -T app php artisan view:cache
+            docker-compose restart horizon
+
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests against staging..."
+          curl -f https://staging-api.yourdomain.com/health || exit 1
+          echo "Smoke tests passed!"
+
+      - name: Notify deployment
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Staging deployment ${{ job.status }}'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        continue-on-error: true
+
+  # ===========================================================================
+  # Deploy to Production
+  # ===========================================================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [setup, build]
+    if: needs.setup.outputs.environment == 'production'
+    environment:
+      name: production
+      url: https://api.yourdomain.com
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create database backup
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd /var/www/signing-api
+            docker-compose exec -T postgres pg_dump -U postgres signing_api > backup_$(date +%Y%m%d_%H%M%S).sql
+
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          script: |
+            cd /var/www/signing-api
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml pull
+            docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+            docker-compose exec -T app php artisan migrate --force
+            docker-compose exec -T app php artisan config:cache
+            docker-compose exec -T app php artisan route:cache
+            docker-compose exec -T app php artisan view:cache
+            docker-compose restart horizon
+
+      - name: Run smoke tests
+        run: |
+          echo "Running smoke tests against production..."
+          curl -f https://api.yourdomain.com/health || exit 1
+          echo "Smoke tests passed!"
+
+      - name: Create GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.setup.outputs.version }}
+          release_name: Release ${{ needs.setup.outputs.version }}
+          draft: false
+          prerelease: false
+
+      - name: Notify deployment
+        if: always()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Production deployment ${{ job.status }}'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        continue-on-error: true
+
+      - name: Notify Sentry
+        if: success()
+        run: |
+          curl -X POST "https://sentry.io/api/0/organizations/${{ secrets.SENTRY_ORG }}/releases/" \
+            -H "Authorization: Bearer ${{ secrets.SENTRY_AUTH_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "version": "${{ needs.setup.outputs.version }}",
+              "projects": ["signing-api"]
+            }'
+        continue-on-error: true

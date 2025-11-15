@@ -1,0 +1,74 @@
+# ============================================================================
+# Docker Compose Production Overrides
+# ============================================================================
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# ============================================================================
+
+version: '3.8'
+
+services:
+  # Production App Configuration
+  app:
+    build:
+      target: production
+      args:
+        INSTALL_DEV_DEPENDENCIES: "false"
+    volumes:
+      # Mount only necessary directories for production
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+
+  # Production Nginx Configuration
+  nginx:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./storage/logs/nginx:/var/log/nginx
+      - ./docker/nginx/ssl:/etc/nginx/ssl:ro  # SSL certificates
+
+  # Production PostgreSQL Configuration
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}  # Must be set in .env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    # Don't expose port externally in production
+    ports: []
+
+  # Production Redis Configuration
+  redis:
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    # Don't expose port externally in production
+    ports: []
+
+  # Production Horizon Configuration
+  horizon:
+    build:
+      target: horizon
+      args:
+        INSTALL_DEV_DEPENDENCIES: "false"
+    volumes:
+      - ./storage:/var/www/html/storage
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+
+  # Production Scheduler Configuration
+  scheduler:
+    build:
+      target: scheduler
+      args:
+        INSTALL_DEV_DEPENDENCIES: "false"
+    volumes:
+      - ./storage:/var/www/html/storage
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+
+# Remove Mailpit in production (use real mail service)
+# To remove: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# will not start mailpit service

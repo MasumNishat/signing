@@ -15,11 +15,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->command->info('🌱 Seeding database...');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Seed reference/configuration tables (no dependencies)
+        $this->command->info('📋 Seeding reference data...');
+        $this->call([
+            FileTypeSeeder::class,
+            SupportedLanguageSeeder::class,
+            SignatureProviderSeeder::class,
         ]);
+
+        // Seed core business tables (with dependencies)
+        $this->command->info('🏢 Seeding core business data...');
+        $this->call([
+            PlanSeeder::class,
+            AccountSeeder::class,
+            PermissionProfileSeeder::class,
+            UserSeeder::class,
+        ]);
+
+        $this->command->info('✅ Database seeding completed!');
     }
 }

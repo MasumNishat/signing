@@ -60,6 +60,43 @@ return [
             'report' => false,
         ],
 
+        // Document storage disk (local for development, S3 for production)
+        'documents' => [
+            'driver' => env('DOCUMENTS_DRIVER', 'local'),
+            'root' => storage_path('app/documents'),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => true,
+        ],
+
+        // S3 disk specifically for documents (production)
+        'documents-s3' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DOCUMENTS_REGION', env('AWS_DEFAULT_REGION')),
+            'bucket' => env('AWS_DOCUMENTS_BUCKET', env('AWS_BUCKET')),
+            'url' => env('AWS_DOCUMENTS_URL'),
+            'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => true,
+            'options' => [
+                'ServerSideEncryption' => 'AES256', // Encryption at rest
+                'StorageClass' => 'INTELLIGENT_TIERING',
+            ],
+        ],
+
+        // Temporary storage for document uploads and conversions
+        'temp' => [
+            'driver' => 'local',
+            'root' => storage_path('app/temp'),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => false,
+        ],
+
     ],
 
     /*

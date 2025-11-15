@@ -1,0 +1,296 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches: [ develop, main ]
+  push:
+    branches: [ develop, main ]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday at midnight
+  workflow_dispatch:
+
+env:
+  PHP_VERSION: '8.4'
+
+jobs:
+  # ===========================================================================
+  # PHPStan Static Analysis
+  # ===========================================================================
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHPStan
+        run: |
+          composer require --dev phpstan/phpstan --with-all-dependencies || true
+          vendor/bin/phpstan analyse --memory-limit=2G --error-format=github
+
+  # ===========================================================================
+  # Psalm Static Analysis
+  # ===========================================================================
+  psalm:
+    name: Psalm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run Psalm
+        run: |
+          composer require --dev vimeo/psalm --with-all-dependencies || true
+          vendor/bin/psalm --output-format=github --shepherd --stats
+
+  # ===========================================================================
+  # PHP Code Sniffer
+  # ===========================================================================
+  phpcs:
+    name: PHP Code Sniffer
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, ctype, iconv, intl
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHP Code Sniffer
+        run: |
+          composer require --dev squizlabs/php_codesniffer --with-all-dependencies || true
+          vendor/bin/phpcs --standard=PSR12 app tests
+
+  # ===========================================================================
+  # Laravel Pint
+  # ===========================================================================
+  pint:
+    name: Laravel Pint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, ctype, iconv, intl
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run Laravel Pint
+        run: |
+          composer require --dev laravel/pint --with-all-dependencies || true
+          vendor/bin/pint --test
+
+  # ===========================================================================
+  # PHP Mess Detector
+  # ===========================================================================
+  phpmd:
+    name: PHP Mess Detector
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, ctype, iconv, intl
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHP Mess Detector
+        run: |
+          composer require --dev phpmd/phpmd --with-all-dependencies || true
+          vendor/bin/phpmd app,tests github cleancode,codesize,controversial,design,naming,unusedcode
+        continue-on-error: true
+
+  # ===========================================================================
+  # PHP Copy/Paste Detector
+  # ===========================================================================
+  phpcpd:
+    name: PHP Copy/Paste Detector
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, ctype, iconv, intl
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Run PHP Copy/Paste Detector
+        run: |
+          composer require --dev sebastian/phpcpd --with-all-dependencies || true
+          vendor/bin/phpcpd app tests
+        continue-on-error: true
+
+  # ===========================================================================
+  # Code Coverage Analysis
+  # ===========================================================================
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: signing_api_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: secret
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_pgsql, pgsql, redis
+          coverage: xdebug
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Copy environment file
+        run: cp .env.example .env
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Run tests with coverage
+        run: php artisan test --coverage --min=80
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: signing_api_test
+          DB_USERNAME: postgres
+          DB_PASSWORD: secret
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/clover.xml
+          flags: full-coverage
+          name: full-coverage
+        continue-on-error: true
+
+      - name: Generate coverage badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          badges-directory: badges
+          generate-coverage-badge: true
+        continue-on-error: true
+
+  # ===========================================================================
+  # Dependency Analysis
+  # ===========================================================================
+  dependencies:
+    name: Dependency Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, xml, ctype, iconv, intl
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Check for outdated packages
+        run: composer outdated --direct --strict
+        continue-on-error: true
+
+      - name: Check platform requirements
+        run: composer check-platform-reqs
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+  # ===========================================================================
+  # Code Quality Summary
+  # ===========================================================================
+  summary:
+    name: Code Quality Summary
+    runs-on: ubuntu-latest
+    needs: [phpstan, pint, coverage, dependencies]
+    if: always()
+
+    steps:
+      - name: Check results
+        run: |
+          echo "PHPStan: ${{ needs.phpstan.result }}"
+          echo "Pint: ${{ needs.pint.result }}"
+          echo "Coverage: ${{ needs.coverage.result }}"
+          echo "Dependencies: ${{ needs.dependencies.result }}"
+
+          if [[ "${{ needs.phpstan.result }}" == "failure" ]] || \
+             [[ "${{ needs.pint.result }}" == "failure" ]] || \
+             [[ "${{ needs.coverage.result }}" == "failure" ]]; then
+            echo "⚠️ Some code quality checks failed"
+            exit 1
+          fi
+
+          echo "✅ All code quality checks passed!"
