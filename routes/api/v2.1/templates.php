@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\V2_1\TemplateRecipientController;
 use App\Http\Controllers\Api\V2_1\TemplateCustomFieldController;
 use App\Http\Controllers\Api\V2_1\TemplateLockController;
 use App\Http\Controllers\Api\V2_1\TemplateNotificationController;
+use App\Http\Controllers\Api\V2_1\TemplateTabController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -200,4 +201,38 @@ Route::prefix('accounts/{accountId}/templates')->name('templates.')->group(funct
     Route::put('/{templateId}/notification', [TemplateNotificationController::class, 'update'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
         ->name('notification.update');
+
+    // =========================================================================
+    // TEMPLATE TABS
+    // =========================================================================
+
+    // Get all template tabs
+    Route::get('/{templateId}/tabs', [TemplateTabController::class, 'index'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('tabs.index');
+
+    // Add tabs to template
+    Route::post('/{templateId}/tabs', [TemplateTabController::class, 'store'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('tabs.store');
+
+    // Replace all template tabs
+    Route::put('/{templateId}/tabs', [TemplateTabController::class, 'update'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('tabs.update');
+
+    // Delete all template tabs
+    Route::delete('/{templateId}/tabs', [TemplateTabController::class, 'destroy'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('tabs.destroy');
+
+    // Get specific template tab
+    Route::get('/{templateId}/tabs/{tabId}', [TemplateTabController::class, 'show'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('tabs.show');
+
+    // Update specific template tab
+    Route::put('/{templateId}/tabs/{tabId}', [TemplateTabController::class, 'updateSingle'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('tabs.update_single');
 });
