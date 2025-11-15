@@ -53,6 +53,23 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('search_status');
 
+    // Envelope reporting and export endpoints (must come before {envelopeId} route)
+    Route::post('export', [\App\Http\Controllers\Api\V2_1\EnvelopeReportController::class, 'export'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('export');
+
+    Route::get('reports/usage', [\App\Http\Controllers\Api\V2_1\EnvelopeReportController::class, 'usageReport'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('reports.usage');
+
+    Route::get('reports/recipients', [\App\Http\Controllers\Api\V2_1\EnvelopeReportController::class, 'recipientReport'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('reports.recipients');
+
+    Route::get('reports/completion_rate', [\App\Http\Controllers\Api\V2_1\EnvelopeReportController::class, 'completionRateReport'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('reports.completion_rate');
+
     // List envelopes
     Route::get('/', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'index'])
         ->middleware(['throttle:api', 'check.account.access'])
