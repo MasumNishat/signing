@@ -87,18 +87,45 @@ Route::middleware(['throttle:api'])->group(function () {
             ->middleware('check.permission:view_account')
             ->name('recipient_names');
 
+        // ==================== Permission Profiles ====================
+
+        // List permission profiles
+        Route::get('permission_profiles', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'index'])
+            ->middleware('check.permission:view_account')
+            ->name('permission_profiles.index');
+
+        // Create permission profile
+        Route::post('permission_profiles', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'store'])
+            ->middleware('check.permission:manage_account')
+            ->name('permission_profiles.store');
+
+        // Get specific permission profile
+        Route::get('permission_profiles/{permissionProfileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'show'])
+            ->middleware('check.permission:view_account')
+            ->name('permission_profiles.show');
+
+        // Update permission profile
+        Route::put('permission_profiles/{permissionProfileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'update'])
+            ->middleware('check.permission:manage_account')
+            ->name('permission_profiles.update');
+
+        // Delete permission profile
+        Route::delete('permission_profiles/{permissionProfileId}', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'destroy'])
+            ->middleware('check.permission:manage_account')
+            ->name('permission_profiles.destroy');
+
         // ==================== Configuration & Settings ====================
 
-        // eNote Configuration
-        Route::get('enote_configuration', [AccountController::class, 'getEnoteConfiguration'])
+        // eNote Configuration (under /settings/ to match OpenAPI spec)
+        Route::get('settings/enote_configuration', [AccountController::class, 'getEnoteConfiguration'])
             ->middleware('check.permission:view_account')
             ->name('enote_configuration.show');
 
-        Route::put('enote_configuration', [AccountController::class, 'updateEnoteConfiguration'])
+        Route::put('settings/enote_configuration', [AccountController::class, 'updateEnoteConfiguration'])
             ->middleware('check.permission:manage_account')
             ->name('enote_configuration.update');
 
-        Route::delete('enote_configuration', [AccountController::class, 'deleteEnoteConfiguration'])
+        Route::delete('settings/enote_configuration', [AccountController::class, 'deleteEnoteConfiguration'])
             ->middleware('check.permission:manage_account')
             ->name('enote_configuration.destroy');
 
