@@ -163,6 +163,15 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('responsive_html_preview.generate');
 
+    // Comments and form data
+    Route::get('{envelopeId}/comments/transcript', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getCommentsTranscript'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('comments.transcript');
+
+    Route::get('{envelopeId}/form_data', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getFormData'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('form_data.get');
+
     // Attachments
     Route::get('{envelopeId}/attachments', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'index'])
         ->middleware(['throttle:api', 'check.account.access'])

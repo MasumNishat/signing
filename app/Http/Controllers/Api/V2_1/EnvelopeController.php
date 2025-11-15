@@ -925,4 +925,99 @@ class EnvelopeController extends BaseController
             'Responsive HTML preview generated successfully'
         );
     }
+
+    /**
+     * Get comments transcript for an envelope
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/comments/transcript
+     *
+     * Returns a transcript of all comments and notes made on the envelope
+     */
+    public function getCommentsTranscript(string $accountId, string $envelopeId): JsonResponse
+    {
+        try {
+            $envelope = Envelope::where('account_id', $accountId)
+                ->where('envelope_id', $envelopeId)
+                ->with(['auditEvents' => function ($query) {
+                    $query->whereIn('event_type', ['comment_added', 'note_added', 'declined_reason'])
+                        ->orderBy('created_at', 'asc');
+                }])
+                ->firstOrFail();
+
+            // Build transcript from audit events
+            $transcript = [];
+            foreach ($envelope->auditEvents as $event) {
+                $transcript[] = [
+                    'timestamp' => $event->created_at?->toIso8601String(),
+                    'user' => $event->user_name,
+                    'event_type' => $event->event_type,
+                    'comment' => $event->metadata['comment'] ?? $event->metadata['note'] ?? $event->metadata['reason'] ?? '',
+                ];
+            }
+
+            return $this->successResponse([
+                'envelope_id' => $envelope->envelope_id,
+                'comments' => $transcript,
+                'total_comments' => count($transcript),
+            ], 'Comments transcript retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * Get form data for an envelope
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/form_data
+     *
+     * Returns all form field data collected from recipients
+     */
+    public function getFormData(string $accountId, string $envelopeId): JsonResponse
+    {
+        try {
+            $envelope = Envelope::where('account_id', $accountId)
+                ->where('envelope_id', $envelopeId)
+                ->with(['tabs.recipient', 'recipients'])
+                ->firstOrFail();
+
+            // Extract form data from tabs
+            $formData = [];
+            $recipientData = [];
+
+            foreach ($envelope->tabs as $tab) {
+                // Only include tabs with values (filled by recipients)
+                if (!empty($tab->value)) {
+                    if (!isset($recipientData[$tab->recipient_id])) {
+                        $recipientData[$tab->recipient_id] = [
+                            'recipient_id' => $tab->recipient->recipient_id ?? null,
+                            'recipient_name' => $tab->recipient->name ?? 'Unknown',
+                            'recipient_email' => $tab->recipient->email ?? null,
+                            'tabs' => [],
+                        ];
+                    }
+
+                    $recipientData[$tab->recipient_id]['tabs'][] = [
+                        'tab_id' => $tab->tab_id,
+                        'tab_label' => $tab->tab_label,
+                        'tab_type' => $tab->tab_type,
+                        'value' => $tab->value,
+                        'document_id' => $tab->document_id,
+                        'page_number' => $tab->page_number,
+                    ];
+                }
+            }
+
+            // Convert to indexed array
+            $formData = array_values($recipientData);
+
+            return $this->successResponse([
+                'envelope_id' => $envelope->envelope_id,
+                'envelope_status' => $envelope->status,
+                'recipients' => $formData,
+                'total_recipients_with_data' => count($formData),
+            ], 'Form data retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
 }
