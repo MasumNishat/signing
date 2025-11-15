@@ -221,6 +221,142 @@ class DiagnosticsController extends BaseController
     }
 
     // =========================================================================
+    // GLOBAL DIAGNOSTICS (5 endpoints)
+    // =========================================================================
+
+    /**
+     * GET /diagnostics/request_logs
+     * Gets the API request logging log files (global)
+     */
+    public function getGlobalRequestLogs(Request $request): JsonResponse
+    {
+        try {
+            $filters = [
+                'account_id' => $request->input('account_id'),
+                'user_id' => $request->input('user_id'),
+                'method' => $request->input('method'),
+                'status' => $request->input('status'),
+                'from_date' => $request->input('from_date'),
+                'to_date' => $request->input('to_date'),
+                'sort_by' => $request->input('sort_by', 'created_date_time'),
+                'sort_order' => $request->input('sort_order', 'desc'),
+                'per_page' => $request->input('per_page', 50),
+            ];
+
+            $logs = $this->diagnosticsService->listGlobalRequestLogs($filters);
+
+            return $this->paginatedResponse($logs, 'Request logs retrieved successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to list global request logs', [
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to retrieve request logs', 500);
+        }
+    }
+
+    /**
+     * DELETE /diagnostics/request_logs
+     * Deletes the request log files (global)
+     */
+    public function deleteGlobalRequestLogs(Request $request): JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'days_old' => 'sometimes|integer|min:30|max:365',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->validationErrorResponse($validator->errors());
+            }
+
+            $daysOld = $request->input('days_old', 90);
+            $deletedCount = $this->diagnosticsService->deleteGlobalRequestLogs($daysOld);
+
+            return $this->successResponse([
+                'deleted_count' => $deletedCount,
+                'days_old' => $daysOld,
+            ], 'Request logs deleted successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to delete global request logs', [
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to delete request logs', 500);
+        }
+    }
+
+    /**
+     * GET /diagnostics/request_logs/{requestLogId}
+     * Gets a request logging log file (global)
+     */
+    public function getGlobalRequestLog(string $requestLogId): JsonResponse
+    {
+        try {
+            $log = $this->diagnosticsService->getGlobalRequestLog($requestLogId);
+
+            return $this->successResponse($log, 'Request log retrieved successfully');
+
+        } catch (ResourceNotFoundException $e) {
+            return $this->notFoundResponse($e->getMessage());
+        } catch (\Exception $e) {
+            Log::error('Failed to get global request log', [
+                'request_log_id' => $requestLogId,
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to retrieve request log', 500);
+        }
+    }
+
+    /**
+     * GET /diagnostics/settings
+     * Gets the API request logging settings
+     */
+    public function getDiagnosticsSettings(): JsonResponse
+    {
+        try {
+            $settings = $this->diagnosticsService->getDiagnosticsSettings();
+
+            return $this->successResponse($settings, 'Diagnostics settings retrieved successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to get diagnostics settings', [
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to retrieve diagnostics settings', 500);
+        }
+    }
+
+    /**
+     * PUT /diagnostics/settings
+     * Enables or disables API request logging for troubleshooting
+     */
+    public function updateDiagnosticsSettings(Request $request): JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'api_request_logging' => 'sometimes|boolean',
+                'api_request_log_remaining_days' => 'sometimes|integer|min:1|max:365',
+                'api_request_log_max_entries' => 'sometimes|integer|min:1000|max:1000000',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->validationErrorResponse($validator->errors());
+            }
+
+            $settings = $this->diagnosticsService->updateDiagnosticsSettings($request->all());
+
+            return $this->successResponse($settings, 'Diagnostics settings updated successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to update diagnostics settings', [
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to update diagnostics settings', 500);
+        }
+    }
+
+    // =========================================================================
     // SYSTEM DIAGNOSTICS (2 endpoints)
     // =========================================================================
 

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V2_1\Auth\AuthController;
 use App\Http\Controllers\Api\V2_1\Auth\OAuthController;
+use App\Http\Controllers\Api\ServiceInformationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,10 @@ use App\Http\Controllers\Api\V2_1\Auth\OAuthController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+// Root-Level Service Information (Public)
+Route::get('/service_information', [ServiceInformationController::class, 'index'])
+    ->name('api.service.information');
 
 // API Version 2.1
 Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
