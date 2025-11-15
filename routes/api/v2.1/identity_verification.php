@@ -15,13 +15,13 @@ use App\Http\Controllers\Api\V2_1\IdentityVerificationController;
 |
 */
 
-Route::middleware(['throttle:api', 'check.account.access'])->group(function () {
+Route::prefix('accounts/{accountId}')->middleware(['throttle:api', 'check.account.access'])->group(function () {
 
     // ===========================
     // Identity Verification Workflows (1 endpoint)
     // ===========================
 
     // Get identity verification workflows for account
-    Route::get('/identity_verification', [IdentityVerificationController::class, 'getIdentityVerificationOptions'])
+    Route::get('identity_verification', [IdentityVerificationController::class, 'getIdentityVerificationOptions'])
         ->name('api.v2.1.accounts.identity-verification.index');
 });
