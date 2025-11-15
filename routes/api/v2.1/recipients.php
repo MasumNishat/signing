@@ -57,4 +57,13 @@ Route::prefix('accounts/{accountId}/envelopes/{envelopeId}/recipients')->group(f
     Route::post('/{recipientId}/signing_url', [RecipientController::class, 'signingUrl'])
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('recipients.signing_url');
+
+    // Document visibility
+    Route::get('/{recipientId}/document_visibility', [RecipientController::class, 'getDocumentVisibility'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.document_visibility.get');
+
+    Route::put('/{recipientId}/document_visibility', [RecipientController::class, 'updateDocumentVisibility'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('recipients.document_visibility.update');
 });

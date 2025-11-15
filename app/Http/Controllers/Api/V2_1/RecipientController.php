@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BaseController;
 use App\Models\Account;
 use App\Models\Envelope;
 use App\Services\RecipientService;
+use App\Services\DocumentVisibilityService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -34,9 +35,12 @@ class RecipientController extends BaseController
     /**
      * Initialize controller
      */
-    public function __construct(RecipientService $recipientService)
+    protected DocumentVisibilityService $visibilityService;
+
+    public function __construct(RecipientService $recipientService, DocumentVisibilityService $visibilityService)
     {
         $this->recipientService = $recipientService;
+        $this->visibilityService = $visibilityService;
     }
 
     /**
@@ -433,6 +437,73 @@ class RecipientController extends BaseController
             return $this->success($urlData, 'Signing URL generated successfully');
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get document visibility for a recipient
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/document_visibility
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function getDocumentVisibility(string $accountId, string $envelopeId, string $recipientId): JsonResponse
+    {
+        try {
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+
+            $envelope = Envelope::where('account_id', $account->id)
+                ->where('envelope_id', $envelopeId)
+                ->with(['documents', 'recipients'])
+                ->firstOrFail();
+
+            $visibilityData = $this->visibilityService->getDocumentVisibility($envelope, $recipientId);
+
+            return $this->success($visibilityData, 'Document visibility retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * Update document visibility for a recipient
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/document_visibility
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function updateDocumentVisibility(Request $request, string $accountId, string $envelopeId, string $recipientId): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'documents' => 'required|array|min:1',
+                'documents.*.document_id' => 'required|string',
+                'documents.*.visible' => 'required|boolean',
+            ]);
+
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+
+            $envelope = Envelope::where('account_id', $account->id)
+                ->where('envelope_id', $envelopeId)
+                ->with(['documents', 'recipients'])
+                ->firstOrFail();
+
+            $visibilityData = $this->visibilityService->updateDocumentVisibility(
+                $envelope,
+                $recipientId,
+                $validated['documents']
+            );
+
+            return $this->success($visibilityData, 'Document visibility updated successfully');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
         }
     }
 }
