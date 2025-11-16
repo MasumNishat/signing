@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V2_1\TemplateLockController;
 use App\Http\Controllers\Api\V2_1\TemplateNotificationController;
 use App\Http\Controllers\Api\V2_1\TemplateTabController;
 use App\Http\Controllers\Api\V2_1\TemplateBulkController;
+use App\Http\Controllers\Api\V2_1\DocumentVisibilityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -297,4 +298,18 @@ Route::prefix('accounts/{accountId}/templates')->name('templates.')->group(funct
     Route::delete('/{templateId}/recipients/{recipientId}/tabs', [TemplateTabController::class, 'deleteRecipientTabs'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
         ->name('recipients.tabs.destroy');
+
+    // =========================================================================
+    // TEMPLATE DOCUMENT VISIBILITY (Phase 1.2)
+    // =========================================================================
+
+    // Get document visibility settings for template
+    Route::get('/{templateId}/document_visibility', [DocumentVisibilityController::class, 'getTemplateVisibility'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('document_visibility.index');
+
+    // Update document visibility settings for template
+    Route::put('/{templateId}/document_visibility', [DocumentVisibilityController::class, 'updateTemplateVisibility'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('document_visibility.update');
 });

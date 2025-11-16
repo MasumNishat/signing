@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V2_1;
 
 use App\Models\Account;
 use App\Models\Envelope;
+use App\Models\Template;
 use App\Models\EnvelopeDocument;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -242,6 +243,118 @@ class DocumentVisibilityController extends BaseController
                         ];
                     })->values(),
                 ], 'Document visibility updated successfully');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * GET /accounts/{accountId}/templates/{templateId}/document_visibility
+     *
+     * Get document visibility settings for a template
+     */
+    public function getTemplateVisibility(string $accountId, string $templateId): JsonResponse
+    {
+        try {
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+
+            $template = Template::where('account_id', $account->id)
+                ->where('template_id', $templateId)
+                ->firstOrFail();
+
+            // Get all documents for this template
+            $documents = EnvelopeDocument::where('template_id', $template->id)
+                ->orderBy('order')
+                ->get();
+
+            $visibilitySettings = $documents->map(function ($document) {
+                $visibleRecipientIds = $document->visible_to_recipients ?? [];
+
+                return [
+                    'document_id' => $document->document_id,
+                    'document_name' => $document->name,
+                    'visible_to_all_recipients' => empty($visibleRecipientIds),
+                    'visible_to_recipients' => $visibleRecipientIds,
+                    'rights' => $document->document_rights ?? 'view',
+                ];
+            })->values()->toArray();
+
+            return $this->successResponse([
+                'template_id' => $template->template_id,
+                'document_visibility' => $visibilitySettings,
+            ], 'Template document visibility settings retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * PUT /accounts/{accountId}/templates/{templateId}/document_visibility
+     *
+     * Update document visibility settings for a template
+     */
+    public function updateTemplateVisibility(
+        Request $request,
+        string $accountId,
+        string $templateId
+    ): JsonResponse {
+        try {
+            $validated = $request->validate([
+                'document_visibility' => 'required|array|min:1',
+                'document_visibility.*.document_id' => 'required|string',
+                'document_visibility.*.visible_to_recipients' => 'sometimes|array',
+                'document_visibility.*.visible_to_recipients.*' => 'string', // recipient IDs
+                'document_visibility.*.rights' => 'sometimes|string|in:view,download,edit',
+            ]);
+
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+
+            $template = Template::where('account_id', $account->id)
+                ->where('template_id', $templateId)
+                ->firstOrFail();
+
+            DB::beginTransaction();
+
+            try {
+                foreach ($validated['document_visibility'] as $setting) {
+                    $document = EnvelopeDocument::where('template_id', $template->id)
+                        ->where('document_id', $setting['document_id'])
+                        ->firstOrFail();
+
+                    // Update document visibility settings
+                    $document->update([
+                        'visible_to_recipients' => $setting['visible_to_recipients'] ?? null,
+                        'document_rights' => $setting['rights'] ?? 'view',
+                    ]);
+                }
+
+                DB::commit();
+
+                // Get updated visibility settings
+                $documents = EnvelopeDocument::where('template_id', $template->id)
+                    ->orderBy('order')
+                    ->get();
+
+                $visibilitySettings = $documents->map(function ($document) {
+                    $visibleRecipientIds = $document->visible_to_recipients ?? [];
+
+                    return [
+                        'document_id' => $document->document_id,
+                        'document_name' => $document->name,
+                        'visible_to_all_recipients' => empty($visibleRecipientIds),
+                        'visible_to_recipients' => $visibleRecipientIds,
+                        'rights' => $document->document_rights ?? 'view',
+                    ];
+                })->values()->toArray();
+
+                return $this->successResponse([
+                    'template_id' => $template->template_id,
+                    'document_visibility' => $visibilitySettings,
+                ], 'Template document visibility settings updated successfully');
             } catch (\Exception $e) {
                 DB::rollBack();
                 throw $e;
