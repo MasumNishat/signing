@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\EnvelopeController;
 use App\Http\Controllers\Web\TemplateController;
+use App\Http\Controllers\Web\DocumentController;
 use App\Http\Controllers\Web\RecipientController;
 use App\Http\Controllers\Web\ContactController;
 use App\Http\Controllers\Web\UserController;
@@ -56,6 +57,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/create', [TemplateController::class, 'create'])->name('create');
         Route::get('/{id}', [TemplateController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [TemplateController::class, 'edit'])->name('edit');
+    });
+
+    // Document Routes (Phase F5)
+    Route::prefix('documents')->name('documents.')->group(function () {
+        Route::get('/', [DocumentController::class, 'index'])->name('index');
+        Route::get('/upload', [DocumentController::class, 'upload'])->name('upload');
+        Route::get('/{id}/viewer', [DocumentController::class, 'viewer'])->name('viewer');
     });
 
     // Recipient Routes (Phase F5)
