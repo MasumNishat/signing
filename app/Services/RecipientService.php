@@ -801,6 +801,49 @@ class RecipientService
     }
 
     /**
+     * Add tabs to recipient
+     *
+     * @param EnvelopeRecipient $recipient
+     * @param array $tabs Array of tab data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function addRecipientTabs(EnvelopeRecipient $recipient, array $tabs): array
+    {
+        if ($recipient->hasSigned()) {
+            throw new BusinessLogicException('Cannot add tabs for recipient who has already signed');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $tabService = app(\App\Services\TabService::class);
+            $addedTabs = [];
+
+            foreach ($tabs as $tabData) {
+                $tabData['recipient_id'] = $recipient->recipient_id;
+                $tabData['envelope_id'] = $recipient->envelope->envelope_id;
+
+                $tab = $tabService->createTab($recipient->envelope, $tabData);
+                $addedTabs[] = $tab;
+            }
+
+            DB::commit();
+
+            return array_map(function ($tab) use ($tabService) {
+                return $tabService->getMetadata($tab);
+            }, $addedTabs);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Failed to add recipient tabs', [
+                'recipient_id' => $recipient->recipient_id,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
      * Update recipient tabs
      *
      * @param EnvelopeRecipient $recipient

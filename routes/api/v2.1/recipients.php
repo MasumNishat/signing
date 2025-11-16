@@ -96,6 +96,14 @@ Route::prefix('accounts/{accountId}/envelopes/{envelopeId}/recipients')->group(f
         ->name('recipients.initials_image.update');
 
     // Recipient tabs
+    Route::get('/{recipientId}/tabs', [RecipientController::class, 'getTabs'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.tabs.get');
+
+    Route::post('/{recipientId}/tabs', [RecipientController::class, 'addTabs'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('recipients.tabs.add');
+
     Route::put('/{recipientId}/tabs', [RecipientController::class, 'updateTabs'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
         ->name('recipients.tabs.update');
