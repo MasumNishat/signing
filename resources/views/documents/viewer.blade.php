@@ -112,7 +112,7 @@
                         <div class="flex items-center space-x-2">
                             <button
                                 @click="previousPage()"
-                                :disabled="currentPage === 1"
+                                x-bind:disabled="currentPage === 1"
                                 class="p-2 rounded hover:bg-bg-hover disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +124,7 @@
                             </span>
                             <button
                                 @click="nextPage()"
-                                :disabled="currentPage === totalPages"
+                                x-bind:disabled="currentPage === totalPages"
                                 class="p-2 rounded hover:bg-bg-hover disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -139,7 +139,7 @@
                         <div class="flex items-center space-x-2">
                             <button
                                 @click="zoomOut()"
-                                :disabled="zoom === 50"
+                                x-bind:disabled="zoom === 50"
                                 class="p-2 rounded hover:bg-bg-hover disabled:opacity-50"
                             >
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +151,7 @@
                             </button>
                             <button
                                 @click="zoomIn()"
-                                :disabled="zoom === 200"
+                                x-bind:disabled="zoom === 200"
                                 class="p-2 rounded hover:bg-bg-hover disabled:opacity-50"
                             >
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -200,7 +200,7 @@
                 <div class="max-w-5xl mx-auto">
                     <!-- Document Preview -->
                     <div class="bg-white dark:bg-gray-800 shadow-lg mx-auto"
-                         :style="`transform: scale(${zoom / 100}) rotate(${rotation}deg); transform-origin: center top;`">
+                         x-bind:style="`transform: scale(${zoom / 100}) rotate(${rotation}deg); transform-origin: center top;`">
 
                         <!-- For PDF Documents -->
                         <template x-if="document && document.mime_type === 'application/pdf'">
@@ -221,8 +221,8 @@
                         <!-- For Image Documents -->
                         <template x-if="document && document.mime_type.startsWith('image/')">
                             <div class="p-8">
-                                <img :src="`/api/v2.1/accounts/${$store.auth.user.account_id}/documents/${document.id}/content`"
-                                     :alt="document.name"
+                                <img x-bind:src="`/api/v2.1/accounts/${$store.auth.user.account_id}/documents/${document.id}/content`"
+                                     x-bind:alt="document.name"
                                      class="mx-auto max-w-full h-auto">
                             </div>
                         </template>

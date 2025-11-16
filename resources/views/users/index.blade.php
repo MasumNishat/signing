@@ -28,7 +28,7 @@
             </x-ui.button>
         </div>
 
-        <x-ui.card :padding="false">
+        <x-ui.card x-bind:padding="false">
             <div x-show="loading" class="p-6 space-y-4">
                 <x-ui.skeleton type="text" class="h-12 w-full" />
                 <x-ui.skeleton type="text" class="h-12 w-full" />
@@ -46,7 +46,7 @@
                         </tr>
                     </thead>
                     <tbody class="bg-primary divide-y divide-border-primary">
-                        <template x-for="user in users" :key="user.id">
+                        <template x-for="user in users" x-bind:key="user.id">
                             <tr class="hover:bg-bg-hover">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
@@ -63,7 +63,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
-                                          :class="user.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800'"
+                                          x-bind:class="user.status === 'active' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800'"
                                           x-text="user.status || 'Active'"></span>
                                 </td>
                                 <td class="px-6 py-4 text-right space-x-2">

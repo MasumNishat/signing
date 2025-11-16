@@ -8,10 +8,10 @@
 
 <x-form.input
     type="time"
-    :name="$name"
-    :label="$label"
-    :value="$value"
-    :required="$required"
-    :error="$error"
+    x-bind:name="$name"
+    x-bind:label="$label"
+    x-bind:value="$value"
+    x-bind:required="$required"
+    x-bind:error="$error"
     {{ $attributes }}
 />

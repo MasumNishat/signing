@@ -10,12 +10,12 @@
 
 <x-form.input
     type="date"
-    :name="$name"
-    :label="$label"
-    :value="$value"
-    :min="$min"
-    :max="$max"
-    :required="$required"
-    :error="$error"
+    x-bind:name="$name"
+    x-bind:label="$label"
+    x-bind:value="$value"
+    x-bind:min="$min"
+    x-bind:max="$max"
+    x-bind:required="$required"
+    x-bind:error="$error"
     {{ $attributes }}
 />

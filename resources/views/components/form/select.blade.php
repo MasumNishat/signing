@@ -22,7 +22,7 @@
 
 <div {{ $attributes->only('class') }}>
     @if($label)
-        <x-form.label :for="$name" :required="$required">
+        <x-form.label x-bind:for="$name" x-bind:required="$required">
             {{ $label }}
         </x-form.label>
     @endif
@@ -53,9 +53,9 @@
     </div>
 
     @if($error)
-        <x-form.validation-error :message="$error" :for="$name" />
+        <x-form.validation-error x-bind:message="$error" x-bind:for="$name" />
     @elseif($helpText)
-        <x-form.help-text :for="$name">{{ $helpText }}</x-form.help-text>
+        <x-form.help-text x-bind:for="$name">{{ $helpText }}</x-form.help-text>
     @endif
 </div>
 
@@ -66,7 +66,7 @@ Usage Examples:
 <x-form.select
     name="status"
     label="Status"
-    :options="['sent' => 'Sent', 'completed' => 'Completed', 'voided' => 'Voided']"
+    x-bind:options="['sent' => 'Sent', 'completed' => 'Completed', 'voided' => 'Voided']"
 />
 
 2. With placeholder:
@@ -74,23 +74,23 @@ Usage Examples:
     name="country"
     label="Country"
     placeholder="Select a country..."
-    :options="$countries"
+    x-bind:options="$countries"
 />
 
 3. With error:
 <x-form.select
     name="role"
     label="Role"
-    :options="['admin' => 'Administrator', 'user' => 'User']"
-    :error="$errors->first('role')"
+    x-bind:options="['admin' => 'Administrator', 'user' => 'User']"
+    x-bind:error="$errors->first('role')"
 />
 
 4. Required select:
 <x-form.select
     name="type"
     label="Document Type"
-    :required="true"
-    :options="['contract' => 'Contract', 'nda' => 'NDA', 'agreement' => 'Agreement']"
+    x-bind:required="true"
+    x-bind:options="['contract' => 'Contract', 'nda' => 'NDA', 'agreement' => 'Agreement']"
 />
 
 5. With custom options (using slot):
@@ -113,7 +113,7 @@ Usage Examples:
         label="Filter by Status"
         x-model="selectedStatus"
         @change="filterEnvelopes()"
-        :options="['all' => 'All', 'sent' => 'Sent', 'completed' => 'Completed']"
+        x-bind:options="['all' => 'All', 'sent' => 'Sent', 'completed' => 'Completed']"
     />
 </div>
 --}}

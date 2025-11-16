@@ -48,29 +48,29 @@
 Usage Examples:
 
 1. Basic progress:
-<x-ui.progress-bar :value="75" />
+<x-ui.progress-bar x-bind:value="75" />
 
 2. With label:
-<x-ui.progress-bar :value="60" :show-label="true">
+<x-ui.progress-bar x-bind:value="60" x-bind:show-label="true">
     Uploading document...
 </x-ui.progress-bar>
 
 3. Different variants:
-<x-ui.progress-bar :value="85" variant="success" :show-label="true">Complete</x-ui.progress-bar>
-<x-ui.progress-bar :value="50" variant="warning" :show-label="true">In Progress</x-ui.progress-bar>
-<x-ui.progress-bar :value="25" variant="danger" :show-label="true">Low</x-ui.progress-bar>
+<x-ui.progress-bar x-bind:value="85" variant="success" x-bind:show-label="true">Complete</x-ui.progress-bar>
+<x-ui.progress-bar x-bind:value="50" variant="warning" x-bind:show-label="true">In Progress</x-ui.progress-bar>
+<x-ui.progress-bar x-bind:value="25" variant="danger" x-bind:show-label="true">Low</x-ui.progress-bar>
 
 4. Sizes:
-<x-ui.progress-bar :value="70" size="sm" />
-<x-ui.progress-bar :value="70" size="md" />
-<x-ui.progress-bar :value="70" size="lg" />
+<x-ui.progress-bar x-bind:value="70" size="sm" />
+<x-ui.progress-bar x-bind:value="70" size="md" />
+<x-ui.progress-bar x-bind:value="70" size="lg" />
 
 5. Animated (for indeterminate progress):
-<x-ui.progress-bar :value="100" :animated="true" variant="primary" />
+<x-ui.progress-bar x-bind:value="100" x-bind:animated="true" variant="primary" />
 
 6. File upload progress:
 <div x-data="{ uploadProgress: 0 }">
-    <x-ui.progress-bar :value="uploadProgress" :show-label="true" variant="success">
+    <x-ui.progress-bar x-bind:value="uploadProgress" x-bind:show-label="true" variant="success">
         Uploading...
     </x-ui.progress-bar>
 </div>
@@ -78,17 +78,17 @@ Usage Examples:
 7. Multi-step process:
 <div x-data="{ currentStep: 2, totalSteps: 5 }">
     <x-ui.progress-bar
-        :value="(currentStep / totalSteps) * 100"
-        :show-label="true">
+        x-bind:value="(currentStep / totalSteps) * 100"
+        x-bind:show-label="true">
         Step <span x-text="currentStep"></span> of <span x-text="totalSteps"></span>
     </x-ui.progress-bar>
 </div>
 
 8. Storage usage:
 <x-ui.progress-bar
-    :value="750"
-    :max="1000"
-    :show-label="true"
+    x-bind:value="750"
+    x-bind:max="1000"
+    x-bind:show-label="true"
     variant="info">
     Storage: 750 MB / 1000 MB
 </x-ui.progress-bar>

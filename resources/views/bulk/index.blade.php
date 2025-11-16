@@ -103,7 +103,7 @@
 
         <!-- Batches List -->
         <div x-show="!loading" class="space-y-4">
-            <template x-for="batch in batches" :key="batch.id">
+            <template x-for="batch in batches" x-bind:key="batch.id">
                 <x-ui.card>
                     <div class="flex items-start justify-between">
                         <div class="flex-1">

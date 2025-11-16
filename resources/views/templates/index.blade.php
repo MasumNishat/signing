@@ -126,7 +126,7 @@
 
             <!-- Templates Grid -->
             <div x-show="templates.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <template x-for="template in templates" :key="template.id">
+                <template x-for="template in templates" x-bind:key="template.id">
                     <x-ui.card class="hover:shadow-lg transition-shadow cursor-pointer" @click="window.location.href='/templates/' + template.id">
                         <div class="flex items-start justify-between mb-4">
                             <div class="flex items-center space-x-3">
@@ -140,7 +140,7 @@
                                 <button @click="useTemplate(template.id)" class="block w-full text-left px-4 py-2 text-sm hover:bg-dropdown-hover">
                                     Use Template
                                 </button>
-                                <a :href="`/templates/${template.id}/edit`" class="block px-4 py-2 text-sm hover:bg-dropdown-hover" @click.stop="">
+                                <a x-bind:href="`/templates/${template.id}/edit`" class="block px-4 py-2 text-sm hover:bg-dropdown-hover" @click.stop="">
                                     Edit
                                 </a>
                                 <button @click="deleteTemplate(template.id)" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-dropdown-hover" @click.stop="">
@@ -197,14 +197,14 @@
                                 size="sm"
                                 variant="secondary"
                                 @click="loadTemplates(pagination.current_page - 1)"
-                                :disabled="pagination.current_page === 1">
+                                x-bind:disabled="pagination.current_page === 1">
                                 Previous
                             </x-ui.button>
                             <x-ui.button
                                 size="sm"
                                 variant="secondary"
                                 @click="loadTemplates(pagination.current_page + 1)"
-                                :disabled="pagination.current_page === pagination.last_page">
+                                x-bind:disabled="pagination.current_page === pagination.last_page">
                                 Next
                             </x-ui.button>
                         </div>

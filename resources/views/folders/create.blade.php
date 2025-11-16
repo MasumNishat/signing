@@ -70,7 +70,7 @@
                         <label class="block text-sm font-medium text-primary mb-1">Parent Folder (Optional)</label>
                         <x-ui.select x-model="folderData.parent_folder_id">
                             <option value="">None (Top Level)</option>
-                            <template x-for="folder in parentFolders" :key="folder.id">
+                            <template x-for="folder in parentFolders" x-bind:key="folder.id">
                                 <option x-bind:value="folder.id" x-text="folder.name"></option>
                             </template>
                         </x-ui.select>
@@ -82,7 +82,7 @@
                         <x-ui.button variant="secondary" type="button" onclick="window.location.href='/folders'">
                             Cancel
                         </x-ui.button>
-                        <x-ui.button variant="primary" type="submit" :disabled="loading">
+                        <x-ui.button variant="primary" type="submit" x-bind:disabled="loading">
                             <span x-show="!loading">Create Folder</span>
                             <span x-show="loading">Creating...</span>
                         </x-ui.button>

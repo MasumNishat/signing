@@ -20,11 +20,11 @@
     {{ $attributes }}>
 
     @if($label)
-        <x-form.label :for="$name">{{ $label }}</x-form.label>
+        <x-form.label x-bind:for="$name">{{ $label }}</x-form.label>
     @endif
 
     <div class="{{ $label ? 'mt-1' : '' }}">
-        <div :class="isDragging ? 'border-primary-500 bg-primary-50' : 'border-input-border'"
+        <div x-bind:class="isDragging ? 'border-primary-500 bg-primary-50' : 'border-input-border'"
              class="border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer hover:border-primary-500">
             <input
                 type="file"
@@ -48,7 +48,7 @@
         </div>
 
         <div x-show="files.length > 0" class="mt-4 space-y-2">
-            <template x-for="(file, index) in files" :key="index">
+            <template x-for="(file, index) in files" x-bind:key="index">
                 <div class="flex items-center justify-between p-2 bg-bg-secondary rounded-lg">
                     <span class="text-sm text-primary" x-text="file.name"></span>
                     <button @click="files.splice(index, 1)" class="text-red-600 hover:text-red-800">
@@ -62,6 +62,6 @@
     </div>
 
     @if($error)
-        <x-form.validation-error :message="$error" :for="$name" />
+        <x-form.validation-error x-bind:message="$error" x-bind:for="$name" />
     @endif
 </div>

@@ -31,7 +31,7 @@
 
 <div {{ $attributes->only('class') }}>
     @if($label)
-        <x-form.label :for="$name" :required="$required">
+        <x-form.label x-bind:for="$name" x-bind:required="$required">
             {{ $label }}
         </x-form.label>
     @endif
@@ -64,9 +64,9 @@
     </div>
 
     @if($error)
-        <x-form.validation-error :message="$error" :for="$name" />
+        <x-form.validation-error x-bind:message="$error" x-bind:for="$name" />
     @elseif($helpText)
-        <x-form.help-text :for="$name">{{ $helpText }}</x-form.help-text>
+        <x-form.help-text x-bind:for="$name">{{ $helpText }}</x-form.help-text>
     @endif
 </div>
 
@@ -77,14 +77,14 @@ Usage Examples:
 <x-form.input name="email" label="Email Address" type="email" placeholder="you@example.com" />
 
 2. Required input:
-<x-form.input name="subject" label="Email Subject" :required="true" />
+<x-form.input name="subject" label="Email Subject" x-bind:required="true" />
 
 3. With error (from validation):
 <x-form.input
     name="email"
     label="Email"
     type="email"
-    :error="$errors->first('email')"
+    x-bind:error="$errors->first('email')"
 />
 
 4. With help text:
@@ -104,13 +104,13 @@ Usage Examples:
 </x-form.input>
 
 6. Disabled input:
-<x-form.input name="id" label="Envelope ID" value="ENV-12345" :disabled="true" />
+<x-form.input name="id" label="Envelope ID" value="ENV-12345" x-bind:disabled="true" />
 
 7. Number input:
 <x-form.input name="amount" label="Amount" type="number" min="0" step="0.01" />
 
 8. Password input:
-<x-form.input name="password" label="Password" type="password" :required="true" />
+<x-form.input name="password" label="Password" type="password" x-bind:required="true" />
 
 9. In Alpine.js form:
 <div x-data="{ formData: { email: '', subject: '' } }">

@@ -27,12 +27,12 @@
                 {{ $label }}
             </label>
             @if($error)
-                <x-form.validation-error :message="$error" :for="$name" />
+                <x-form.validation-error x-bind:message="$error" x-bind:for="$name" />
             @endif
         </div>
     @endif
 </div>
 
 {{--
-Usage: <x-form.checkbox name="agree" label="I agree to terms" :checked="true" />
+Usage: <x-form.checkbox name="agree" label="I agree to terms" x-bind:checked="true" />
 --}}

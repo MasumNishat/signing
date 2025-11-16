@@ -73,24 +73,24 @@ Usage Examples:
 <x-ui.badge size="lg">Large</x-ui.badge>
 
 4. With dot indicator:
-<x-ui.badge :dot="true" variant="success">Online</x-ui.badge>
-<x-ui.badge :dot="true" variant="danger">Offline</x-ui.badge>
+<x-ui.badge x-bind:dot="true" variant="success">Online</x-ui.badge>
+<x-ui.badge x-bind:dot="true" variant="danger">Offline</x-ui.badge>
 
 5. Square/rounded:
-<x-ui.badge :rounded="false">Square Badge</x-ui.badge>
+<x-ui.badge x-bind:rounded="false">Square Badge</x-ui.badge>
 
 6. Removable badge:
-<x-ui.badge :removable="true" @click="removeTag()">Tag Name</x-ui.badge>
+<x-ui.badge x-bind:removable="true" @click="removeTag()">Tag Name</x-ui.badge>
 
 7. Status badges (common use case):
 @if($envelope->status === 'sent')
-    <x-ui.badge variant="primary" :dot="true">Sent</x-ui.badge>
+    <x-ui.badge variant="primary" x-bind:dot="true">Sent</x-ui.badge>
 @elseif($envelope->status === 'completed')
-    <x-ui.badge variant="success" :dot="true">Completed</x-ui.badge>
+    <x-ui.badge variant="success" x-bind:dot="true">Completed</x-ui.badge>
 @elseif($envelope->status === 'voided')
-    <x-ui.badge variant="danger" :dot="true">Voided</x-ui.badge>
+    <x-ui.badge variant="danger" x-bind:dot="true">Voided</x-ui.badge>
 @elseif($envelope->status === 'draft')
-    <x-ui.badge variant="gray" :dot="true">Draft</x-ui.badge>
+    <x-ui.badge variant="gray" x-bind:dot="true">Draft</x-ui.badge>
 @endif
 
 8. Count badge:
@@ -98,8 +98,8 @@ Usage Examples:
 
 9. Tag list with removable badges:
 <div class="flex flex-wrap gap-2">
-    <x-ui.badge :removable="true" variant="primary">Marketing</x-ui.badge>
-    <x-ui.badge :removable="true" variant="success">Approved</x-ui.badge>
-    <x-ui.badge :removable="true" variant="warning">Review</x-ui.badge>
+    <x-ui.badge x-bind:removable="true" variant="primary">Marketing</x-ui.badge>
+    <x-ui.badge x-bind:removable="true" variant="success">Approved</x-ui.badge>
+    <x-ui.badge x-bind:removable="true" variant="warning">Review</x-ui.badge>
 </div>
 --}}

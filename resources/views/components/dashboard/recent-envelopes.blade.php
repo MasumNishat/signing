@@ -4,7 +4,7 @@
     'loading' => false
 ])
 
-<x-ui.card :padding="false">
+<x-ui.card x-bind:padding="false">
     <div class="px-6 py-4 border-b border-card-border flex items-center justify-between">
         <h3 class="text-lg font-semibold text-primary">Recent Envelopes</h3>
         <a href="/envelopes" class="text-sm font-medium text-primary-600 hover:text-primary-500">View all</a>

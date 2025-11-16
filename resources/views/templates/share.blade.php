@@ -135,7 +135,7 @@
             <x-ui.card>
                 <h3 class="text-lg font-semibold text-primary mb-4">Shared With</h3>
                 <div x-show="sharedUsers.length > 0" class="space-y-3">
-                    <template x-for="user in sharedUsers" :key="user.id">
+                    <template x-for="user in sharedUsers" x-bind:key="user.id">
                         <div class="flex items-center justify-between p-4 border border-border-primary rounded-lg">
                             <div class="flex items-center">
                                 <div class="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center mr-3">
@@ -152,8 +152,8 @@
                                     @change="updatePermission(user.shared_with_user_id, user.can_edit)"
                                     class="text-sm"
                                 >
-                                    <option :value="false">View Only</option>
-                                    <option :value="true">Can Edit</option>
+                                    <option x-bind:value="false">View Only</option>
+                                    <option x-bind:value="true">Can Edit</option>
                                 </x-ui.select>
                                 <button
                                     @click="removeAccess(user.shared_with_user_id)"

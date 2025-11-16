@@ -51,10 +51,10 @@
         <!-- Tabs -->
         <div class="border-b border-border-primary mb-6">
             <nav class="flex space-x-8">
-                <button @click="activeTab = 'signing'" :class="activeTab === 'signing' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                <button @click="activeTab = 'signing'" x-bind:class="activeTab === 'signing' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                     Signing Groups
                 </button>
-                <button @click="activeTab = 'user'" :class="activeTab === 'user' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                <button @click="activeTab = 'user'" x-bind:class="activeTab === 'user' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary'" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                     User Groups
                 </button>
             </nav>
@@ -67,7 +67,7 @@
             </div>
             <div x-show="loading"><x-ui.skeleton type="card" class="h-32" /></div>
             <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <template x-for="group in signingGroups" :key="group.id">
+                <template x-for="group in signingGroups" x-bind:key="group.id">
                     <x-ui.card>
                         <h3 class="text-lg font-semibold" x-text="group.name"></h3>
                         <p class="text-sm text-text-secondary mt-2"><span x-text="group.member_count || 0"></span> members</p>
@@ -87,7 +87,7 @@
             </div>
             <div x-show="loading"><x-ui.skeleton type="card" class="h-32" /></div>
             <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <template x-for="group in userGroups" :key="group.id">
+                <template x-for="group in userGroups" x-bind:key="group.id">
                     <x-ui.card>
                         <h3 class="text-lg font-semibold" x-text="group.name"></h3>
                         <p class="text-sm text-text-secondary mt-2"><span x-text="group.user_count || 0"></span> users</p>

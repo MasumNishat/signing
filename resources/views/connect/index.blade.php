@@ -53,7 +53,7 @@
         <div x-show="loading"><x-ui.skeleton type="card" class="h-32" /></div>
 
         <div x-show="!loading" class="space-y-4">
-            <template x-for="webhook in webhooks" :key="webhook.id">
+            <template x-for="webhook in webhooks" x-bind:key="webhook.id">
                 <x-ui.card>
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
@@ -63,7 +63,7 @@
                             </div>
                             <p class="mt-1 text-sm text-text-secondary font-mono" x-text="webhook.url"></p>
                             <div class="mt-2 flex flex-wrap gap-2">
-                                <template x-for="event in webhook.events" :key="event">
+                                <template x-for="event in webhook.events" x-bind:key="event">
                                     <span class="px-2 py-1 text-xs bg-bg-secondary border border-border-primary rounded-md text-primary" x-text="event"></span>
                                 </template>
                             </div>

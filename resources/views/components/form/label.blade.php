@@ -18,7 +18,7 @@ Usage Examples:
 <x-form.label for="email">Email Address</x-form.label>
 
 2. Required field:
-<x-form.label for="subject" :required="true">Subject</x-form.label>
+<x-form.label for="subject" x-bind:required="true">Subject</x-form.label>
 
 3. With custom styling:
 <x-form.label for="name" class="text-lg font-bold">Your Name</x-form.label>

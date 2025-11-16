@@ -1,4 +1,4 @@
-<x-layout.app :title="'Envelope: ' . ($envelope->email_subject ?? 'Details')">
+<x-layout.app x-bind:title="'Envelope: ' . ($envelope->email_subject ?? 'Details')">
     <div x-data="{
         loading: true,
         envelope: {},
@@ -112,7 +112,7 @@
                     <div class="flex items-center gap-3 mb-2">
                         <h1 class="text-2xl font-bold text-primary" x-text="envelope.email_subject"></h1>
                         <span class="inline-flex px-3 py-1 text-sm font-medium rounded-full"
-                              :class="getStatusColor(envelope.status)"
+                              x-bind:class="getStatusColor(envelope.status)"
                               x-text="envelope.status ? envelope.status.charAt(0).toUpperCase() + envelope.status.slice(1) : ''">
                         </span>
                     </div>
@@ -154,26 +154,26 @@
             </div>
 
             <!-- Tabs -->
-            <x-ui.card :padding="false">
+            <x-ui.card x-bind:padding="false">
                 <div class="border-b border-card-border">
                     <nav class="flex -mb-px">
                         <button @click="activeTab = 'details'"
-                                :class="activeTab === 'details' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
+                                x-bind:class="activeTab === 'details' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
                                 class="px-6 py-4 border-b-2 font-medium text-sm transition-colors">
                             Details
                         </button>
                         <button @click="activeTab = 'documents'"
-                                :class="activeTab === 'documents' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
+                                x-bind:class="activeTab === 'documents' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
                                 class="px-6 py-4 border-b-2 font-medium text-sm transition-colors">
                             Documents (<span x-text="documents.length"></span>)
                         </button>
                         <button @click="activeTab = 'recipients'"
-                                :class="activeTab === 'recipients' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
+                                x-bind:class="activeTab === 'recipients' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
                                 class="px-6 py-4 border-b-2 font-medium text-sm transition-colors">
                             Recipients (<span x-text="recipients.length"></span>)
                         </button>
                         <button @click="activeTab = 'history'"
-                                :class="activeTab === 'history' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
+                                x-bind:class="activeTab === 'history' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
                                 class="px-6 py-4 border-b-2 font-medium text-sm transition-colors">
                             History
                         </button>
@@ -191,7 +191,7 @@
                             <dt class="text-sm font-medium text-text-secondary">Status</dt>
                             <dd class="mt-1">
                                 <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
-                                      :class="getStatusColor(envelope.status)"
+                                      x-bind:class="getStatusColor(envelope.status)"
                                       x-text="envelope.status ? envelope.status.charAt(0).toUpperCase() + envelope.status.slice(1) : ''">
                                 </span>
                             </dd>
@@ -230,7 +230,7 @@
                 <!-- Documents Tab -->
                 <div x-show="activeTab === 'documents'" class="p-6">
                     <div class="space-y-4">
-                        <template x-for="doc in documents" :key="doc.id">
+                        <template x-for="doc in documents" x-bind:key="doc.id">
                             <div class="flex items-center justify-between p-4 border border-border-primary rounded-lg hover:bg-bg-hover">
                                 <div class="flex items-center space-x-4">
                                     <svg class="w-10 h-10 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -270,14 +270,14 @@
                 <!-- Recipients Tab -->
                 <div x-show="activeTab === 'recipients'" class="p-6">
                     <div class="space-y-4">
-                        <template x-for="recipient in recipients" :key="recipient.id">
+                        <template x-for="recipient in recipients" x-bind:key="recipient.id">
                             <div class="p-4 border border-border-primary rounded-lg">
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1">
                                         <div class="flex items-center gap-3 mb-2">
                                             <p class="font-medium text-primary" x-text="recipient.name"></p>
                                             <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
-                                                  :class="getRecipientStatusColor(recipient.status)"
+                                                  x-bind:class="getRecipientStatusColor(recipient.status)"
                                                   x-text="recipient.status ? recipient.status.charAt(0).toUpperCase() + recipient.status.slice(1) : ''">
                                             </span>
                                         </div>
@@ -307,7 +307,7 @@
                 <div x-show="activeTab === 'history'" class="p-6">
                     <div class="flow-root">
                         <ul class="-mb-8">
-                            <template x-for="(event, index) in auditEvents" :key="event.id">
+                            <template x-for="(event, index) in auditEvents" x-bind:key="event.id">
                                 <li>
                                     <div class="relative pb-8">
                                         <span x-show="index < auditEvents.length - 1" class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>

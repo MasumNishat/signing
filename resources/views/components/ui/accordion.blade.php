@@ -14,7 +14,7 @@
 
         <!-- Toggle Icon -->
         <svg class="w-5 h-5 text-text-secondary transition-transform duration-200"
-             :class="open ? 'rotate-180' : ''"
+             x-bind:class="open ? 'rotate-180' : ''"
              fill="none"
              viewBox="0 0 24 24"
              stroke="currentColor">
@@ -54,7 +54,7 @@ Usage Examples:
         </p>
     </x-ui.accordion>
 
-    <x-ui.accordion title="How do I create a template?" :open="true">
+    <x-ui.accordion title="How do I create a template?" x-bind:open="true">
         <p class="text-text-secondary">
             Go to Templates section, click "Create Template", and follow the wizard.
         </p>
@@ -95,7 +95,7 @@ Usage Examples:
 
 5. Settings panel:
 <div class="space-y-2">
-    <x-ui.accordion title="🔔 Notification Settings" :open="true">
+    <x-ui.accordion title="🔔 Notification Settings" x-bind:open="true">
         <div class="space-y-3">
             <label class="flex items-center justify-between">
                 <span class="text-sm">Email notifications</span>

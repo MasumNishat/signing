@@ -69,7 +69,7 @@
                         <x-ui.button variant="secondary" type="button" onclick="window.location.href='/workspaces'">
                             Cancel
                         </x-ui.button>
-                        <x-ui.button variant="primary" type="submit" :disabled="loading">
+                        <x-ui.button variant="primary" type="submit" x-bind:disabled="loading">
                             <span x-show="!loading">Create Workspace</span>
                             <span x-show="loading">Creating...</span>
                         </x-ui.button>

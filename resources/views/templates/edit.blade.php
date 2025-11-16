@@ -199,7 +199,7 @@
                 </div>
 
                 <div x-show="documents.length > 0" class="space-y-3">
-                    <template x-for="(doc, index) in documents" :key="doc.id">
+                    <template x-for="(doc, index) in documents" x-bind:key="doc.id">
                         <div class="flex items-center justify-between p-3 border border-border-primary rounded-lg">
                             <div class="flex items-center">
                                 <span class="text-2xl mr-3">📄</span>
@@ -239,7 +239,7 @@
                 </div>
 
                 <div x-show="recipients.length > 0" class="space-y-3">
-                    <template x-for="(recipient, index) in recipients" :key="recipient.id">
+                    <template x-for="(recipient, index) in recipients" x-bind:key="recipient.id">
                         <div class="p-4 border border-border-primary rounded-lg">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
@@ -297,7 +297,7 @@
                 <x-ui.button variant="secondary" onclick="window.location.href='/templates'">
                     Cancel
                 </x-ui.button>
-                <x-ui.button variant="primary" @click="updateTemplate()" :disabled="loading">
+                <x-ui.button variant="primary" @click="updateTemplate()" x-bind:disabled="loading">
                     <span x-show="!loading">Update Template</span>
                     <span x-show="loading">Updating...</span>
                 </x-ui.button>

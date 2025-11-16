@@ -1,4 +1,4 @@
-<x-layout.app :title="'Webhook: ' . ($webhook->name ?? 'Details')">
+<x-layout.app x-bind:title="'Webhook: ' . ($webhook->name ?? 'Details')">
     <div x-data="{
         loading: true,
         webhook: null,
@@ -125,7 +125,7 @@
                     <div class="md:col-span-2">
                         <dt class="text-sm font-medium text-text-secondary mb-2">Events (<span x-text="webhook?.events?.length || 0"></span>)</dt>
                         <dd class="flex flex-wrap gap-2">
-                            <template x-for="event in webhook?.events" :key="event">
+                            <template x-for="event in webhook?.events" x-bind:key="event">
                                 <span class="px-2 py-1 text-xs bg-bg-secondary border border-border-primary rounded-md text-primary" x-text="event"></span>
                             </template>
                         </dd>
@@ -153,7 +153,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-border-primary">
-                            <template x-for="log in logs" :key="log.id">
+                            <template x-for="log in logs" x-bind:key="log.id">
                                 <tr class="hover:bg-bg-secondary">
                                     <td class="px-4 py-3 text-sm text-primary" x-text="log.event_type"></td>
                                     <td class="px-4 py-3 text-sm">

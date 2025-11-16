@@ -1,4 +1,4 @@
-<x-layout.app :title="'PowerForm: ' . ($powerform->name ?? 'Details')">
+<x-layout.app x-bind:title="'PowerForm: ' . ($powerform->name ?? 'Details')">
     <div x-data="{
         loading: true,
         powerform: null,
@@ -226,7 +226,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-border-primary">
-                            <template x-for="submission in submissions.slice(0, 5)" :key="submission.id">
+                            <template x-for="submission in submissions.slice(0, 5)" x-bind:key="submission.id">
                                 <tr>
                                     <td class="px-4 py-3 text-sm text-primary" x-text="submission.submitted_by || 'Anonymous'"></td>
                                     <td class="px-4 py-3 text-sm text-primary" x-text="submission.submitted_email || 'N/A'"></td>
@@ -239,7 +239,7 @@
                                     <td class="px-4 py-3 text-sm text-primary" x-text="formatDate(submission.created_at)"></td>
                                     <td class="px-4 py-3 text-sm">
                                         <template x-if="submission.envelope_id">
-                                            <a :href="`/envelopes/${submission.envelope_id}`" class="text-primary-600 hover:underline">View</a>
+                                            <a x-bind:href="`/envelopes/${submission.envelope_id}`" class="text-primary-600 hover:underline">View</a>
                                         </template>
                                         <template x-if="!submission.envelope_id">
                                             <span class="text-text-secondary">-</span>

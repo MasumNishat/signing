@@ -57,20 +57,20 @@
 Usage Examples:
 
 1. Simple breadcrumb:
-<x-layout.breadcrumbs :items="[
+<x-layout.breadcrumbs x-bind:items="[
     ['label' => 'Envelopes', 'url' => '/envelopes'],
     ['label' => 'Create New', 'url' => '']
 ]" />
 
 2. With custom separator:
-<x-layout.breadcrumbs separator="slash" :items="[
+<x-layout.breadcrumbs separator="slash" x-bind:items="[
     ['label' => 'Templates', 'url' => '/templates'],
     ['label' => 'Marketing', 'url' => '/templates/marketing'],
     ['label' => 'Edit Template', 'url' => '']
 ]" />
 
 3. Deep navigation:
-<x-layout.breadcrumbs separator="arrow" :items="[
+<x-layout.breadcrumbs separator="arrow" x-bind:items="[
     ['label' => 'Settings', 'url' => '/settings'],
     ['label' => 'Account', 'url' => '/settings/account'],
     ['label' => 'Billing', 'url' => '/settings/account/billing'],
@@ -93,5 +93,5 @@ public function edit($id)
 }
 
 Then in view:
-<x-layout.breadcrumbs :items="$breadcrumbs" />
+<x-layout.breadcrumbs x-bind:items="$breadcrumbs" />
 --}}

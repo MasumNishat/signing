@@ -160,12 +160,12 @@
 
         <!-- Activity Timeline -->
         <div x-show="!loading">
-            <x-ui.card :padding="false">
+            <x-ui.card x-bind:padding="false">
                 @if(true)
                     <div class="px-6 py-4">
                         <div class="flow-root">
                             <ul role="list" class="-mb-8">
-                                <template x-for="(activity, index) in activities" :key="activity.id">
+                                <template x-for="(activity, index) in activities" x-bind:key="activity.id">
                                     <li>
                                         <div class="relative pb-8">
                                             <span x-show="index < activities.length - 1"
@@ -175,9 +175,9 @@
                                                 <div>
                                                     <div class="relative px-1">
                                                         <div class="h-10 w-10 rounded-full flex items-center justify-center ring-8 ring-bg-primary"
-                                                             :class="getActivityColor(activity.type)">
+                                                             x-bind:class="getActivityColor(activity.type)">
                                                             <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="getActivityIcon(activity.type)" />
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x-bind:d="getActivityIcon(activity.type)" />
                                                             </svg>
                                                         </div>
                                                     </div>
@@ -187,18 +187,18 @@
                                                         <span class="font-medium" x-text="activity.user"></span>
                                                         <span x-text="activity.type.replace('_', ' ')"></span>
                                                         <template x-if="activity.envelope_subject">
-                                                            <a :href="'/envelopes/' + activity.envelope_id" class="font-medium text-primary-600 hover:text-primary-500">
+                                                            <a x-bind:href="'/envelopes/' + activity.envelope_id" class="font-medium text-primary-600 hover:text-primary-500">
                                                                 <span x-text="activity.envelope_subject"></span>
                                                             </a>
                                                         </template>
                                                     </div>
                                                     <div class="mt-0.5 text-xs text-text-secondary">
-                                                        <time :datetime="activity.created_at" x-text="new Date(activity.created_at).toLocaleString()"></time>
+                                                        <time x-bind:datetime="activity.created_at" x-text="new Date(activity.created_at).toLocaleString()"></time>
                                                     </div>
                                                 </div>
                                                 <div class="flex-shrink-0">
                                                     <template x-if="activity.envelope_id">
-                                                        <a :href="'/envelopes/' + activity.envelope_id"
+                                                        <a x-bind:href="'/envelopes/' + activity.envelope_id"
                                                            class="text-sm text-primary-600 hover:text-primary-500 font-medium">
                                                             View
                                                         </a>
@@ -223,13 +223,13 @@
                             <x-ui.button variant="secondary"
                                          size="sm"
                                          @click="loadActivities(pagination.current_page - 1)"
-                                         :disabled="pagination.current_page === 1">
+                                         x-bind:disabled="pagination.current_page === 1">
                                 Previous
                             </x-ui.button>
                             <x-ui.button variant="secondary"
                                          size="sm"
                                          @click="loadActivities(pagination.current_page + 1)"
-                                         :disabled="pagination.current_page === pagination.last_page">
+                                         x-bind:disabled="pagination.current_page === pagination.last_page">
                                 Next
                             </x-ui.button>
                         </div>

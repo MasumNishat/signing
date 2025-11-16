@@ -168,11 +168,11 @@
                         <div>
                             <label class="block text-sm font-medium text-primary mb-2">Status</label>
                             <div class="space-y-2">
-                                <template x-for="status in ['draft', 'sent', 'delivered', 'completed', 'declined', 'voided']" :key="status">
+                                <template x-for="status in ['draft', 'sent', 'delivered', 'completed', 'declined', 'voided']" x-bind:key="status">
                                     <label class="flex items-center cursor-pointer">
                                         <input
                                             type="checkbox"
-                                            :checked="isStatusSelected(status)"
+                                            x-bind:checked="isStatusSelected(status)"
                                             @change="toggleStatus(status)"
                                             class="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                         >
@@ -254,7 +254,7 @@
 
                     <!-- Action Buttons -->
                     <div class="mt-6 space-y-2">
-                        <x-ui.button variant="primary" @click="search()" :disabled="loading" class="w-full">
+                        <x-ui.button variant="primary" @click="search()" x-bind:disabled="loading" class="w-full">
                             <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
@@ -279,7 +279,7 @@
                     </div>
 
                     <div x-show="savedSearches.length > 0" class="space-y-2">
-                        <template x-for="search in savedSearches" :key="search.id">
+                        <template x-for="search in savedSearches" x-bind:key="search.id">
                             <div class="p-3 border border-border-primary rounded-md hover:bg-bg-secondary">
                                 <div class="flex items-center justify-between">
                                     <button
@@ -334,13 +334,13 @@
 
                 <!-- Results List -->
                 <div x-show="!loading && results.length > 0" class="space-y-4">
-                    <template x-for="envelope in results" :key="envelope.id">
+                    <template x-for="envelope in results" x-bind:key="envelope.id">
                         <x-ui.card>
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-center space-x-3">
                                         <a
-                                            :href="`/envelopes/${envelope.id}`"
+                                            x-bind:href="`/envelopes/${envelope.id}`"
                                             class="text-lg font-semibold text-primary hover:text-primary-600"
                                             x-text="envelope.subject || 'Untitled Envelope'"
                                         ></a>

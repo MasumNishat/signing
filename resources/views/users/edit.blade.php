@@ -164,7 +164,7 @@
                 <x-ui.button variant="secondary" x-bind:onclick="`window.location.href='/users/${user?.id}'`">
                     Cancel
                 </x-ui.button>
-                <x-ui.button variant="primary" @click="updateUser()" :disabled="loading">
+                <x-ui.button variant="primary" @click="updateUser()" x-bind:disabled="loading">
                     <span x-show="!loading">Update User</span>
                     <span x-show="loading">Updating...</span>
                 </x-ui.button>

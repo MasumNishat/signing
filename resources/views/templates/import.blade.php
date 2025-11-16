@@ -63,17 +63,17 @@
         <!-- Step Indicator -->
         <div class="mb-8">
             <div class="flex items-center">
-                <div class="flex items-center" :class="step >= 1 ? 'text-primary-600' : 'text-gray-400'">
+                <div class="flex items-center" x-bind:class="step >= 1 ? 'text-primary-600' : 'text-gray-400'">
                     <div class="flex items-center justify-center w-8 h-8 rounded-full border-2"
-                         :class="step >= 1 ? 'border-primary-600 bg-primary-600 text-white' : 'border-gray-400'">
+                         x-bind:class="step >= 1 ? 'border-primary-600 bg-primary-600 text-white' : 'border-gray-400'">
                         1
                     </div>
                     <span class="ml-2 text-sm font-medium">Upload File</span>
                 </div>
-                <div class="flex-1 h-px mx-4" :class="step >= 2 ? 'bg-primary-600' : 'bg-gray-300'"></div>
-                <div class="flex items-center" :class="step >= 2 ? 'text-primary-600' : 'text-gray-400'">
+                <div class="flex-1 h-px mx-4" x-bind:class="step >= 2 ? 'bg-primary-600' : 'bg-gray-300'"></div>
+                <div class="flex items-center" x-bind:class="step >= 2 ? 'text-primary-600' : 'text-gray-400'">
                     <div class="flex items-center justify-center w-8 h-8 rounded-full border-2"
-                         :class="step >= 2 ? 'border-primary-600 bg-primary-600 text-white' : 'border-gray-400'">
+                         x-bind:class="step >= 2 ? 'border-primary-600 bg-primary-600 text-white' : 'border-gray-400'">
                         2
                     </div>
                     <span class="ml-2 text-sm font-medium">Complete</span>
@@ -139,7 +139,7 @@
                     <x-ui.button
                         variant="primary"
                         @click="uploadTemplate()"
-                        :disabled="!file || uploading"
+                        x-bind:disabled="!file || uploading"
                     >
                         <span x-show="!uploading">Import Template</span>
                         <span x-show="uploading">Importing...</span>

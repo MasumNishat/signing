@@ -1,4 +1,4 @@
-<x-layout.app :title="'Template: ' . ($template->name ?? 'Details')">
+<x-layout.app x-bind:title="'Template: ' . ($template->name ?? 'Details')">
     <div x-data="{
         loading: true,
         template: {},
@@ -125,7 +125,7 @@
             <x-ui.card>
                 <h2 class="text-lg font-semibold text-primary mb-4">Documents (<span x-text="documents.length"></span>)</h2>
                 <div class="space-y-4">
-                    <template x-for="doc in documents" :key="doc.id">
+                    <template x-for="doc in documents" x-bind:key="doc.id">
                         <div class="flex items-center justify-between p-4 border border-border-primary rounded-lg">
                             <div class="flex items-center space-x-4">
                                 <svg class="w-10 h-10 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -153,7 +153,7 @@
             <x-ui.card>
                 <h2 class="text-lg font-semibold text-primary mb-4">Recipient Roles (<span x-text="recipients.length"></span>)</h2>
                 <div class="space-y-4">
-                    <template x-for="recipient in recipients" :key="recipient.id">
+                    <template x-for="recipient in recipients" x-bind:key="recipient.id">
                         <div class="p-4 border border-border-primary rounded-lg">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">

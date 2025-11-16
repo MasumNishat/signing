@@ -184,7 +184,7 @@ Usage Examples:
 </div>
 
 7. Non-closeable modal (for critical actions):
-<x-ui.modal name="processing" :closeable="false" max-width="sm">
+<x-ui.modal name="processing" x-bind:closeable="false" max-width="sm">
     <div class="p-6 text-center">
         <svg class="animate-spin h-12 w-12 mx-auto mb-4 text-primary-600" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

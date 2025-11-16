@@ -105,7 +105,7 @@
             <x-ui.card class="mb-6">
                 <h3 class="text-lg font-semibold text-primary mb-4">Assign Recipients</h3>
                 <div class="space-y-4">
-                    <template x-for="(recipient, index) in recipients" :key="index">
+                    <template x-for="(recipient, index) in recipients" x-bind:key="index">
                         <div class="p-4 border border-border-primary rounded-lg">
                             <div class="flex items-center justify-between mb-3">
                                 <div class="flex items-center space-x-3">
@@ -174,7 +174,7 @@
                 <x-ui.button variant="secondary" onclick="window.location.href='/templates'">
                     Cancel
                 </x-ui.button>
-                <x-ui.button variant="primary" @click="createEnvelope()" :disabled="recipients.length === 0">
+                <x-ui.button variant="primary" @click="createEnvelope()" x-bind:disabled="recipients.length === 0">
                     Create Envelope from Template
                 </x-ui.button>
             </div>

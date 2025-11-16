@@ -71,7 +71,7 @@
             <div class="flex items-center space-x-2">
                 <a href="/connect" class="text-text-secondary hover:text-primary">Webhooks</a>
                 <span class="text-text-secondary">/</span>
-                <a :href="`/connect/${webhook?.id}`" class="text-text-secondary hover:text-primary" x-text="webhook?.name"></a>
+                <a x-bind:href="`/connect/${webhook?.id}`" class="text-text-secondary hover:text-primary" x-text="webhook?.name"></a>
                 <span class="text-text-secondary">/</span>
                 <span class="text-primary">Test</span>
             </div>
@@ -98,7 +98,7 @@
                         <div>
                             <label class="block text-sm font-medium text-primary mb-1">Event Type</label>
                             <x-ui.select x-model="testPayload.event_type">
-                                <template x-for="event in availableEvents" :key="event">
+                                <template x-for="event in availableEvents" x-bind:key="event">
                                     <option x-bind:value="event" x-text="event"></option>
                                 </template>
                             </x-ui.select>
@@ -120,7 +120,7 @@
 
                         <!-- Send Button -->
                         <div class="pt-4">
-                            <x-ui.button variant="primary" @click="sendTest()" :disabled="loading" class="w-full">
+                            <x-ui.button variant="primary" @click="sendTest()" x-bind:disabled="loading" class="w-full">
                                 <span x-show="!loading">Send Test Webhook</span>
                                 <span x-show="loading">Sending...</span>
                             </x-ui.button>
@@ -186,7 +186,7 @@
                             <dl class="space-y-2">
                                 <div class="flex justify-between">
                                     <dt class="text-sm text-text-secondary">Status Code</dt>
-                                    <dd class="text-sm font-mono" :class="testResult?.success ? 'text-green-600' : 'text-red-600'" x-text="testResult?.status_code"></dd>
+                                    <dd class="text-sm font-mono" x-bind:class="testResult?.success ? 'text-green-600' : 'text-red-600'" x-text="testResult?.status_code"></dd>
                                 </div>
                                 <div class="flex justify-between">
                                     <dt class="text-sm text-text-secondary">Response Time</dt>

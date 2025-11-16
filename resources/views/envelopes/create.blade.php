@@ -161,45 +161,45 @@
         <div class="mb-8">
             <nav aria-label="Progress">
                 <ol class="flex items-center">
-                    <li class="relative pr-8 sm:pr-20" :class="currentStep >= 1 ? 'flex-1' : 'flex-shrink-0'">
+                    <li class="relative pr-8 sm:pr-20" x-bind:class="currentStep >= 1 ? 'flex-1' : 'flex-shrink-0'">
                         <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                            <div class="h-0.5 w-full" :class="currentStep > 1 ? 'bg-primary-600' : 'bg-gray-200'"></div>
+                            <div class="h-0.5 w-full" x-bind:class="currentStep > 1 ? 'bg-primary-600' : 'bg-gray-200'"></div>
                         </div>
                         <div class="relative flex h-8 w-8 items-center justify-center rounded-full"
-                             :class="currentStep >= 1 ? 'bg-primary-600' : 'bg-white border-2 border-gray-300'">
-                            <span class="text-sm font-semibold" :class="currentStep >= 1 ? 'text-white' : 'text-gray-500'">1</span>
+                             x-bind:class="currentStep >= 1 ? 'bg-primary-600' : 'bg-white border-2 border-gray-300'">
+                            <span class="text-sm font-semibold" x-bind:class="currentStep >= 1 ? 'text-white' : 'text-gray-500'">1</span>
                         </div>
-                        <span class="mt-2 block text-xs font-medium" :class="currentStep >= 1 ? 'text-primary-600' : 'text-gray-500'">Documents</span>
+                        <span class="mt-2 block text-xs font-medium" x-bind:class="currentStep >= 1 ? 'text-primary-600' : 'text-gray-500'">Documents</span>
                     </li>
 
-                    <li class="relative pr-8 sm:pr-20" :class="currentStep >= 2 ? 'flex-1' : 'flex-shrink-0'">
+                    <li class="relative pr-8 sm:pr-20" x-bind:class="currentStep >= 2 ? 'flex-1' : 'flex-shrink-0'">
                         <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                            <div class="h-0.5 w-full" :class="currentStep > 2 ? 'bg-primary-600' : 'bg-gray-200'"></div>
+                            <div class="h-0.5 w-full" x-bind:class="currentStep > 2 ? 'bg-primary-600' : 'bg-gray-200'"></div>
                         </div>
                         <div class="relative flex h-8 w-8 items-center justify-center rounded-full"
-                             :class="currentStep >= 2 ? 'bg-primary-600' : 'bg-white border-2 border-gray-300'">
-                            <span class="text-sm font-semibold" :class="currentStep >= 2 ? 'text-white' : 'text-gray-500'">2</span>
+                             x-bind:class="currentStep >= 2 ? 'bg-primary-600' : 'bg-white border-2 border-gray-300'">
+                            <span class="text-sm font-semibold" x-bind:class="currentStep >= 2 ? 'text-white' : 'text-gray-500'">2</span>
                         </div>
-                        <span class="mt-2 block text-xs font-medium" :class="currentStep >= 2 ? 'text-primary-600' : 'text-gray-500'">Recipients</span>
+                        <span class="mt-2 block text-xs font-medium" x-bind:class="currentStep >= 2 ? 'text-primary-600' : 'text-gray-500'">Recipients</span>
                     </li>
 
-                    <li class="relative pr-8 sm:pr-20" :class="currentStep >= 3 ? 'flex-1' : 'flex-shrink-0'">
+                    <li class="relative pr-8 sm:pr-20" x-bind:class="currentStep >= 3 ? 'flex-1' : 'flex-shrink-0'">
                         <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                            <div class="h-0.5 w-full" :class="currentStep > 3 ? 'bg-primary-600' : 'bg-gray-200'"></div>
+                            <div class="h-0.5 w-full" x-bind:class="currentStep > 3 ? 'bg-primary-600' : 'bg-gray-200'"></div>
                         </div>
                         <div class="relative flex h-8 w-8 items-center justify-center rounded-full"
-                             :class="currentStep >= 3 ? 'bg-primary-600' : 'bg-white border-2 border-gray-300'">
-                            <span class="text-sm font-semibold" :class="currentStep >= 3 ? 'text-white' : 'text-gray-500'">3</span>
+                             x-bind:class="currentStep >= 3 ? 'bg-primary-600' : 'bg-white border-2 border-gray-300'">
+                            <span class="text-sm font-semibold" x-bind:class="currentStep >= 3 ? 'text-white' : 'text-gray-500'">3</span>
                         </div>
-                        <span class="mt-2 block text-xs font-medium" :class="currentStep >= 3 ? 'text-primary-600' : 'text-gray-500'">Details</span>
+                        <span class="mt-2 block text-xs font-medium" x-bind:class="currentStep >= 3 ? 'text-primary-600' : 'text-gray-500'">Details</span>
                     </li>
 
                     <li class="relative">
                         <div class="relative flex h-8 w-8 items-center justify-center rounded-full"
-                             :class="currentStep >= 4 ? 'bg-primary-600' : 'bg-white border-2 border-gray-300'">
-                            <span class="text-sm font-semibold" :class="currentStep >= 4 ? 'text-white' : 'text-gray-500'">4</span>
+                             x-bind:class="currentStep >= 4 ? 'bg-primary-600' : 'bg-white border-2 border-gray-300'">
+                            <span class="text-sm font-semibold" x-bind:class="currentStep >= 4 ? 'text-white' : 'text-gray-500'">4</span>
                         </div>
-                        <span class="mt-2 block text-xs font-medium" :class="currentStep >= 4 ? 'text-primary-600' : 'text-gray-500'">Review</span>
+                        <span class="mt-2 block text-xs font-medium" x-bind:class="currentStep >= 4 ? 'text-primary-600' : 'text-gray-500'">Review</span>
                     </li>
                 </ol>
             </nav>
@@ -226,7 +226,7 @@
 
             <!-- Documents List -->
             <div class="space-y-3" x-show="documents.length > 0">
-                <template x-for="doc in documents" :key="doc.id">
+                <template x-for="doc in documents" x-bind:key="doc.id">
                     <div class="flex items-center justify-between p-4 border border-border-primary rounded-lg">
                         <div class="flex items-center space-x-4 flex-1">
                             <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -241,12 +241,12 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button @click="moveDocumentUp(doc.id)" class="p-2 text-text-secondary hover:text-primary" :disabled="doc.order === 1">
+                            <button @click="moveDocumentUp(doc.id)" class="p-2 text-text-secondary hover:text-primary" x-bind:disabled="doc.order === 1">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                                 </svg>
                             </button>
-                            <button @click="moveDocumentDown(doc.id)" class="p-2 text-text-secondary hover:text-primary" :disabled="doc.order === documents.length">
+                            <button @click="moveDocumentDown(doc.id)" class="p-2 text-text-secondary hover:text-primary" x-bind:disabled="doc.order === documents.length">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -273,30 +273,30 @@
 
             <!-- Recipients List -->
             <div class="space-y-4 mb-6">
-                <template x-for="(recipient, index) in recipients" :key="recipient.id">
+                <template x-for="(recipient, index) in recipients" x-bind:key="recipient.id">
                     <div class="p-4 border border-border-primary rounded-lg">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <x-form.input
-                                :name="'recipient_name_' + index"
+                                x-bind:name="'recipient_name_' + index"
                                 label="Name"
                                 x-model="recipient.name"
                                 placeholder="John Doe"
-                                :required="true"
+                                x-bind:required="true"
                             />
                             <x-form.input
-                                :name="'recipient_email_' + index"
+                                x-bind:name="'recipient_email_' + index"
                                 label="Email"
                                 type="email"
                                 x-model="recipient.email"
                                 placeholder="john@example.com"
-                                :required="true"
+                                x-bind:required="true"
                             />
                             <div>
                                 <x-form.select
-                                    :name="'recipient_type_' + index"
+                                    x-bind:name="'recipient_type_' + index"
                                     label="Role"
                                     x-model="recipient.recipient_type"
-                                    :options="[
+                                    x-bind:options="[
                                         'signer' => 'Signer',
                                         'cc' => 'CC (Receives Copy)',
                                         'in_person_signer' => 'In-Person Signer'
@@ -334,7 +334,7 @@
                     label="Email Subject"
                     x-model="envelopeData.email_subject"
                     placeholder="Please sign this document"
-                    :required="true"
+                    x-bind:required="true"
                     x-bind:error="errors.email_subject?.[0]"
                 />
 
@@ -358,7 +358,7 @@
                 <div>
                     <h3 class="font-medium text-primary mb-2">Documents (<span x-text="documents.length"></span>)</h3>
                     <ul class="list-disc list-inside text-sm text-text-secondary space-y-1">
-                        <template x-for="doc in documents" :key="doc.id">
+                        <template x-for="doc in documents" x-bind:key="doc.id">
                             <li x-text="doc.name"></li>
                         </template>
                     </ul>
@@ -368,7 +368,7 @@
                 <div>
                     <h3 class="font-medium text-primary mb-2">Recipients (<span x-text="recipients.length"></span>)</h3>
                     <ul class="list-disc list-inside text-sm text-text-secondary space-y-1">
-                        <template x-for="recipient in recipients" :key="recipient.id">
+                        <template x-for="recipient in recipients" x-bind:key="recipient.id">
                             <li>
                                 <span x-text="recipient.name"></span> (<span x-text="recipient.email"></span>) -
                                 <span x-text="recipient.recipient_type.replace('_', ' ').charAt(0).toUpperCase() + recipient.recipient_type.slice(1).replace('_', ' ')"></span>
@@ -404,18 +404,18 @@
             </x-ui.button>
 
             <div class="flex gap-2 ml-auto">
-                <x-ui.button variant="secondary" @click="saveDraft()" x-show="currentStep === 4" :loading="loading">
+                <x-ui.button variant="secondary" @click="saveDraft()" x-show="currentStep === 4" x-bind:loading="loading">
                     Save as Draft
                 </x-ui.button>
 
-                <x-ui.button variant="primary" @click="nextStep()" x-show="currentStep < 4" :disabled="!canProceed(currentStep)">
+                <x-ui.button variant="primary" @click="nextStep()" x-show="currentStep < 4" x-bind:disabled="!canProceed(currentStep)">
                     Next
                     <svg class="w-5 h-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </x-ui.button>
 
-                <x-ui.button variant="primary" @click="sendEnvelope()" x-show="currentStep === 4" :loading="loading">
+                <x-ui.button variant="primary" @click="sendEnvelope()" x-show="currentStep === 4" x-bind:loading="loading">
                     <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>

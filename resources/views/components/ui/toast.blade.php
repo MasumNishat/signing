@@ -4,7 +4,7 @@
      aria-live="assertive"
      aria-atomic="true">
 
-    <template x-for="notification in $store.toast.notifications" :key="notification.id">
+    <template x-for="notification in $store.toast.notifications" x-bind:key="notification.id">
         <div x-show="notification.show"
              x-transition:enter="transition ease-out duration-300 transform"
              x-transition:enter-start="translate-x-full opacity-0"
@@ -78,7 +78,7 @@
             <template x-if="notification.showProgress">
                 <div class="h-1 bg-gray-200">
                     <div class="h-full bg-primary-600 transition-all duration-100"
-                         :style="`width: ${notification.progress || 0}%`"></div>
+                         x-bind:style="`width: ${notification.progress || 0}%`"></div>
                 </div>
             </template>
         </div>

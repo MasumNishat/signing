@@ -104,7 +104,7 @@
                         label="Template Name"
                         x-model="templateData.name"
                         placeholder="Sales Agreement Template"
-                        :required="true"
+                        x-bind:required="true"
                         x-bind:error="errors.name?.[0]"
                     />
 
@@ -154,7 +154,7 @@
 
                 <!-- Documents List -->
                 <div class="space-y-3" x-show="documents.length > 0">
-                    <template x-for="doc in documents" :key="doc.id">
+                    <template x-for="doc in documents" x-bind:key="doc.id">
                         <div class="flex items-center justify-between p-4 border border-border-primary rounded-lg">
                             <div class="flex items-center space-x-4">
                                 <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -189,21 +189,21 @@
 
                 <!-- Recipients List -->
                 <div class="space-y-4 mb-6">
-                    <template x-for="(recipient, index) in recipients" :key="recipient.id">
+                    <template x-for="(recipient, index) in recipients" x-bind:key="recipient.id">
                         <div class="p-4 border border-border-primary rounded-lg">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <x-form.input
-                                    :name="'role_name_' + index"
+                                    x-bind:name="'role_name_' + index"
                                     label="Role Name"
                                     x-model="recipient.role_name"
                                     placeholder="Buyer, Seller, Manager..."
-                                    :required="true"
+                                    x-bind:required="true"
                                 />
                                 <x-form.select
-                                    :name="'recipient_type_' + index"
+                                    x-bind:name="'recipient_type_' + index"
                                     label="Type"
                                     x-model="recipient.recipient_type"
-                                    :options="[
+                                    x-bind:options="[
                                         'signer' => 'Signer',
                                         'cc' => 'CC (Receives Copy)',
                                         'in_person_signer' => 'In-Person Signer'
@@ -240,7 +240,7 @@
                 <x-ui.button variant="secondary" onclick="window.location.href='/templates'">
                     Cancel
                 </x-ui.button>
-                <x-ui.button variant="primary" @click="saveTemplate()" :loading="loading">
+                <x-ui.button variant="primary" @click="saveTemplate()" x-bind:loading="loading">
                     <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>

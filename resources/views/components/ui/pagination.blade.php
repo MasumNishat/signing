@@ -98,13 +98,13 @@ public function index()
 }
 
 // View
-<x-ui.pagination :data="$envelopes" />
+<x-ui.pagination x-bind:data="$envelopes" />
 
 2. Simple pagination (prev/next only):
-<x-ui.pagination :data="$envelopes" :simple="true" />
+<x-ui.pagination x-bind:data="$envelopes" x-bind:simple="true" />
 
 3. Without results text:
-<x-ui.pagination :data="$envelopes" :show-text="false" />
+<x-ui.pagination x-bind:data="$envelopes" x-bind:show-text="false" />
 
 4. With Alpine.js AJAX pagination:
 <div x-data="{
@@ -122,7 +122,7 @@ public function index()
 
     <!-- Content -->
     <div class="space-y-4">
-        <template x-for="envelope in envelopes" :key="envelope.id">
+        <template x-for="envelope in envelopes" x-bind:key="envelope.id">
             <x-ui.card>
                 <p x-text="envelope.email_subject"></p>
             </x-ui.card>
@@ -145,16 +145,16 @@ public function index()
             <ul class="inline-flex -space-x-px">
                 <li>
                     <button @click="currentPage--; loadEnvelopes()"
-                            :disabled="currentPage === 1"
-                            :class="currentPage === 1 ? 'cursor-not-allowed opacity-50' : ''"
+                            x-bind:disabled="currentPage === 1"
+                            x-bind:class="currentPage === 1 ? 'cursor-not-allowed opacity-50' : ''"
                             class="px-3 py-2 rounded-l-lg border">
                         Previous
                     </button>
                 </li>
                 <li>
                     <button @click="currentPage++; loadEnvelopes()"
-                            :disabled="currentPage * perPage >= total"
-                            :class="currentPage * perPage >= total ? 'cursor-not-allowed opacity-50' : ''"
+                            x-bind:disabled="currentPage * perPage >= total"
+                            x-bind:class="currentPage * perPage >= total ? 'cursor-not-allowed opacity-50' : ''"
                             class="px-3 py-2 rounded-r-lg border">
                         Next
                     </button>
@@ -166,7 +166,7 @@ public function index()
 
 5. Centered pagination:
 <div class="flex justify-center">
-    <x-ui.pagination :data="$envelopes" :show-text="false" />
+    <x-ui.pagination x-bind:data="$envelopes" x-bind:show-text="false" />
 </div>
 
 6. With per-page selector:
@@ -182,7 +182,7 @@ public function index()
         <span class="text-sm text-text-secondary">entries</span>
     </div>
 
-    <x-ui.pagination :data="$envelopes" :show-text="false" />
+    <x-ui.pagination x-bind:data="$envelopes" x-bind:show-text="false" />
 </div>
 
 7. Mobile responsive:
@@ -191,6 +191,6 @@ public function index()
         Showing {{ $envelopes->firstItem() }} to {{ $envelopes->lastItem() }} of {{ $envelopes->total() }} results
     </div>
 
-    <x-ui.pagination :data="$envelopes" :show-text="false" />
+    <x-ui.pagination x-bind:data="$envelopes" x-bind:show-text="false" />
 </div>
 --}}

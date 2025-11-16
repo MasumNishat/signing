@@ -129,7 +129,7 @@
             <x-ui.button variant="secondary" onclick="window.location.href='/users'">
                 Cancel
             </x-ui.button>
-            <x-ui.button variant="primary" @click="createUser()" :disabled="loading">
+            <x-ui.button variant="primary" @click="createUser()" x-bind:disabled="loading">
                 <span x-show="!loading">Create User</span>
                 <span x-show="loading">Creating...</span>
             </x-ui.button>

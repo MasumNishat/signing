@@ -56,7 +56,7 @@
                 label="Email Address"
                 type="email"
                 x-model="formData.email"
-                :disabled="true"
+                x-bind:disabled="true"
             />
 
             <!-- New Password -->
@@ -68,14 +68,14 @@
                     placeholder="••••••••"
                     x-model="formData.password"
                     @input="checkPasswordStrength()"
-                    :required="true"
+                    x-bind:required="true"
                     x-bind:error="errors.password?.[0]"
                 />
 
                 <!-- Password Strength Indicator -->
                 <div class="mt-2">
                     <div class="flex items-center space-x-1">
-                        <div class="flex-1 h-2 rounded-full" :class="{
+                        <div class="flex-1 h-2 rounded-full" x-bind:class="{
                             'bg-red-500': passwordStrength === 1,
                             'bg-orange-500': passwordStrength === 2,
                             'bg-yellow-500': passwordStrength === 3,
@@ -102,7 +102,7 @@
                 type="password"
                 placeholder="••••••••"
                 x-model="formData.password_confirmation"
-                :required="true"
+                x-bind:required="true"
             />
 
             <!-- Submit Button -->
@@ -110,7 +110,7 @@
                 type="submit"
                 variant="primary"
                 class="w-full"
-                :loading="loading"
+                x-bind:loading="loading"
                 x-bind:disabled="loading">
                 Reset password
             </x-ui.button>

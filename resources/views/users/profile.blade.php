@@ -176,28 +176,28 @@
                 <nav class="flex space-x-8">
                     <button
                         @click="activeTab = 'profile'"
-                        :class="activeTab === 'profile' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
+                        x-bind:class="activeTab === 'profile' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                     >
                         Profile Information
                     </button>
                     <button
                         @click="activeTab = 'image'"
-                        :class="activeTab === 'image' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
+                        x-bind:class="activeTab === 'image' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                     >
                         Profile Image
                     </button>
                     <button
                         @click="activeTab = 'password'"
-                        :class="activeTab === 'password' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
+                        x-bind:class="activeTab === 'password' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                     >
                         Change Password
                     </button>
                     <button
                         @click="activeTab = 'account'"
-                        :class="activeTab === 'account' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
+                        x-bind:class="activeTab === 'account' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                     >
                         Account Details
@@ -268,7 +268,7 @@
 
                 <!-- Actions -->
                 <div class="flex items-center justify-end">
-                    <x-ui.button variant="primary" @click="updateProfile()" :disabled="loading">
+                    <x-ui.button variant="primary" @click="updateProfile()" x-bind:disabled="loading">
                         <span x-show="!loading">Save Changes</span>
                         <span x-show="loading">Saving...</span>
                     </x-ui.button>
@@ -315,7 +315,7 @@
                     <x-ui.button variant="danger" @click="deleteProfileImage()">
                         Delete Current Image
                     </x-ui.button>
-                    <x-ui.button variant="primary" @click="uploadProfileImage()" :disabled="!profileImage || uploadingImage">
+                    <x-ui.button variant="primary" @click="uploadProfileImage()" x-bind:disabled="!profileImage || uploadingImage">
                         <span x-show="!uploadingImage">Upload Image</span>
                         <span x-show="uploadingImage">Uploading...</span>
                     </x-ui.button>
@@ -361,7 +361,7 @@
 
                 <!-- Actions -->
                 <div class="flex items-center justify-end">
-                    <x-ui.button variant="primary" @click="changePassword()" :disabled="loading">
+                    <x-ui.button variant="primary" @click="changePassword()" x-bind:disabled="loading">
                         <span x-show="!loading">Change Password</span>
                         <span x-show="loading">Changing...</span>
                     </x-ui.button>
@@ -410,7 +410,7 @@
                 <x-ui.card>
                     <h3 class="text-lg font-semibold text-primary mb-4">My Permissions</h3>
                     <div x-show="user?.permissions && user.permissions.length > 0" class="flex flex-wrap gap-2">
-                        <template x-for="permission in user?.permissions" :key="permission">
+                        <template x-for="permission in user?.permissions" x-bind:key="permission">
                             <x-ui.badge variant="secondary" x-text="permission.replace('_', ' ').toUpperCase()"></x-ui.badge>
                         </template>
                     </div>

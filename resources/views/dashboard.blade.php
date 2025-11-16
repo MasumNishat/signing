@@ -164,7 +164,7 @@
             </x-ui.card>
 
             <!-- Recent Envelopes -->
-            <x-ui.card :padding="false">
+            <x-ui.card x-bind:padding="false">
                 <div class="px-6 py-4 border-b border-card-border flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-primary">Recent Envelopes</h3>
                     <a href="/envelopes" class="text-sm font-medium text-primary-600 hover:text-primary-500">View all</a>
@@ -195,14 +195,14 @@
                             </x-table.row>
                         </x-table.thead>
                         <x-table.tbody>
-                            <template x-for="envelope in recentEnvelopes" :key="envelope.id">
+                            <template x-for="envelope in recentEnvelopes" x-bind:key="envelope.id">
                                 <x-table.row class="hover:bg-bg-hover cursor-pointer" @click="window.location.href='/envelopes/' + envelope.id">
                                     <x-table.cell>
                                         <p class="font-medium text-primary" x-text="envelope.email_subject"></p>
                                     </x-table.cell>
                                     <x-table.cell>
                                         <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
-                                              :class="{
+                                              x-bind:class="{
                                                   'bg-primary-100 text-primary-800': envelope.status === 'sent',
                                                   'bg-green-100 text-green-800': envelope.status === 'completed',
                                                   'bg-red-100 text-red-800': envelope.status === 'voided',

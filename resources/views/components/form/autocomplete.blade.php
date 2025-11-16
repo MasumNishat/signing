@@ -32,7 +32,7 @@
     {{ $attributes }}>
 
     @if($label)
-        <x-form.label :for="$name" :required="$required">{{ $label }}</x-form.label>
+        <x-form.label x-bind:for="$name" x-bind:required="$required">{{ $label }}</x-form.label>
     @endif
 
     <div class="{{ $label ? 'mt-1' : '' }} relative">
@@ -51,7 +51,7 @@
         <div x-show="showSuggestions"
              x-transition
              class="absolute z-10 w-full mt-1 bg-dropdown-bg border border-dropdown-border rounded-lg shadow-lg max-h-60 overflow-auto">
-            <template x-for="suggestion in filteredSuggestions" :key="suggestion">
+            <template x-for="suggestion in filteredSuggestions" x-bind:key="suggestion">
                 <button type="button"
                         @click="select(suggestion)"
                         x-text="suggestion"
@@ -62,6 +62,6 @@
     </div>
 
     @if($error)
-        <x-form.validation-error :message="$error" :for="$name" />
+        <x-form.validation-error x-bind:message="$error" x-bind:for="$name" />
     @endif
 </div>
