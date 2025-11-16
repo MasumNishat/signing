@@ -35,7 +35,7 @@ class CheckAccountAccess
             ], 401);
         }
 
-        // Get account ID from route parameter
+        // Get account ID from route parameter (this is accounts.id, not account_id UUID)
         $accountId = $request->route('accountId');
 
         if (!$accountId) {
@@ -43,17 +43,25 @@ class CheckAccountAccess
             return $next($request);
         }
 
-        // Find the account
-        $account = \App\Models\Account::where('account_id', $accountId)->first();
+        // Find the account by primary key (id), not the UUID account_id column
+        $account = \App\Models\Account::find($accountId);
 
         if (!$account) {
             return response()->json([
                 'success' => false,
-                'message' => 'Account not found',
+                'error' => [
+                    'code' => 'ACCOUNT_NOT_FOUND',
+                    'message' => 'Account not found',
+                ],
+                'meta' => [
+                    'timestamp' => now()->toIso8601String(),
+                    'request_id' => $request->header('X-Request-ID') ?? \Str::uuid()->toString(),
+                    'version' => 'v2.1',
+                ],
             ], 404);
         }
 
-        // Check if user belongs to this account
+        // Check if user belongs to this account (both are integers)
         if ($user->account_id !== $account->id) {
             // Check if user has authorization to act on behalf of this account
             $hasAuthorization = \App\Models\UserAuthorization::where('agent_user_id', $user->id)
