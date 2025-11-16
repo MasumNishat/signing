@@ -31,7 +31,7 @@ class EnvelopeConsumerDisclosureController extends BaseController
         string $recipientId
     ): JsonResponse {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -144,7 +144,7 @@ class EnvelopeConsumerDisclosureController extends BaseController
                 'user_agent' => 'sometimes|string|max:500',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -196,7 +196,7 @@ class EnvelopeConsumerDisclosureController extends BaseController
         string $langCode = 'en'
     ): JsonResponse {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)

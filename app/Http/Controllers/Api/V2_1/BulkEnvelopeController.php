@@ -64,7 +64,7 @@ class BulkEnvelopeController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->bulkService->bulkStatusUpdate(
                 $account,
@@ -101,7 +101,7 @@ class BulkEnvelopeController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->bulkService->bulkVoid(
                 $account,
@@ -136,7 +136,7 @@ class BulkEnvelopeController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->bulkService->bulkResend(
                 $account,
@@ -174,7 +174,7 @@ class BulkEnvelopeController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->bulkService->bulkRecipientUpdate(
                 $account,
@@ -209,7 +209,7 @@ class BulkEnvelopeController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->bulkService->bulkRecipientResend(
                 $account,
@@ -244,7 +244,7 @@ class BulkEnvelopeController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->bulkService->bulkRecipientRemove(
                 $account,
@@ -283,7 +283,7 @@ class BulkEnvelopeController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->bulkService->bulkDocumentAdd(
                 $account,
@@ -320,7 +320,7 @@ class BulkEnvelopeController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->bulkService->bulkDocumentReplace(
                 $account,
@@ -355,7 +355,7 @@ class BulkEnvelopeController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->bulkService->bulkDocumentDelete(
                 $account,
@@ -392,7 +392,7 @@ class BulkEnvelopeController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->bulkService->bulkDocumentDownload(
                 $account,

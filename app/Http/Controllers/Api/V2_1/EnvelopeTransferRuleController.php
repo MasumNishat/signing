@@ -31,7 +31,7 @@ class EnvelopeTransferRuleController extends BaseController
     public function index(Request $request, string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $filters = [
                 'enabled' => $request->query('enabled'),
@@ -74,7 +74,7 @@ class EnvelopeTransferRuleController extends BaseController
                 'envelope_types.*' => 'string|max:50',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $rule = $this->transferRuleService->createTransferRule($account, $validated);
 
@@ -109,7 +109,7 @@ class EnvelopeTransferRuleController extends BaseController
                 'transfer_rules.*.envelope_types' => 'sometimes|array',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $rules = $this->transferRuleService->bulkUpdateTransferRules($account, $validated['transfer_rules']);
 
@@ -145,7 +145,7 @@ class EnvelopeTransferRuleController extends BaseController
                 'envelope_types.*' => 'string|max:50',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $rule = $this->transferRuleService->getTransferRule($account, $ruleId);
             $rule = $this->transferRuleService->updateTransferRule($rule, $validated);
@@ -167,7 +167,7 @@ class EnvelopeTransferRuleController extends BaseController
     public function destroy(string $accountId, string $ruleId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $rule = $this->transferRuleService->getTransferRule($account, $ruleId);
             $this->transferRuleService->deleteTransferRule($rule);

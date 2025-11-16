@@ -28,7 +28,7 @@ class DocumentVisibilityController extends BaseController
     public function index(string $accountId, string $envelopeId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -61,7 +61,7 @@ class DocumentVisibilityController extends BaseController
                 'document_visibility.*.rights' => 'sometimes|string|in:view,download,edit',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -118,7 +118,7 @@ class DocumentVisibilityController extends BaseController
         string $documentId
     ): JsonResponse {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -179,7 +179,7 @@ class DocumentVisibilityController extends BaseController
                 'rights' => 'sometimes|string|in:view,download,edit',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -260,7 +260,7 @@ class DocumentVisibilityController extends BaseController
     public function getTemplateVisibility(string $accountId, string $templateId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $template = Template::where('account_id', $account->id)
                 ->where('template_id', $templateId)
@@ -311,7 +311,7 @@ class DocumentVisibilityController extends BaseController
                 'document_visibility.*.rights' => 'sometimes|string|in:view,download,edit',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $template = Template::where('account_id', $account->id)
                 ->where('template_id', $templateId)

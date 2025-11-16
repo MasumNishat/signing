@@ -57,7 +57,7 @@ class TabController extends BaseController
         string $envelopeId,
         string $recipientId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -110,7 +110,7 @@ class TabController extends BaseController
         string $envelopeId,
         string $recipientId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -210,7 +210,7 @@ class TabController extends BaseController
         string $recipientId,
         string $tabId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -251,7 +251,7 @@ class TabController extends BaseController
         string $recipientId,
         string $tabId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -330,7 +330,7 @@ class TabController extends BaseController
         string $recipientId,
         string $tabId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)

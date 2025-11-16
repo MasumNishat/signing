@@ -32,7 +32,7 @@ class AdvancedFeaturesController extends BaseController
                 'suppress_emails' => 'sometimes|boolean',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             DB::beginTransaction();
 
@@ -92,7 +92,7 @@ class AdvancedFeaturesController extends BaseController
                 'steps.*.conditions' => 'sometimes|array',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $workflowId = 'wf-' . \Illuminate\Support\Str::uuid();
 
@@ -124,7 +124,7 @@ class AdvancedFeaturesController extends BaseController
                 'include_user_actions' => 'sometimes|boolean',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $auditEvents = DB::table('envelope_audit_events')
                 ->join('envelopes', 'envelope_audit_events.envelope_id', '=', 'envelopes.id')
@@ -170,7 +170,7 @@ class AdvancedFeaturesController extends BaseController
                 'clone_tabs' => 'sometimes|boolean',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $template = Template::where('account_id', $account->id)
                 ->where('template_id', $validated['template_id'])
@@ -207,7 +207,7 @@ class AdvancedFeaturesController extends BaseController
                 'timezone' => 'sometimes|string',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $validated['envelope_id'])
@@ -242,7 +242,7 @@ class AdvancedFeaturesController extends BaseController
                 'custom_message' => 'sometimes|string|max:500',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -275,7 +275,7 @@ class AdvancedFeaturesController extends BaseController
     public function getDashboard(Request $request, string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $stats = DB::table('envelopes')
                 ->where('account_id', $account->id)
@@ -315,7 +315,7 @@ class AdvancedFeaturesController extends BaseController
                 'event_type' => 'required|string',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             // In production, this would send a test webhook
             return $this->successResponse([
@@ -346,7 +346,7 @@ class AdvancedFeaturesController extends BaseController
                 'format' => 'sometimes|string|in:json,zip',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $exportId = 'export-' . \Illuminate\Support\Str::uuid();
 

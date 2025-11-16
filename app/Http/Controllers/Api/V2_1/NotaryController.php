@@ -26,7 +26,7 @@ class NotaryController extends BaseController
     public function getConfiguration(string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             // In production, this would retrieve from a notary_configurations table
             return $this->successResponse([
@@ -74,7 +74,7 @@ class NotaryController extends BaseController
                 'jurisdiction' => 'required|string',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $validated['envelope_id'])
@@ -136,7 +136,7 @@ class NotaryController extends BaseController
                 'start_position' => 'sometimes|integer|min:0',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $query = DB::table('notary_journal_entries')
                 ->where('account_id', $account->id);

@@ -41,7 +41,7 @@ class EnvelopeCorrectionController extends BaseController
                 'suppress_emails' => 'sometimes|boolean',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -161,7 +161,7 @@ class EnvelopeCorrectionController extends BaseController
                 'resend_envelope' => 'sometimes|boolean',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)

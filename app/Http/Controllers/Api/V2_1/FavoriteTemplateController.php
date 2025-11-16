@@ -29,7 +29,7 @@ class FavoriteTemplateController extends BaseController
     public function index(Request $request, string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $userId = $request->user()->id;
 
             $favorites = FavoriteTemplate::where('account_id', $account->id)
@@ -67,7 +67,7 @@ class FavoriteTemplateController extends BaseController
     public function store(Request $request, string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $userId = $request->user()->id;
 
             $validator = Validator::make($request->all(), [
@@ -125,7 +125,7 @@ class FavoriteTemplateController extends BaseController
     public function destroy(Request $request, string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $userId = $request->user()->id;
 
             $validator = Validator::make($request->all(), [

@@ -27,7 +27,7 @@ class DocumentPageController extends BaseController
     public function index(string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)->firstOrFail();
             $document = EnvelopeDocument::where('envelope_id', $envelope->id)
@@ -63,7 +63,7 @@ class DocumentPageController extends BaseController
     public function show(string $accountId, string $envelopeId, string $documentId, int $pageNumber): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
             $document = EnvelopeDocument::where('envelope_id', $envelope->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -89,7 +89,7 @@ class DocumentPageController extends BaseController
     public function destroy(string $accountId, string $envelopeId, string $documentId, int $pageNumber): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
 
             if (!$envelope->isDraft()) {
@@ -115,7 +115,7 @@ class DocumentPageController extends BaseController
     public function getPageImage(string $accountId, string $envelopeId, string $documentId, int $pageNumber): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
             $document = EnvelopeDocument::where('envelope_id', $envelope->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -140,7 +140,7 @@ class DocumentPageController extends BaseController
         $request->validate(['rotation' => 'required|integer|in:90,180,270']);
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
 
             if (!$envelope->isDraft()) {
@@ -166,7 +166,7 @@ class DocumentPageController extends BaseController
     public function getPageTabs(string $accountId, string $envelopeId, string $documentId, int $pageNumber): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
             $document = EnvelopeDocument::where('envelope_id', $envelope->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -200,7 +200,7 @@ class DocumentPageController extends BaseController
         $request->validate(['new_position' => 'required|integer|min:1']);
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
 
             if (!$envelope->isDraft()) {
@@ -229,7 +229,7 @@ class DocumentPageController extends BaseController
         ]);
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
 
             if (!$envelope->isDraft()) {

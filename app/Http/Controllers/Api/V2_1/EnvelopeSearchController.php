@@ -49,7 +49,7 @@ class EnvelopeSearchController extends BaseController
                 'order_by' => 'sometimes|string|in:created,last_modified,sent,signed,completed,subject,status,sender',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $query = Envelope::where('account_id', $account->id);
 
@@ -198,7 +198,7 @@ class EnvelopeSearchController extends BaseController
     public function searchFolders(string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             // Get all folders with envelope counts
             $folders = DB::table('folders')
@@ -237,7 +237,7 @@ class EnvelopeSearchController extends BaseController
     public function searchStatus(string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             // Get distinct statuses with counts
             $statuses = DB::table('envelopes')

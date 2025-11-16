@@ -20,7 +20,7 @@ class ApiKeyController extends BaseController
      */
     public function index(Request $request, string $accountId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $query = ApiKey::where('account_id', $account->id)
             ->with('user:id,user_name,email');
@@ -45,7 +45,7 @@ class ApiKeyController extends BaseController
      */
     public function show(Request $request, string $accountId, int $keyId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $apiKey = ApiKey::where('account_id', $account->id)
             ->where('id', $keyId)
@@ -69,7 +69,7 @@ class ApiKeyController extends BaseController
      */
     public function store(Request $request, string $accountId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         // Authorization check
         if (Gate::denies('create', ApiKey::class)) {
@@ -136,7 +136,7 @@ class ApiKeyController extends BaseController
      */
     public function update(Request $request, string $accountId, int $keyId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $apiKey = ApiKey::where('account_id', $account->id)
             ->where('id', $keyId)
@@ -178,7 +178,7 @@ class ApiKeyController extends BaseController
      */
     public function revoke(Request $request, string $accountId, int $keyId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $apiKey = ApiKey::where('account_id', $account->id)
             ->where('id', $keyId)
@@ -204,7 +204,7 @@ class ApiKeyController extends BaseController
      */
     public function destroy(Request $request, string $accountId, int $keyId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $apiKey = ApiKey::where('account_id', $account->id)
             ->where('id', $keyId)
@@ -230,7 +230,7 @@ class ApiKeyController extends BaseController
      */
     public function rotate(Request $request, string $accountId, int $keyId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $oldApiKey = ApiKey::where('account_id', $account->id)
             ->where('id', $keyId)

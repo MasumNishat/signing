@@ -28,7 +28,7 @@ class HtmlDefinitionController extends BaseController
     public function getEnvelopeDocumentHtmlDef(string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
             $document = EnvelopeDocument::where('envelope_id', $envelope->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -57,7 +57,7 @@ class HtmlDefinitionController extends BaseController
     public function getTemplateDocumentHtmlDef(string $accountId, string $templateId, string $documentId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $template = Template::where('account_id', $account->id)->where('template_id', $templateId)->firstOrFail();
             $document = EnvelopeDocument::where('template_id', $template->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -85,7 +85,7 @@ class HtmlDefinitionController extends BaseController
     public function getEnvelopeGlobalHtmlDef(string $accountId, string $envelopeId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->with('documents')->firstOrFail();
 
             $definitions = [];
@@ -113,7 +113,7 @@ class HtmlDefinitionController extends BaseController
     public function getTemplateGlobalHtmlDef(string $accountId, string $templateId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $template = Template::where('account_id', $account->id)->where('template_id', $templateId)->firstOrFail();
             $documents = EnvelopeDocument::where('template_id', $template->id)->get();
 
@@ -148,7 +148,7 @@ class HtmlDefinitionController extends BaseController
         ]);
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
             $document = EnvelopeDocument::where('envelope_id', $envelope->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -181,7 +181,7 @@ class HtmlDefinitionController extends BaseController
         ]);
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $template = Template::where('account_id', $account->id)->where('template_id', $templateId)->firstOrFail();
             $document = EnvelopeDocument::where('template_id', $template->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -214,7 +214,7 @@ class HtmlDefinitionController extends BaseController
         ]);
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
             $document = EnvelopeDocument::where('envelope_id', $envelope->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -241,7 +241,7 @@ class HtmlDefinitionController extends BaseController
         ]);
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $template = Template::where('account_id', $account->id)->where('template_id', $templateId)->firstOrFail();
             $document = EnvelopeDocument::where('template_id', $template->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -260,7 +260,7 @@ class HtmlDefinitionController extends BaseController
     public function deleteEnvelopeDocumentHtmlDef(string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
             $document = EnvelopeDocument::where('envelope_id', $envelope->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -277,7 +277,7 @@ class HtmlDefinitionController extends BaseController
     public function deleteTemplateDocumentHtmlDef(string $accountId, string $templateId, string $documentId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $template = Template::where('account_id', $account->id)->where('template_id', $templateId)->firstOrFail();
             $document = EnvelopeDocument::where('template_id', $template->id)->where('document_id', $documentId)->firstOrFail();
 

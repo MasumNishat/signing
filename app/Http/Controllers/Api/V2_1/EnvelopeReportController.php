@@ -35,7 +35,7 @@ class EnvelopeReportController extends BaseController
                 'include_fields' => 'sometimes|array',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $query = Envelope::where('account_id', $account->id)
                 ->with(['recipients', 'documents']);
@@ -133,7 +133,7 @@ class EnvelopeReportController extends BaseController
                 'group_by' => 'sometimes|string|in:day,week,month',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $groupBy = $validated['group_by'] ?? 'day';
 
@@ -192,7 +192,7 @@ class EnvelopeReportController extends BaseController
                 'top_n' => 'sometimes|integer|min:1|max:100',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $query = DB::table('envelope_recipients')
                 ->join('envelopes', 'envelope_recipients.envelope_id', '=', 'envelopes.id')
@@ -268,7 +268,7 @@ class EnvelopeReportController extends BaseController
                 'to_date' => 'sometimes|date',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $query = DB::table('envelopes')
                 ->where('account_id', $account->id);

@@ -19,7 +19,7 @@ class PermissionProfileController extends BaseController
      */
     public function index(string $accountId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $profiles = PermissionProfile::where('account_id', $account->id)
             ->withCount('users')
@@ -37,7 +37,7 @@ class PermissionProfileController extends BaseController
      */
     public function show(string $accountId, string $profileId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $profile = PermissionProfile::where('account_id', $account->id)
             ->where('permission_profile_id', $profileId)
@@ -57,7 +57,7 @@ class PermissionProfileController extends BaseController
      */
     public function store(Request $request, string $accountId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'permission_profile_name' => 'required|string|max:255',
@@ -102,7 +102,7 @@ class PermissionProfileController extends BaseController
      */
     public function update(Request $request, string $accountId, string $profileId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $profile = PermissionProfile::where('account_id', $account->id)
             ->where('permission_profile_id', $profileId)
@@ -136,7 +136,7 @@ class PermissionProfileController extends BaseController
      */
     public function destroy(string $accountId, string $profileId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $profile = PermissionProfile::where('account_id', $account->id)
             ->where('permission_profile_id', $profileId)

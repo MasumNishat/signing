@@ -32,7 +32,7 @@ class MobileController extends BaseController
                 'start_position' => 'sometimes|integer|min:0',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $query = Envelope::where('account_id', $account->id);
 
@@ -95,7 +95,7 @@ class MobileController extends BaseController
     public function getEnvelopeView(string $accountId, string $envelopeId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -158,7 +158,7 @@ class MobileController extends BaseController
                 'device_info.browser' => 'sometimes|string',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -197,7 +197,7 @@ class MobileController extends BaseController
     public function getSettings(string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             return $this->successResponse([
                 'mobile_enabled' => true,
