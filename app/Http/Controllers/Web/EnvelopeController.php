@@ -20,7 +20,8 @@ class EnvelopeController extends Controller
      */
     public function create()
     {
-        return view('envelopes.create');
+        $accountId = auth()->user()->account_id ?? 1; // Fallback to 1 for dev
+        return view('envelopes.create', compact('accountId'));
     }
 
     /**
