@@ -15,9 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // Register middleware aliases
         $middleware->alias([
             'api.key' => \App\Http\Middleware\ApiKeyAuthentication::class,
-            'scope' => \App\Http\Middleware\CheckApiScope::class,
-            'account.access' => \App\Http\Middleware\CheckAccountAccess::class,
-            'permission' => \App\Http\Middleware\CheckPermission::class,
+            'check.scope' => \App\Http\Middleware\CheckApiScope::class,
+            'check.account.access' => \App\Http\Middleware\CheckAccountAccess::class,
+            'check.permission' => \App\Http\Middleware\CheckPermission::class,
             'rate.limit' => \App\Http\Middleware\RateLimitMiddleware::class,
         ]);
 
