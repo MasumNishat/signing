@@ -66,7 +66,7 @@ Usage Examples:
 <x-form.select
     name="status"
     label="Status"
-    x-bind:options="['sent' => 'Sent', 'completed' => 'Completed', 'voided' => 'Voided']"
+    x-bind:options="{'sent': 'Sent', 'completed': 'Completed', 'voided': 'Voided'}"
 />
 
 2. With placeholder:
@@ -81,7 +81,7 @@ Usage Examples:
 <x-form.select
     name="role"
     label="Role"
-    x-bind:options="['admin' => 'Administrator', 'user' => 'User']"
+    x-bind:options="{'admin': 'Administrator', 'user': 'User'}"
     error="{{ $errors->first('role')"
 />
 
@@ -90,7 +90,7 @@ Usage Examples:
     name="type"
     label="Document Type"
     x-bind:required="true"
-    x-bind:options="['contract' => 'Contract', 'nda' => 'NDA', 'agreement' => 'Agreement']"
+    x-bind:options="{'contract': 'Contract', 'nda': 'NDA', 'agreement': 'Agreement'}"
 />
 
 5. With custom options (using slot):
@@ -113,7 +113,7 @@ Usage Examples:
         label="Filter by Status"
         x-model="selectedStatus"
         @change="filterEnvelopes()"
-        x-bind:options="['all' => 'All', 'sent' => 'Sent', 'completed' => 'Completed']"
+        x-bind:options="{'all': 'All', 'sent': 'Sent', 'completed': 'Completed'}"
     />
 </div>
 --}}
