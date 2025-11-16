@@ -8,7 +8,7 @@
 
 <div {{ $attributes->only('class') }}>
     @if($label)
-        <x-form.label for="{{ $name }}" {{ $required ? "required" : "" }}>{{ $label }}</x-form.label>
+        <x-form.label for="{{ $name }}" @if($required) required @endif>{{ $label }}</x-form.label>
     @endif
 
     <div class="{{ $label ? 'mt-1' : '' }} flex items-center space-x-3">
@@ -17,7 +17,7 @@
             name="{{ $name }}"
             id="{{ $name }}"
             value="{{ old($name, $value) }}"
-            {{ $required ? 'required' : '' }}
+            @if($required) required @endif
             class="w-12 h-10 rounded border border-input-border cursor-pointer"
         />
         <input

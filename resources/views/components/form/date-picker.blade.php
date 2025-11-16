@@ -15,7 +15,7 @@
     :value="$value"
     :min="$min"
     :max="$max"
-    {{ $required ? "required" : "" }}
-    error="{{ $error }}"
+    :required="$required"
+    :error="$error"
     {{ $attributes }}
 />

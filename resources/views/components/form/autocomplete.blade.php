@@ -32,7 +32,7 @@
     {{ $attributes }}>
 
     @if($label)
-        <x-form.label for="{{ $name }}" {{ $required ? "required" : "" }}>{{ $label }}</x-form.label>
+        <x-form.label for="{{ $name }}" @if($required) required @endif>{{ $label }}</x-form.label>
     @endif
 
     <div class="{{ $label ? 'mt-1' : '' }} relative">
@@ -44,7 +44,7 @@
             @input="filter()"
             @focus="filter()"
             placeholder="{{ $placeholder }}"
-            {{ $required ? 'required' : '' }}
+            @if($required) required @endif
             class="block w-full rounded-lg border border-input-border bg-input-bg text-input-text px-3 py-2 focus:ring-2 focus:ring-primary-500"
         />
 

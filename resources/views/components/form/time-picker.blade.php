@@ -11,7 +11,7 @@
     :name="$name"
     :label="$label"
     :value="$value"
-    {{ $required ? "required" : "" }}
-    error="{{ $error }}"
+    :required="$required"
+    :error="$error"
     {{ $attributes }}
 />
