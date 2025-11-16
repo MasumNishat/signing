@@ -13,6 +13,11 @@ use App\Http\Controllers\Web\SettingsController;
 use App\Http\Controllers\Web\BillingController;
 use App\Http\Controllers\Web\BulkSendController;
 use App\Http\Controllers\Web\PowerFormController;
+use App\Http\Controllers\Web\GroupController;
+use App\Http\Controllers\Web\FolderController;
+use App\Http\Controllers\Web\WorkspaceController;
+use App\Http\Controllers\Web\ConnectController;
+use App\Http\Controllers\Web\WorkflowController;
 
 /*
 |--------------------------------------------------------------------------
@@ -124,5 +129,38 @@ Route::middleware('auth')->group(function () {
         Route::get('/create', [PowerFormController::class, 'create'])->name('create');
         Route::get('/{id}', [PowerFormController::class, 'show'])->name('show');
         Route::get('/{id}/submissions', [PowerFormController::class, 'submissions'])->name('submissions');
+    });
+
+    // Groups Routes (Phase F7)
+    Route::prefix('groups')->name('groups.')->group(function () {
+        Route::get('/', [GroupController::class, 'index'])->name('index');
+        Route::get('/signing', [GroupController::class, 'signingGroups'])->name('signing');
+    });
+
+    // Folders Routes (Phase F7)
+    Route::prefix('folders')->name('folders.')->group(function () {
+        Route::get('/', [FolderController::class, 'index'])->name('index');
+        Route::get('/create', [FolderController::class, 'create'])->name('create');
+    });
+
+    // Workspaces Routes (Phase F7)
+    Route::prefix('workspaces')->name('workspaces.')->group(function () {
+        Route::get('/', [WorkspaceController::class, 'index'])->name('index');
+        Route::get('/create', [WorkspaceController::class, 'create'])->name('create');
+        Route::get('/{id}', [WorkspaceController::class, 'show'])->name('show');
+    });
+
+    // Connect/Webhooks Routes (Phase F7)
+    Route::prefix('connect')->name('connect.')->group(function () {
+        Route::get('/', [ConnectController::class, 'index'])->name('index');
+        Route::get('/create', [ConnectController::class, 'create'])->name('create');
+        Route::get('/{id}', [ConnectController::class, 'show'])->name('show');
+        Route::get('/{id}/logs', [ConnectController::class, 'logs'])->name('logs');
+        Route::get('/{id}/test', [ConnectController::class, 'test'])->name('test');
+    });
+
+    // Workflow Routes (Phase F7)
+    Route::prefix('workflow')->name('workflow.')->group(function () {
+        Route::get('/builder', [WorkflowController::class, 'builder'])->name('builder');
     });
 });
