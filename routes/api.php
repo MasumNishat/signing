@@ -130,6 +130,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Bulk Send Routes
         require __DIR__.'/api/v2.1/bulk.php';
 
+        // Bulk Envelope Operations Routes (Phase 2.3)
+        require __DIR__.'/api/v2.1/bulk_envelopes.php';
+
         // Folder Routes
         require __DIR__.'/api/v2.1/folders.php';
 

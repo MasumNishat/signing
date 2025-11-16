@@ -740,6 +740,112 @@ class RecipientController extends BaseController
     }
 
     /**
+     * Get recipient tabs
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/tabs
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function getTabs(
+        string $accountId,
+        string $envelopeId,
+        string $recipientId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $tabs = $recipient->tabs()->get();
+
+            return $this->success([
+                'recipient_id' => $recipient->recipient_id,
+                'total_tabs' => $tabs->count(),
+                'tabs' => $tabs->map(function ($tab) {
+                    return [
+                        'tab_id' => $tab->tab_id,
+                        'tab_type' => $tab->tab_type,
+                        'tab_label' => $tab->tab_label,
+                        'document_id' => $tab->document_id,
+                        'page_number' => $tab->page_number,
+                        'x_position' => $tab->x_position,
+                        'y_position' => $tab->y_position,
+                        'width' => $tab->width,
+                        'height' => $tab->height,
+                        'required' => $tab->required,
+                        'locked' => $tab->locked,
+                        'value' => $tab->value,
+                        'status' => $tab->status,
+                    ];
+                }),
+            ], 'Recipient tabs retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 404);
+        }
+    }
+
+    /**
+     * Add recipient tabs
+     *
+     * POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function addTabs(
+        Request $request,
+        string $accountId,
+        string $envelopeId,
+        string $recipientId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'tabs' => 'required|array|min:1',
+            'tabs.*.tab_type' => 'required|string',
+            'tabs.*.document_id' => 'required|string',
+            'tabs.*.page_number' => 'required|integer|min:1',
+            'tabs.*.x_position' => 'required|numeric',
+            'tabs.*.y_position' => 'required|numeric',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            $recipient = $this->recipientService->getRecipient($envelope, $recipientId);
+
+            $addedTabs = $this->recipientService->addRecipientTabs(
+                $recipient,
+                $request->input('tabs')
+            );
+
+            return $this->created([
+                'recipient_id' => $recipient->recipient_id,
+                'added_count' => count($addedTabs),
+                'tabs' => $addedTabs,
+            ], 'Recipient tabs added successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
      * Update recipient tabs
      *
      * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/recipients/{recipientId}/tabs
