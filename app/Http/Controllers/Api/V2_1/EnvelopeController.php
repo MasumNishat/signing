@@ -45,7 +45,7 @@ class EnvelopeController extends BaseController
      */
     public function index(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         // Validate query parameters
         $validator = Validator::make($request->all(), [
@@ -81,7 +81,7 @@ class EnvelopeController extends BaseController
      */
     public function store(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         // Validate request
         $validator = Validator::make($request->all(), [
@@ -164,7 +164,7 @@ class EnvelopeController extends BaseController
      */
     public function show(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = $this->envelopeService->getEnvelope($account, $envelopeId);
 
@@ -185,7 +185,7 @@ class EnvelopeController extends BaseController
      */
     public function update(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -224,7 +224,7 @@ class EnvelopeController extends BaseController
      */
     public function destroy(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -248,7 +248,7 @@ class EnvelopeController extends BaseController
      */
     public function send(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -273,7 +273,7 @@ class EnvelopeController extends BaseController
      */
     public function void(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -308,7 +308,7 @@ class EnvelopeController extends BaseController
      */
     public function statistics(string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $statistics = $this->envelopeService->getEnvelopeStatistics($account);
 
@@ -324,7 +324,7 @@ class EnvelopeController extends BaseController
      */
     public function getNotification(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -345,7 +345,7 @@ class EnvelopeController extends BaseController
      */
     public function updateNotification(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -389,7 +389,7 @@ class EnvelopeController extends BaseController
      */
     public function getEmailSettings(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -410,7 +410,7 @@ class EnvelopeController extends BaseController
      */
     public function updateEmailSettings(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -469,7 +469,7 @@ class EnvelopeController extends BaseController
      */
     public function deleteEmailSettings(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -498,7 +498,7 @@ class EnvelopeController extends BaseController
      */
     public function getCustomFields(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -519,7 +519,7 @@ class EnvelopeController extends BaseController
      */
     public function updateCustomFields(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -580,7 +580,7 @@ class EnvelopeController extends BaseController
      */
     public function deleteCustomFields(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -604,7 +604,7 @@ class EnvelopeController extends BaseController
      */
     public function getLock(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -629,7 +629,7 @@ class EnvelopeController extends BaseController
      */
     public function createLock(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -670,7 +670,7 @@ class EnvelopeController extends BaseController
      */
     public function updateLock(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -711,7 +711,7 @@ class EnvelopeController extends BaseController
      */
     public function deleteLock(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -737,7 +737,7 @@ class EnvelopeController extends BaseController
      */
     public function getAuditEvents(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -768,7 +768,7 @@ class EnvelopeController extends BaseController
      */
     public function getWorkflow(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -793,7 +793,7 @@ class EnvelopeController extends BaseController
      */
     public function updateWorkflow(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -838,7 +838,7 @@ class EnvelopeController extends BaseController
      */
     public function getCorrectView(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -863,7 +863,7 @@ class EnvelopeController extends BaseController
      */
     public function getSenderView(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -888,7 +888,7 @@ class EnvelopeController extends BaseController
      */
     public function getRecipientView(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -926,7 +926,7 @@ class EnvelopeController extends BaseController
      */
     public function getHtmlDefinitions(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -956,7 +956,7 @@ class EnvelopeController extends BaseController
         string $accountId,
         string $envelopeId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1079,7 +1079,7 @@ class EnvelopeController extends BaseController
      */
     public function getDocGenFormFields(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1111,7 +1111,7 @@ class EnvelopeController extends BaseController
      */
     public function updateDocGenFormFields(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)

@@ -61,7 +61,7 @@ class TemplateTabController extends BaseController
         string $templateId,
         string $documentId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -142,7 +142,7 @@ class TemplateTabController extends BaseController
             return $this->validationError($validator->errors());
         }
 
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -227,7 +227,7 @@ class TemplateTabController extends BaseController
             return $this->validationError($validator->errors());
         }
 
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -301,7 +301,7 @@ class TemplateTabController extends BaseController
             return $this->validationError($validator->errors());
         }
 
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -340,7 +340,7 @@ class TemplateTabController extends BaseController
         string $templateId,
         string $recipientId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -422,7 +422,7 @@ class TemplateTabController extends BaseController
             return $this->validationError($validator->errors());
         }
 
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -498,7 +498,7 @@ class TemplateTabController extends BaseController
             return $this->validationError($validator->errors());
         }
 
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -564,7 +564,7 @@ class TemplateTabController extends BaseController
             return $this->validationError($validator->errors());
         }
 
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)

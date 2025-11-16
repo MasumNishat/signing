@@ -497,7 +497,7 @@ class BulkSendController extends Controller
      */
     protected function getAccountById(string $accountId): \App\Models\Account
     {
-        $account = \App\Models\Account::where('account_id', $accountId)->first();
+        $account = \App\Models\Account::find($accountId);
 
         if (!$account) {
             throw new ResourceNotFoundException('Account not found');

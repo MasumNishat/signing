@@ -35,7 +35,7 @@ class DocumentGenerationController extends BaseController
                 'generate_preview' => 'sometimes|boolean',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $template = Template::where('account_id', $account->id)
                 ->where('template_id', $templateId)
@@ -94,7 +94,7 @@ class DocumentGenerationController extends BaseController
                 'format' => 'sometimes|string|in:pdf,html',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = \App\Models\Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -143,7 +143,7 @@ class DocumentGenerationController extends BaseController
     public function getPreview(string $accountId, string $documentId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             // In production, this would:
             // 1. Retrieve generated document

@@ -35,7 +35,7 @@ class SharedAccessController extends BaseController
     public function index(Request $request, string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $currentUser = $request->user();
 
             $validated = $request->validate([
@@ -167,7 +167,7 @@ class SharedAccessController extends BaseController
     public function update(Request $request, string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $currentUser = $request->user();
 
             $validated = $request->validate([

@@ -40,7 +40,7 @@ class SettingsController extends BaseController
     {
         try {
             // Find account by account_id (UUID string)
-            $account = \App\Models\Account::where('account_id', $accountId)->firstOrFail();
+            $account = \App\Models\Account::findOrFail($accountId);
 
             $settings = $this->settingsService->getAccountSettings($account->id);
 
@@ -63,7 +63,7 @@ class SettingsController extends BaseController
     {
         try {
             // Find account by account_id (UUID string)
-            $account = \App\Models\Account::where('account_id', $accountId)->firstOrFail();
+            $account = \App\Models\Account::findOrFail($accountId);
 
             $validator = Validator::make($request->all(), [
                 'allow_signing_extensions' => 'sometimes|boolean',

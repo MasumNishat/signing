@@ -32,7 +32,7 @@ class CaptiveRecipientController extends BaseController
                 'email' => 'sometimes|string|max:255',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $query = CaptiveRecipient::where('account_id', $account->id);
 
@@ -86,7 +86,7 @@ class CaptiveRecipientController extends BaseController
                 'captive_recipients.*.user_name' => 'sometimes|string|max:255',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             DB::beginTransaction();
 
@@ -149,7 +149,7 @@ class CaptiveRecipientController extends BaseController
     public function show(string $accountId, string $recipientId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $captiveRecipient = CaptiveRecipient::where('account_id', $account->id)
                 ->where('id', $recipientId)
@@ -182,7 +182,7 @@ class CaptiveRecipientController extends BaseController
                 'user_name' => 'sometimes|string|max:255',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $captiveRecipient = CaptiveRecipient::where('account_id', $account->id)
                 ->where('id', $recipientId)
@@ -219,7 +219,7 @@ class CaptiveRecipientController extends BaseController
     public function destroy(string $accountId, string $recipientPart): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             // Delete all captive recipients with this recipient_part
             $deleted = CaptiveRecipient::where('account_id', $account->id)

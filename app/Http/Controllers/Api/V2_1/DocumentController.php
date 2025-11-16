@@ -43,7 +43,7 @@ class DocumentController extends BaseController
      */
     public function index(string $accountId, string $envelopeId, Request $request): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -77,7 +77,7 @@ class DocumentController extends BaseController
      */
     public function store(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -143,7 +143,7 @@ class DocumentController extends BaseController
      */
     public function show(string $accountId, string $envelopeId, string $documentId, Request $request)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -190,7 +190,7 @@ class DocumentController extends BaseController
      */
     public function update(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -249,7 +249,7 @@ class DocumentController extends BaseController
      */
     public function destroy(string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -283,7 +283,7 @@ class DocumentController extends BaseController
         string $envelopeId,
         string $documentId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -328,7 +328,7 @@ class DocumentController extends BaseController
      */
     public function reorder(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -372,7 +372,7 @@ class DocumentController extends BaseController
         string $envelopeId,
         string $documentId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -424,7 +424,7 @@ class DocumentController extends BaseController
         string $envelopeId,
         string $documentId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -495,7 +495,7 @@ class DocumentController extends BaseController
         string $documentId,
         string $tabId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -561,7 +561,7 @@ class DocumentController extends BaseController
         string $documentId,
         string $tabId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -593,7 +593,7 @@ class DocumentController extends BaseController
         string $envelopeId,
         string $documentId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -627,7 +627,7 @@ class DocumentController extends BaseController
         string $envelopeId,
         string $documentId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -671,7 +671,7 @@ class DocumentController extends BaseController
         string $accountId,
         string $envelopeId
     ) {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -705,7 +705,7 @@ class DocumentController extends BaseController
         string $accountId,
         string $envelopeId
     ) {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -741,7 +741,7 @@ class DocumentController extends BaseController
         string $envelopeId,
         string $documentId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -772,7 +772,7 @@ class DocumentController extends BaseController
         string $envelopeId,
         string $documentId
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -800,7 +800,7 @@ class DocumentController extends BaseController
      */
     public function bulkAdd(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -822,7 +822,7 @@ class DocumentController extends BaseController
      */
     public function bulkDestroy(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -865,7 +865,7 @@ class DocumentController extends BaseController
      */
     public function bulkUpdateFields(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -906,7 +906,7 @@ class DocumentController extends BaseController
      */
     public function bulkDestroyFields(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -947,7 +947,7 @@ class DocumentController extends BaseController
      */
     public function deletePage(string $accountId, string $envelopeId, string $documentId, int $pageNumber): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -978,7 +978,7 @@ class DocumentController extends BaseController
      */
     public function getPageImage(Request $request, string $accountId, string $envelopeId, string $documentId, int $pageNumber)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1010,7 +1010,7 @@ class DocumentController extends BaseController
      */
     public function rotatePageImage(Request $request, string $accountId, string $envelopeId, string $documentId, int $pageNumber): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1048,7 +1048,7 @@ class DocumentController extends BaseController
      */
     public function getPageTabs(string $accountId, string $envelopeId, string $documentId, int $pageNumber): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1077,7 +1077,7 @@ class DocumentController extends BaseController
      */
     public function getTabs(string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1107,7 +1107,7 @@ class DocumentController extends BaseController
      */
     public function addTabs(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1137,7 +1137,7 @@ class DocumentController extends BaseController
      */
     public function updateTabs(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1167,7 +1167,7 @@ class DocumentController extends BaseController
      */
     public function deleteTabs(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1207,7 +1207,7 @@ class DocumentController extends BaseController
      */
     public function getTemplates(string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1237,7 +1237,7 @@ class DocumentController extends BaseController
      */
     public function addTemplates(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -1276,7 +1276,7 @@ class DocumentController extends BaseController
      */
     public function deleteTemplate(string $accountId, string $envelopeId, string $documentId, string $templateId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)

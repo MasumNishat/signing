@@ -49,7 +49,7 @@ class ChunkedUploadController extends BaseController
      */
     public function store(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'chunked_upload' => 'required|file|max:25000', // 25MB max per chunk
@@ -93,7 +93,7 @@ class ChunkedUploadController extends BaseController
      */
     public function show(string $accountId, string $chunkedUploadId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $upload = ChunkedUpload::where('account_id', $account->id)
             ->where('chunked_upload_id', $chunkedUploadId)
@@ -117,7 +117,7 @@ class ChunkedUploadController extends BaseController
      */
     public function update(Request $request, string $accountId, string $chunkedUploadId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $upload = ChunkedUpload::where('account_id', $account->id)
             ->where('chunked_upload_id', $chunkedUploadId)
@@ -146,7 +146,7 @@ class ChunkedUploadController extends BaseController
      */
     public function destroy(string $accountId, string $chunkedUploadId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $upload = ChunkedUpload::where('account_id', $account->id)
             ->where('chunked_upload_id', $chunkedUploadId)
@@ -178,7 +178,7 @@ class ChunkedUploadController extends BaseController
         string $chunkedUploadId,
         string $chunkedUploadPartSeq
     ): JsonResponse {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $upload = ChunkedUpload::where('account_id', $account->id)
             ->where('chunked_upload_id', $chunkedUploadId)

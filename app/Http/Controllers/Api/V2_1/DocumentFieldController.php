@@ -31,7 +31,7 @@ class DocumentFieldController extends BaseController
         string $documentId
     ): JsonResponse {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
                 ->firstOrFail();
@@ -79,7 +79,7 @@ class DocumentFieldController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
                 ->firstOrFail();
@@ -136,7 +136,7 @@ class DocumentFieldController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
                 ->firstOrFail();
@@ -170,7 +170,7 @@ class DocumentFieldController extends BaseController
         string $documentId
     ): JsonResponse {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
                 ->firstOrFail();

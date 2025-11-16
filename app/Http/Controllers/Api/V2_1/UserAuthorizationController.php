@@ -34,7 +34,7 @@ class UserAuthorizationController extends BaseController
     public function indexPrincipal(Request $request, string $accountId, string $userId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $user = User::where('user_name', $userId)->where('account_id', $account->id)->firstOrFail();
 
             $authorizations = UserAuthorization::where('account_id', $account->id)
@@ -78,7 +78,7 @@ class UserAuthorizationController extends BaseController
     public function indexAgent(Request $request, string $accountId, string $userId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $user = User::where('user_name', $userId)->where('account_id', $account->id)->firstOrFail();
 
             $authorizations = UserAuthorization::where('account_id', $account->id)
@@ -122,7 +122,7 @@ class UserAuthorizationController extends BaseController
     public function storeBulk(Request $request, string $accountId, string $userId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $user = User::where('user_name', $userId)->where('account_id', $account->id)->firstOrFail();
 
             $validator = Validator::make($request->all(), [
@@ -187,7 +187,7 @@ class UserAuthorizationController extends BaseController
     public function store(Request $request, string $accountId, string $userId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $user = User::where('user_name', $userId)->where('account_id', $account->id)->firstOrFail();
 
             $validator = Validator::make($request->all(), [
@@ -240,7 +240,7 @@ class UserAuthorizationController extends BaseController
     public function show(string $accountId, string $userId, string $authorizationId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $user = User::where('user_name', $userId)->where('account_id', $account->id)->firstOrFail();
 
             $authorization = UserAuthorization::where('id', $authorizationId)
@@ -281,7 +281,7 @@ class UserAuthorizationController extends BaseController
     public function update(Request $request, string $accountId, string $userId, string $authorizationId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $user = User::where('user_name', $userId)->where('account_id', $account->id)->firstOrFail();
 
             $authorization = UserAuthorization::where('id', $authorizationId)
@@ -327,7 +327,7 @@ class UserAuthorizationController extends BaseController
     public function destroy(string $accountId, string $userId, string $authorizationId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $user = User::where('user_name', $userId)->where('account_id', $account->id)->firstOrFail();
 
             $authorization = UserAuthorization::where('id', $authorizationId)
@@ -360,7 +360,7 @@ class UserAuthorizationController extends BaseController
     public function destroyBulk(string $accountId, string $userId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $user = User::where('user_name', $userId)->where('account_id', $account->id)->firstOrFail();
 
             // Delete all authorizations where this user is the principal

@@ -24,7 +24,7 @@ class EnvelopeSummaryController extends BaseController
     public function getSummary(string $accountId, string $envelopeId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)
@@ -103,7 +103,7 @@ class EnvelopeSummaryController extends BaseController
     public function getStatusChanges(string $accountId, string $envelopeId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $envelope = Envelope::where('account_id', $account->id)
                 ->where('envelope_id', $envelopeId)

@@ -49,7 +49,7 @@ class ConnectController extends BaseController
      */
     public function index(string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $configurations = $this->connectService->listConfigurations($account);
@@ -66,7 +66,7 @@ class ConnectController extends BaseController
      */
     public function store(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'name' => 'nullable|string|max:255',
@@ -104,7 +104,7 @@ class ConnectController extends BaseController
      */
     public function update(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'connect_id' => 'required|string',
@@ -138,7 +138,7 @@ class ConnectController extends BaseController
      */
     public function show(string $accountId, string $connectId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $config = $this->connectService->getConfiguration($account, $connectId);
@@ -155,7 +155,7 @@ class ConnectController extends BaseController
      */
     public function destroy(string $accountId, string $connectId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $config = ConnectConfiguration::where('account_id', $account->id)
@@ -176,7 +176,7 @@ class ConnectController extends BaseController
      */
     public function retryEnvelope(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $results = $this->webhookService->retryFailedDeliveries($account, $envelopeId);
@@ -193,7 +193,7 @@ class ConnectController extends BaseController
      */
     public function retryEnvelopes(string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $results = $this->webhookService->retryFailedDeliveries($account);
@@ -210,7 +210,7 @@ class ConnectController extends BaseController
      */
     public function logs(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'connect_id' => 'nullable|string',
@@ -250,7 +250,7 @@ class ConnectController extends BaseController
      */
     public function getLog(string $accountId, string $logId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $log = $this->connectService->getLog($account, $logId);
@@ -267,7 +267,7 @@ class ConnectController extends BaseController
      */
     public function deleteLog(string $accountId, string $logId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $log = ConnectLog::where('account_id', $account->id)
@@ -288,7 +288,7 @@ class ConnectController extends BaseController
      */
     public function failures(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'envelope_id' => 'nullable|string',
@@ -322,7 +322,7 @@ class ConnectController extends BaseController
      */
     public function deleteFailure(string $accountId, string $failureId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $failure = ConnectFailure::where('account_id', $account->id)
@@ -343,7 +343,7 @@ class ConnectController extends BaseController
      */
     public function getOAuthConfig(string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $config = $this->connectService->getOAuthConfig($account);
@@ -365,7 +365,7 @@ class ConnectController extends BaseController
      */
     public function createOAuthConfig(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'connect_id' => 'nullable|string',
@@ -393,7 +393,7 @@ class ConnectController extends BaseController
      */
     public function updateOAuthConfig(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'connect_id' => 'nullable|string',
@@ -421,7 +421,7 @@ class ConnectController extends BaseController
      */
     public function deleteOAuthConfig(string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $deleted = $this->connectService->deleteOAuthConfig($account);
@@ -446,7 +446,7 @@ class ConnectController extends BaseController
      */
     public function publishHistorical(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'from_date' => 'required|date',

@@ -47,7 +47,7 @@ class CustomTabController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $result = $this->customTabService->listCustomTabs(
                 account: $account,
@@ -109,7 +109,7 @@ class CustomTabController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             // Check name uniqueness
             if (!$this->customTabService->isNameUnique($account, $request->name)) {
@@ -146,7 +146,7 @@ class CustomTabController extends BaseController
     public function show(string $accountId, string $customTabId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $customTab = $this->customTabService->getCustomTab($account, $customTabId);
 
             return $this->success(
@@ -194,7 +194,7 @@ class CustomTabController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $customTab = $this->customTabService->getCustomTab($account, $customTabId);
 
             // Check name uniqueness if name is being changed
@@ -233,7 +233,7 @@ class CustomTabController extends BaseController
     public function destroy(string $accountId, string $customTabId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $customTab = $this->customTabService->getCustomTab($account, $customTabId);
 
             $this->customTabService->deleteCustomTab($customTab);
@@ -253,7 +253,7 @@ class CustomTabController extends BaseController
     public function getByType(string $accountId, string $type): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $customTabs = $this->customTabService->getCustomTabsByType($account, $type);
 
@@ -280,7 +280,7 @@ class CustomTabController extends BaseController
     public function getShared(string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $customTabs = $this->customTabService->getSharedCustomTabs($account);
 
@@ -304,7 +304,7 @@ class CustomTabController extends BaseController
     public function getPersonal(Request $request, string $accountId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $userId = $request->user()->id;
 
             $customTabs = $this->customTabService->getPersonalCustomTabs($account, $userId);

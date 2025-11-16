@@ -54,7 +54,7 @@ class TemplateController extends BaseController
      */
     public function index(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'owner_user_id' => 'nullable|exists:users,id',
@@ -100,7 +100,7 @@ class TemplateController extends BaseController
      */
     public function store(Request $request, string $accountId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $validator = Validator::make($request->all(), [
             'template_name' => 'required|string|max:255',
@@ -145,7 +145,7 @@ class TemplateController extends BaseController
      */
     public function show(string $accountId, string $templateId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         try {
             $template = $this->templateService->getTemplate($account, $templateId);
@@ -167,7 +167,7 @@ class TemplateController extends BaseController
      */
     public function update(Request $request, string $accountId, string $templateId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -202,7 +202,7 @@ class TemplateController extends BaseController
      */
     public function destroy(string $accountId, string $templateId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -228,7 +228,7 @@ class TemplateController extends BaseController
      */
     public function createEnvelope(Request $request, string $accountId, string $templateId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -268,7 +268,7 @@ class TemplateController extends BaseController
      */
     public function share(Request $request, string $accountId, string $templateId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -305,7 +305,7 @@ class TemplateController extends BaseController
      */
     public function unshare(string $accountId, string $templateId, int $userId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -336,7 +336,7 @@ class TemplateController extends BaseController
      */
     public function addFavorite(Request $request, string $accountId, string $templateId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)
@@ -373,7 +373,7 @@ class TemplateController extends BaseController
      */
     public function removeFavorite(Request $request, string $accountId, string $templateId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $template = Template::where('account_id', $account->id)
             ->where('template_id', $templateId)

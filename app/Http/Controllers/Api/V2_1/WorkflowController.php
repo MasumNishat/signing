@@ -52,7 +52,7 @@ class WorkflowController extends BaseController
      */
     public function start(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -110,7 +110,7 @@ class WorkflowController extends BaseController
      */
     public function pause(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -154,7 +154,7 @@ class WorkflowController extends BaseController
      */
     public function resume(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -186,7 +186,7 @@ class WorkflowController extends BaseController
      */
     public function cancel(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -228,7 +228,7 @@ class WorkflowController extends BaseController
      */
     public function status(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -253,7 +253,7 @@ class WorkflowController extends BaseController
      */
     public function currentRecipients(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -290,7 +290,7 @@ class WorkflowController extends BaseController
      */
     public function pendingRecipients(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)

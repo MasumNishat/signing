@@ -48,7 +48,7 @@ class EnvelopeDownloadController extends BaseController
      */
     public function downloadCombinedPdf(Request $request, string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -88,7 +88,7 @@ class EnvelopeDownloadController extends BaseController
      */
     public function downloadDocument(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -126,7 +126,7 @@ class EnvelopeDownloadController extends BaseController
      */
     public function certificate(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)
@@ -152,7 +152,7 @@ class EnvelopeDownloadController extends BaseController
      */
     public function formData(string $accountId, string $envelopeId): JsonResponse
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $envelope = Envelope::where('account_id', $account->id)
             ->where('envelope_id', $envelopeId)

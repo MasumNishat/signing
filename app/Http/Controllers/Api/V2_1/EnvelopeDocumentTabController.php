@@ -35,7 +35,7 @@ class EnvelopeDocumentTabController extends BaseController
     public function getDocumentTabs(string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
             $document = EnvelopeDocument::where('envelope_id', $envelope->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -85,7 +85,7 @@ class EnvelopeDocumentTabController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
 
             if (!$envelope->isDraft()) {
@@ -121,7 +121,7 @@ class EnvelopeDocumentTabController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
             $document = EnvelopeDocument::where('envelope_id', $envelope->id)->where('document_id', $documentId)->firstOrFail();
 
@@ -143,7 +143,7 @@ class EnvelopeDocumentTabController extends BaseController
     public function deleteDocumentTabs(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
 
             if (!$envelope->isDraft()) {
@@ -171,7 +171,7 @@ class EnvelopeDocumentTabController extends BaseController
     public function getRecipientTabs(string $accountId, string $envelopeId, string $recipientId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
 
             $tabs = EnvelopeTab::where('envelope_id', $envelope->id)
@@ -216,7 +216,7 @@ class EnvelopeDocumentTabController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
 
             if (!$envelope->isDraft()) {
@@ -250,7 +250,7 @@ class EnvelopeDocumentTabController extends BaseController
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
 
             $updatedCount = $this->tabService->updateTabs($envelope, $request->tabs);
@@ -271,7 +271,7 @@ class EnvelopeDocumentTabController extends BaseController
     public function deleteRecipientTabs(string $accountId, string $envelopeId, string $recipientId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
             $envelope = Envelope::where('account_id', $account->id)->where('envelope_id', $envelopeId)->firstOrFail();
 
             if (!$envelope->isDraft()) {

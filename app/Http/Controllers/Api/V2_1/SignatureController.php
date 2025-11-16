@@ -600,7 +600,7 @@ class SignatureController extends Controller
     public function getSeal(string $accountId, string $sealId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $seal = $this->signatureService->getSeal($account->id, $sealId);
 
@@ -639,7 +639,7 @@ class SignatureController extends Controller
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $seal = $this->signatureService->createSeal($account->id, $request->all());
 
@@ -673,7 +673,7 @@ class SignatureController extends Controller
         }
 
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $seal = $this->signatureService->updateSeal($account->id, $sealId, $request->all());
 
@@ -701,7 +701,7 @@ class SignatureController extends Controller
     public function deleteSeal(string $accountId, string $sealId): JsonResponse
     {
         try {
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             $deleted = $this->signatureService->deleteSeal($account->id, $sealId);
 

@@ -36,7 +36,7 @@ class TemplateBulkController extends BaseController
                 'templates.*.password' => 'sometimes|string|max:255',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             DB::beginTransaction();
 
@@ -97,7 +97,7 @@ class TemplateBulkController extends BaseController
                 'updates.description' => 'sometimes|string',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             DB::beginTransaction();
 
@@ -153,7 +153,7 @@ class TemplateBulkController extends BaseController
                 'template_ids' => 'required|array|min:1|max:50',
             ]);
 
-            $account = Account::where('account_id', $accountId)->firstOrFail();
+            $account = Account::findOrFail($accountId);
 
             DB::beginTransaction();
 

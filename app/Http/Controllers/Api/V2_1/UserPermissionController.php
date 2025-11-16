@@ -28,7 +28,7 @@ class UserPermissionController extends BaseController
      */
     public function show(string $accountId, string $userId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $user = User::where('account_id', $account->id)
             ->where('id', $userId)
@@ -57,7 +57,7 @@ class UserPermissionController extends BaseController
      */
     public function assignRole(Request $request, string $accountId, string $userId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $user = User::where('account_id', $account->id)
             ->where('id', $userId)
@@ -98,7 +98,7 @@ class UserPermissionController extends BaseController
      */
     public function assignProfile(Request $request, string $accountId, string $userId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $user = User::where('account_id', $account->id)
             ->where('id', $userId)
@@ -140,7 +140,7 @@ class UserPermissionController extends BaseController
      */
     public function checkPermissions(Request $request, string $accountId, string $userId)
     {
-        $account = Account::where('account_id', $accountId)->firstOrFail();
+        $account = Account::findOrFail($accountId);
 
         $user = User::where('account_id', $account->id)
             ->where('id', $userId)
