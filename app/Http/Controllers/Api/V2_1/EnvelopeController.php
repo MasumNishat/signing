@@ -443,6 +443,53 @@ class EnvelopeController extends BaseController
     }
 
     /**
+     * Create envelope email settings (POST creates/updates).
+     *
+     * POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/email_settings
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function createEmailSettings(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        // POST behaves same as PUT for email settings (create or update)
+        return $this->updateEmailSettings($request, $accountId, $envelopeId);
+    }
+
+    /**
+     * Delete envelope email settings (reset to defaults).
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/email_settings
+     *
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function deleteEmailSettings(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            // Reset email settings to null/defaults
+            $this->envelopeService->updateEmailSettings($envelope, [
+                'replyEmailAddressOverride' => null,
+                'replyEmailNameOverride' => null,
+                'bccEmailAddresses' => [],
+            ]);
+
+            return $this->noContent('Email settings deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
      * Get envelope custom fields.
      *
      * @param  string  $accountId

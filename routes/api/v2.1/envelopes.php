@@ -119,9 +119,17 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('email_settings.get');
 
+    Route::post('{envelopeId}/email_settings', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'createEmailSettings'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('email_settings.create');
+
     Route::put('{envelopeId}/email_settings', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'updateEmailSettings'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
         ->name('email_settings.update');
+
+    Route::delete('{envelopeId}/email_settings', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'deleteEmailSettings'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.delete'])
+        ->name('email_settings.delete');
 
     // Custom fields
     Route::get('{envelopeId}/custom_fields', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getCustomFields'])
