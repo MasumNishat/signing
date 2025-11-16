@@ -36,10 +36,21 @@ class AuthController extends Controller
 
             // Generate personal access token for API calls
             $user = Auth::user();
-            $token = $user->createToken('web-session')->accessToken;
 
-            // Store token in session for frontend use
-            session(['api_token' => $token]);
+            try {
+                $token = $user->createToken('web-session')->accessToken;
+                // Store token in session for frontend use
+                session(['api_token' => $token]);
+            } catch (\Exception $e) {
+                // Log error but don't block login
+                \Log::warning('Failed to create API token on login', [
+                    'error' => $e->getMessage(),
+                    'user_id' => $user->id,
+                ]);
+
+                // Set a flag that API token is unavailable
+                session(['api_token_error' => true]);
+            }
 
             return redirect()->intended('dashboard');
         }
@@ -92,8 +103,17 @@ class AuthController extends Controller
         Auth::login($user);
 
         // Generate personal access token for API calls
-        $token = $user->createToken('web-session')->accessToken;
-        session(['api_token' => $token]);
+        try {
+            $token = $user->createToken('web-session')->accessToken;
+            session(['api_token' => $token]);
+        } catch (\Exception $e) {
+            // Log error but don't block registration
+            \Log::warning('Failed to create API token on registration', [
+                'error' => $e->getMessage(),
+                'user_id' => $user->id,
+            ]);
+            session(['api_token_error' => true]);
+        }
 
         return redirect('dashboard');
     }
