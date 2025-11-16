@@ -92,12 +92,17 @@ class BaseController extends Controller
     /**
      * Validation error response.
      *
-     * @param  array  $errors
+     * @param  array|\Illuminate\Support\MessageBag  $errors
      * @param  string  $message
      * @return JsonResponse
      */
-    public function validationError(array $errors, string $message = 'Validation Error'): JsonResponse
+    public function validationError($errors, string $message = 'Validation Error'): JsonResponse
     {
+        // Convert MessageBag to array if needed
+        if ($errors instanceof \Illuminate\Support\MessageBag) {
+            $errors = $errors->toArray();
+        }
+
         return $this->sendValidationError($errors, $message);
     }
 
