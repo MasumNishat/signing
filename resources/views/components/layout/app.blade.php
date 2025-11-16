@@ -143,8 +143,18 @@
     <script>
         document.addEventListener('alpine:init', () => {
             // Set user data and API token from Laravel session
-            Alpine.store('auth').user = @json(auth()->user());
-            Alpine.store('auth').token = @json(session('api_token'));
+            const user = @json(auth()->user());
+            const token = @json(session('api_token'));
+
+            // Only set if user exists and has account_id
+            if (user && user.account_id) {
+                Alpine.store('auth').user = user;
+                Alpine.store('auth').token = token;
+            } else {
+                console.error('User missing account_id:', user);
+                // Optionally show an error message
+                Alpine.store('toast').error('User account configuration incomplete. Please contact support.');
+            }
         });
     </script>
     @endauth

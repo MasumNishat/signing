@@ -10,16 +10,28 @@
         recentEnvelopes: [],
         async loadDashboard() {
             try {
+                // Check if user and account_id exist
+                if (!$store.auth.user || !$store.auth.user.account_id) {
+                    console.error('User or account_id missing:', $store.auth.user);
+                    $store.toast.error('User session invalid. Please log in again.');
+                    this.loading = false;
+                    setTimeout(() => window.location.href = '/login', 2000);
+                    return;
+                }
+
+                const accountId = $store.auth.user.account_id;
+
                 // Load statistics
-                const statsResponse = await $api.get(`/accounts/${$store.auth.user.account_id}/envelopes/statistics`);
+                const statsResponse = await $api.get(`/accounts/${accountId}/envelopes/statistics`);
                 this.statistics = statsResponse.data;
 
                 // Load recent envelopes
-                const envelopesResponse = await $api.get(`/accounts/${$store.auth.user.account_id}/envelopes?per_page=5&sort_by=created_at&sort_direction=desc`);
+                const envelopesResponse = await $api.get(`/accounts/${accountId}/envelopes?per_page=5&sort_by=created_at&sort_direction=desc`);
                 this.recentEnvelopes = envelopesResponse.data.data;
 
                 this.loading = false;
             } catch (error) {
+                console.error('Dashboard load error:', error);
                 $store.toast.error('Failed to load dashboard data');
                 this.loading = false;
             }
