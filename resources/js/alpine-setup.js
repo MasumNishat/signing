@@ -196,14 +196,19 @@ Alpine.store('loading', {
 
 // $api - Helper for making API requests
 Alpine.magic('api', () => {
+    const API_BASE_PATH = '/api/v2.1';
+
     return {
         async request(method, url, data = null, config = {}) {
             const token = Alpine.store('auth').token;
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
+            // Prepend API base path if not already included
+            const fullUrl = url.startsWith('/api/') ? url : `${API_BASE_PATH}${url}`;
+
             const defaultConfig = {
                 method,
-                url,
+                url: fullUrl,
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
