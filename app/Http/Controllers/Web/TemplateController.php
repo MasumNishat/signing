@@ -42,4 +42,40 @@ class TemplateController extends Controller
     {
         return view('templates.edit', ['templateId' => $id]);
     }
+
+    /**
+     * Show the form for using a template to create an envelope
+     *
+     * @param string $id
+     */
+    public function use($id)
+    {
+        return view('templates.use', ['templateId' => $id]);
+    }
+
+    /**
+     * Show the template sharing page
+     *
+     * @param string $id
+     */
+    public function share($id)
+    {
+        return view('templates.share', ['templateId' => $id]);
+    }
+
+    /**
+     * Show the template import page
+     */
+    public function import()
+    {
+        return view('templates.import');
+    }
+
+    /**
+     * Show favorite templates
+     */
+    public function favorites()
+    {
+        return view('templates.favorites');
+    }
 }

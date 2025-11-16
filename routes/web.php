@@ -51,12 +51,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/edit', [EnvelopeController::class, 'edit'])->name('edit');
     });
 
-    // Template Routes
+    // Template Routes (Phase F4 - Complete)
     Route::prefix('templates')->name('templates.')->group(function () {
         Route::get('/', [TemplateController::class, 'index'])->name('index');
         Route::get('/create', [TemplateController::class, 'create'])->name('create');
+        Route::get('/import', [TemplateController::class, 'import'])->name('import');
+        Route::get('/favorites', [TemplateController::class, 'favorites'])->name('favorites');
         Route::get('/{id}', [TemplateController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [TemplateController::class, 'edit'])->name('edit');
+        Route::get('/{id}/use', [TemplateController::class, 'use'])->name('use');
+        Route::get('/{id}/share', [TemplateController::class, 'share'])->name('share');
     });
 
     // Document Routes (Phase F5)
