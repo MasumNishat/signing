@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V2_1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Account;
 use App\Services\SignatureService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -586,6 +587,129 @@ class SignatureController extends Controller
                     ];
                 }),
             ]);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Get a specific seal.
+     *
+     * GET /v2.1/accounts/{accountId}/seals/{sealId}
+     */
+    public function getSeal(string $accountId, string $sealId): JsonResponse
+    {
+        try {
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+
+            $seal = $this->signatureService->getSeal($account->id, $sealId);
+
+            if (!$seal) {
+                return $this->notFound('Seal not found');
+            }
+
+            return $this->success([
+                'sealId' => $seal->seal_id,
+                'sealName' => $seal->seal_name,
+                'sealIdentifier' => $seal->seal_identifier,
+                'status' => $seal->status,
+                'createdAt' => $seal->created_at?->toIso8601String(),
+                'updatedAt' => $seal->updated_at?->toIso8601String(),
+            ], 'Seal retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Create a new seal.
+     *
+     * POST /v2.1/accounts/{accountId}/seals
+     */
+    public function createSeal(Request $request, string $accountId): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'seal_name' => 'required|string|max:255',
+            'seal_identifier' => 'required|string|max:255',
+            'status' => 'sometimes|in:active,inactive',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+
+            $seal = $this->signatureService->createSeal($account->id, $request->all());
+
+            return $this->created([
+                'sealId' => $seal->seal_id,
+                'sealName' => $seal->seal_name,
+                'sealIdentifier' => $seal->seal_identifier,
+                'status' => $seal->status,
+                'createdAt' => $seal->created_at?->toIso8601String(),
+            ], 'Seal created successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Update an existing seal.
+     *
+     * PUT /v2.1/accounts/{accountId}/seals/{sealId}
+     */
+    public function updateSeal(Request $request, string $accountId, string $sealId): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'seal_name' => 'sometimes|string|max:255',
+            'seal_identifier' => 'sometimes|string|max:255',
+            'status' => 'sometimes|in:active,inactive',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+
+            $seal = $this->signatureService->updateSeal($account->id, $sealId, $request->all());
+
+            if (!$seal) {
+                return $this->notFound('Seal not found');
+            }
+
+            return $this->success([
+                'sealId' => $seal->seal_id,
+                'sealName' => $seal->seal_name,
+                'sealIdentifier' => $seal->seal_identifier,
+                'status' => $seal->status,
+                'updatedAt' => $seal->updated_at?->toIso8601String(),
+            ], 'Seal updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Delete a seal.
+     *
+     * DELETE /v2.1/accounts/{accountId}/seals/{sealId}
+     */
+    public function deleteSeal(string $accountId, string $sealId): JsonResponse
+    {
+        try {
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+
+            $deleted = $this->signatureService->deleteSeal($account->id, $sealId);
+
+            if (!$deleted) {
+                return $this->notFound('Seal not found');
+            }
+
+            return $this->noContent('Seal deleted successfully');
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), 500);
         }

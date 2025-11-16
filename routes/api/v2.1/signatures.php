@@ -124,10 +124,29 @@ Route::prefix('accounts/{accountId}')->middleware(['throttle:api', 'check.accoun
         ->name('api.v2.1.accounts.users.signatures.image.destroy');
 
     // ===========================
-    // Seals (1 endpoint)
+    // Seals (5 endpoints)
     // ===========================
 
-    // Get account seals
+    // Get account seals (list)
     Route::get('seals', [SignatureController::class, 'getSeals'])
         ->name('api.v2.1.accounts.seals.index');
+
+    // Create new seal
+    Route::post('seals', [SignatureController::class, 'createSeal'])
+        ->middleware('check.permission:manage_account')
+        ->name('api.v2.1.accounts.seals.store');
+
+    // Get specific seal
+    Route::get('seals/{sealId}', [SignatureController::class, 'getSeal'])
+        ->name('api.v2.1.accounts.seals.show');
+
+    // Update seal
+    Route::put('seals/{sealId}', [SignatureController::class, 'updateSeal'])
+        ->middleware('check.permission:manage_account')
+        ->name('api.v2.1.accounts.seals.update');
+
+    // Delete seal
+    Route::delete('seals/{sealId}', [SignatureController::class, 'deleteSeal'])
+        ->middleware('check.permission:manage_account')
+        ->name('api.v2.1.accounts.seals.destroy');
 });

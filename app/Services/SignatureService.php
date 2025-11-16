@@ -357,4 +357,63 @@ class SignatureService
 
         return $extensions[$mimeType] ?? 'bin';
     }
+
+    /**
+     * Get specific seal.
+     */
+    public function getSeal(int $accountId, string $sealId): ?Seal
+    {
+        return Seal::where('account_id', $accountId)
+            ->where('seal_id', $sealId)
+            ->first();
+    }
+
+    /**
+     * Create a new seal.
+     */
+    public function createSeal(int $accountId, array $data): Seal
+    {
+        $seal = Seal::create([
+            'account_id' => $accountId,
+            'seal_name' => $data['seal_name'] ?? null,
+            'seal_identifier' => $data['seal_identifier'] ?? null,
+            'status' => $data['status'] ?? Seal::STATUS_ACTIVE,
+        ]);
+
+        return $seal;
+    }
+
+    /**
+     * Update an existing seal.
+     */
+    public function updateSeal(int $accountId, string $sealId, array $data): ?Seal
+    {
+        $seal = $this->getSeal($accountId, $sealId);
+
+        if (!$seal) {
+            return null;
+        }
+
+        $seal->update(array_filter([
+            'seal_name' => $data['seal_name'] ?? null,
+            'seal_identifier' => $data['seal_identifier'] ?? null,
+            'status' => $data['status'] ?? null,
+        ], fn($value) => $value !== null));
+
+        return $seal->fresh();
+    }
+
+    /**
+     * Delete a seal.
+     */
+    public function deleteSeal(int $accountId, string $sealId): bool
+    {
+        $seal = $this->getSeal($accountId, $sealId);
+
+        if (!$seal) {
+            return false;
+        }
+
+        return $seal->delete();
+    }
 }
