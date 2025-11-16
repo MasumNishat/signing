@@ -114,7 +114,7 @@
     }" x-init="init()">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Create Bulk Send</h1>
+            <h1 class="text-2xl font-bold text-primary">Create Bulk Send</h1>
             <p class="mt-1 text-sm text-text-secondary">Send an envelope to multiple recipients</p>
         </div>
 
@@ -147,10 +147,10 @@
         <!-- Step 1: Select Template -->
         <div x-show="step === 1">
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Batch Information</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Batch Information</h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Batch Name *</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Batch Name *</label>
                         <x-ui.input
                             type="text"
                             x-model="bulkData.batch_name"
@@ -160,7 +160,7 @@
                         <p x-show="errors.batch_name" class="mt-1 text-sm text-red-600" x-text="errors.batch_name?.[0]"></p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Select Template *</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Select Template *</label>
                         <x-ui.select x-model="bulkData.template_id" required>
                             <option value="">Choose a template...</option>
                             <template x-for="template in templates" :key="template.id">
@@ -176,7 +176,7 @@
                             id="send-immediately"
                             class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                         >
-                        <label for="send-immediately" class="ml-2 text-sm text-text-primary">
+                        <label for="send-immediately" class="ml-2 text-sm text-primary">
                             Send immediately after creation
                         </label>
                     </div>
@@ -187,7 +187,7 @@
         <!-- Step 2: Add Recipients -->
         <div x-show="step === 2">
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Add Recipients</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Add Recipients</h3>
 
                 <!-- CSV Upload -->
                 <div class="mb-6 p-4 border-2 border-dashed border-border-primary rounded-lg">
@@ -195,7 +195,7 @@
                         <svg class="mx-auto h-12 w-12 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                         </svg>
-                        <h4 class="mt-2 text-sm font-medium text-text-primary">Upload CSV File</h4>
+                        <h4 class="mt-2 text-sm font-medium text-primary">Upload CSV File</h4>
                         <p class="mt-1 text-xs text-text-secondary">CSV must include Name, Email columns</p>
                         <input
                             type="file"
@@ -208,7 +208,7 @@
                                 file:bg-primary-50 file:text-primary-700
                                 hover:file:bg-primary-100"
                         />
-                        <p x-show="csvFile" class="mt-2 text-sm text-text-primary">
+                        <p x-show="csvFile" class="mt-2 text-sm text-primary">
                             Selected: <span x-text="csvFile?.name"></span>
                         </p>
                         <x-ui.button variant="primary" class="mt-4" @click="uploadCsv()" :disabled="!csvFile || loading">
@@ -223,7 +223,7 @@
                 <!-- Manual Entry -->
                 <div>
                     <div class="flex items-center justify-between mb-4">
-                        <h4 class="text-sm font-medium text-text-primary">Manually Add Recipients</h4>
+                        <h4 class="text-sm font-medium text-primary">Manually Add Recipients</h4>
                         <x-ui.button variant="secondary" size="sm" @click="addRecipient()">
                             + Add Recipient
                         </x-ui.button>
@@ -234,7 +234,7 @@
                             <div class="flex items-start space-x-4 p-4 bg-bg-secondary rounded-lg">
                                 <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
-                                        <label class="block text-xs font-medium text-text-primary mb-1">Name *</label>
+                                        <label class="block text-xs font-medium text-primary mb-1">Name *</label>
                                         <x-ui.input
                                             type="text"
                                             x-model="recipient.name"
@@ -243,7 +243,7 @@
                                         />
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-text-primary mb-1">Email *</label>
+                                        <label class="block text-xs font-medium text-primary mb-1">Email *</label>
                                         <x-ui.input
                                             type="email"
                                             x-model="recipient.email"
@@ -252,7 +252,7 @@
                                         />
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-text-primary mb-1">Role</label>
+                                        <label class="block text-xs font-medium text-primary mb-1">Role</label>
                                         <x-ui.select x-model="recipient.role">
                                             <option value="signer">Signer</option>
                                             <option value="approver">Approver</option>
@@ -277,19 +277,19 @@
         <!-- Step 3: Review & Send -->
         <div x-show="step === 3">
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Review Bulk Send</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Review Bulk Send</h3>
                 <dl class="space-y-3">
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Batch Name</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="bulkData.batch_name"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="bulkData.batch_name"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Template</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="templates.find(t => t.id === bulkData.template_id)?.name || 'N/A'"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="templates.find(t => t.id === bulkData.template_id)?.name || 'N/A'"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Total Recipients</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="recipients.length"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="recipients.length"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Send Immediately</dt>
@@ -302,7 +302,7 @@
 
             <!-- Recipients Preview -->
             <x-ui.card>
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Recipients Preview</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Recipients Preview</h3>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-border-primary">
                         <thead>
@@ -316,9 +316,9 @@
                         <tbody class="divide-y divide-border-primary">
                             <template x-for="(recipient, index) in recipients.slice(0, 10)" :key="index">
                                 <tr>
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="index + 1"></td>
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="recipient.name"></td>
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="recipient.email"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="index + 1"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="recipient.name"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="recipient.email"></td>
                                     <td class="px-4 py-3 text-sm">
                                         <x-ui.badge variant="secondary" x-text="recipient.role?.toUpperCase()"></x-ui.badge>
                                     </td>

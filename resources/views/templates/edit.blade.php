@@ -20,7 +20,7 @@
                 const templateId = window.location.pathname.split('/')[2];
                 const response = await $api.get(`/accounts/${$store.auth.user.account_id}/templates/${templateId}`);
                 this.template = response.data;
-                
+
                 // Populate form data
                 this.templateData = {
                     name: this.template.name || '',
@@ -28,7 +28,7 @@
                     email_subject: this.template.email_subject || '',
                     email_blurb: this.template.email_blurb || ''
                 };
-                
+
                 this.documents = this.template.documents || [];
                 this.recipients = this.template.recipients || [];
             } catch (error) {
@@ -83,23 +83,23 @@
 
             try {
                 const formData = new FormData();
-                
+
                 // Add template data
                 formData.append('name', this.templateData.name);
                 formData.append('description', this.templateData.description);
                 formData.append('email_subject', this.templateData.email_subject);
                 formData.append('email_blurb', this.templateData.email_blurb);
-                
+
                 // Add recipients
                 formData.append('recipients', JSON.stringify(this.recipients));
-                
+
                 // Add new documents (files)
                 this.documents.forEach((doc, index) => {
                     if (doc.file) {
                         formData.append(`documents[${index}]`, doc.file);
                     }
                 });
-                
+
                 const response = await $api.post(
                     `/accounts/${$store.auth.user.account_id}/templates/${this.template.id}`,
                     formData,
@@ -107,7 +107,7 @@
                         headers: { 'Content-Type': 'multipart/form-data' }
                     }
                 );
-                
+
                 $store.toast.success('Template updated successfully');
                 window.location.href = `/templates/${response.data.id}`;
             } catch (error) {
@@ -131,16 +131,16 @@
         <div x-show="!loading || template">
             <!-- Header -->
             <div class="mb-6">
-                <h1 class="text-2xl font-bold text-text-primary">Edit Template</h1>
+                <h1 class="text-2xl font-bold text-primary">Edit Template</h1>
                 <p class="mt-1 text-sm text-text-secondary">Update template settings, documents, and recipient roles</p>
             </div>
 
             <!-- Template Info -->
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Template Information</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Template Information</h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Template Name *</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Template Name *</label>
                         <x-ui.input
                             type="text"
                             x-model="templateData.name"
@@ -150,17 +150,17 @@
                         <p x-show="errors.name" class="mt-1 text-sm text-red-600" x-text="errors.name?.[0]"></p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Description</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Description</label>
                         <textarea
                             x-model="templateData.description"
                             rows="3"
-                            class="w-full rounded-md border border-border-primary bg-bg-primary text-text-primary px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            class="w-full rounded-md border border-border-primary bg-primary text-primary px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
                             placeholder="Enter template description"
                         ></textarea>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Default Email Subject</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Default Email Subject</label>
                             <x-ui.input
                                 type="text"
                                 x-model="templateData.email_subject"
@@ -168,7 +168,7 @@
                             />
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Email Message</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Email Message</label>
                             <x-ui.input
                                 type="text"
                                 x-model="templateData.email_blurb"
@@ -182,7 +182,7 @@
             <!-- Documents -->
             <x-ui.card class="mb-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-text-primary">Documents</h3>
+                    <h3 class="text-lg font-semibold text-primary">Documents</h3>
                     <label for="document-upload">
                         <x-ui.button variant="secondary" size="sm" as="span">
                             Add Document
@@ -204,7 +204,7 @@
                             <div class="flex items-center">
                                 <span class="text-2xl mr-3">📄</span>
                                 <div>
-                                    <p class="text-sm font-medium text-text-primary" x-text="doc.name"></p>
+                                    <p class="text-sm font-medium text-primary" x-text="doc.name"></p>
                                     <p class="text-xs text-text-secondary">Order: <span x-text="doc.order"></span></p>
                                 </div>
                             </div>
@@ -232,7 +232,7 @@
             <!-- Recipient Roles -->
             <x-ui.card class="mb-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-text-primary">Recipient Roles</h3>
+                    <h3 class="text-lg font-semibold text-primary">Recipient Roles</h3>
                     <x-ui.button variant="secondary" size="sm" @click="addRecipientRole()">
                         Add Role
                     </x-ui.button>
@@ -243,7 +243,7 @@
                         <div class="p-4 border border-border-primary rounded-lg">
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-text-primary mb-1">Role Name *</label>
+                                    <label class="block text-sm font-medium text-primary mb-1">Role Name *</label>
                                     <x-ui.input
                                         type="text"
                                         x-model="recipient.role_name"
@@ -252,7 +252,7 @@
                                     />
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-text-primary mb-1">Type *</label>
+                                    <label class="block text-sm font-medium text-primary mb-1">Type *</label>
                                     <x-ui.select x-model="recipient.recipient_type">
                                         <option value="signer">Signer</option>
                                         <option value="approver">Approver</option>
@@ -262,7 +262,7 @@
                                 </div>
                                 <div class="flex items-end justify-between">
                                     <div class="flex-1">
-                                        <label class="block text-sm font-medium text-text-primary mb-1">Routing Order</label>
+                                        <label class="block text-sm font-medium text-primary mb-1">Routing Order</label>
                                         <x-ui.input
                                             type="number"
                                             x-model="recipient.routing_order"

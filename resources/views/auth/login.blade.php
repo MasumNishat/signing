@@ -51,7 +51,7 @@
             <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-lg mb-4">
                 <span class="text-3xl font-bold text-white">D</span>
             </div>
-            <h2 class="text-2xl font-bold text-text-primary">Welcome back</h2>
+            <h2 class="text-2xl font-bold text-primary">Welcome back</h2>
             <p class="mt-2 text-sm text-text-secondary">Sign in to your account to continue</p>
         </div>
 
@@ -109,7 +109,7 @@
                 type="submit"
                 variant="primary"
                 class="w-full"
-                :loading="loading"
+                x-bind:loading="loading"
                 x-bind:disabled="loading">
                 Sign in
             </x-ui.button>

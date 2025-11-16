@@ -56,7 +56,7 @@
         <!-- Header -->
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">PowerForms</h1>
+                <h1 class="text-2xl font-bold text-primary">PowerForms</h1>
                 <p class="mt-1 text-sm text-text-secondary">Create public forms for document signing</p>
             </div>
             <x-ui.button variant="primary" onclick="window.location.href='/powerforms/create'">
@@ -71,7 +71,7 @@
         <x-ui.card class="mb-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">Search</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Search</label>
                     <x-ui.input
                         type="text"
                         x-model="filter.search"
@@ -80,7 +80,7 @@
                     />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">Status</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Status</label>
                     <x-ui.select x-model="filter.status" @change="loadPowerForms()">
                         <option value="">All Statuses</option>
                         <option value="active">Active</option>
@@ -110,7 +110,7 @@
                     <div class="flex flex-col h-full">
                         <div class="flex items-start justify-between mb-4">
                             <div class="flex-1">
-                                <h3 class="text-lg font-semibold text-text-primary" x-text="powerform.name"></h3>
+                                <h3 class="text-lg font-semibold text-primary" x-text="powerform.name"></h3>
                                 <x-ui.badge class="mt-2" x-bind:variant="getStatusColor(powerform.status)" x-text="powerform.status?.toUpperCase()"></x-ui.badge>
                             </div>
                         </div>
@@ -120,11 +120,11 @@
                         <div class="space-y-2 mb-4">
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-text-secondary">Submissions:</span>
-                                <span class="font-medium text-text-primary" x-text="powerform.submission_count || 0"></span>
+                                <span class="font-medium text-primary" x-text="powerform.submission_count || 0"></span>
                             </div>
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-text-secondary">Created:</span>
-                                <span class="text-text-primary" x-text="formatDate(powerform.created_at)"></span>
+                                <span class="text-primary" x-text="formatDate(powerform.created_at)"></span>
                             </div>
                         </div>
 
@@ -148,7 +148,7 @@
                 <svg class="mx-auto h-12 w-12 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-text-primary">No PowerForms</h3>
+                <h3 class="mt-2 text-sm font-medium text-primary">No PowerForms</h3>
                 <p class="mt-1 text-sm text-text-secondary">Get started by creating your first PowerForm</p>
                 <div class="mt-6">
                     <x-ui.button variant="primary" onclick="window.location.href='/powerforms/create'">

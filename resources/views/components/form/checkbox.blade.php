@@ -23,7 +23,7 @@
 
     @if($label)
         <div class="ml-3">
-            <label for="{{ $name }}" class="text-sm font-medium text-text-primary cursor-pointer">
+            <label for="{{ $name }}" class="text-sm font-medium text-primary cursor-pointer">
                 {{ $label }}
             </label>
             @if($error)

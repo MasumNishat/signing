@@ -14,7 +14,7 @@
                 const templateId = window.location.pathname.split('/')[2];
                 const response = await $api.get(`/accounts/${$store.auth.user.account_id}/templates/${templateId}`);
                 this.template = response.data;
-                
+
                 // Initialize recipients from template roles
                 this.recipients = (this.template.recipients || []).map(role => ({
                     role_name: role.role_name,
@@ -23,7 +23,7 @@
                     name: '',
                     email: ''
                 }));
-                
+
                 this.emailSubject = this.template.name || '';
             } catch (error) {
                 $store.toast.error('Failed to load template');
@@ -41,7 +41,7 @@
                 $store.toast.error('Please fill in all recipient information');
                 return;
             }
-            
+
             try {
                 const response = await $api.post(
                     `/accounts/${$store.auth.user.account_id}/envelopes`,
@@ -53,7 +53,7 @@
                         status: 'created'
                     }
                 );
-                
+
                 $store.toast.success('Envelope created from template');
                 window.location.href = `/envelopes/${response.data.id}`;
             } catch (error) {
@@ -72,16 +72,16 @@
         <div x-show="!loading && template">
             <!-- Header -->
             <div class="mb-6">
-                <h1 class="text-2xl font-bold text-text-primary">Use Template: <span x-text="template?.name"></span></h1>
+                <h1 class="text-2xl font-bold text-primary">Use Template: <span x-text="template?.name"></span></h1>
                 <p class="mt-1 text-sm text-text-secondary">Fill in recipient information to create an envelope from this template</p>
             </div>
 
             <!-- Email Settings -->
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Email Settings</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Email Settings</h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Email Subject</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Email Subject</label>
                         <x-ui.input
                             type="text"
                             x-model="emailSubject"
@@ -90,11 +90,11 @@
                         />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Email Message (Optional)</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Email Message (Optional)</label>
                         <textarea
                             x-model="emailMessage"
                             rows="4"
-                            class="w-full rounded-md border border-border-primary bg-bg-primary text-text-primary px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            class="w-full rounded-md border border-border-primary bg-primary text-primary px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
                             placeholder="Enter a custom message for recipients"
                         ></textarea>
                     </div>
@@ -103,7 +103,7 @@
 
             <!-- Recipients -->
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Assign Recipients</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Assign Recipients</h3>
                 <div class="space-y-4">
                     <template x-for="(recipient, index) in recipients" :key="index">
                         <div class="p-4 border border-border-primary rounded-lg">
@@ -113,9 +113,9 @@
                                         <span class="font-semibold text-primary-600" x-text="recipient.role_name?.charAt(0).toUpperCase()"></span>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-medium text-text-primary" x-text="recipient.role_name"></p>
+                                        <p class="text-sm font-medium text-primary" x-text="recipient.role_name"></p>
                                         <p class="text-xs text-text-secondary">
-                                            <span x-text="recipient.recipient_type.toUpperCase()"></span> • 
+                                            <span x-text="recipient.recipient_type.toUpperCase()"></span> •
                                             Order: <span x-text="recipient.routing_order"></span>
                                         </p>
                                     </div>
@@ -123,7 +123,7 @@
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-text-primary mb-1">Name *</label>
+                                    <label class="block text-sm font-medium text-primary mb-1">Name *</label>
                                     <x-ui.input
                                         type="text"
                                         x-model="recipient.name"
@@ -132,7 +132,7 @@
                                     />
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-text-primary mb-1">Email *</label>
+                                    <label class="block text-sm font-medium text-primary mb-1">Email *</label>
                                     <x-ui.input
                                         type="email"
                                         x-model="recipient.email"
@@ -156,15 +156,15 @@
 
             <!-- Template Preview -->
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Template Contents</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Template Contents</h3>
                 <div class="space-y-3">
                     <div>
                         <p class="text-sm font-medium text-text-secondary">Documents</p>
-                        <p class="text-lg text-text-primary" x-text="`${template?.documents?.length || 0} document(s)`"></p>
+                        <p class="text-lg text-primary" x-text="`${template?.documents?.length || 0} document(s)`"></p>
                     </div>
                     <div>
                         <p class="text-sm font-medium text-text-secondary">Form Fields</p>
-                        <p class="text-lg text-text-primary" x-text="`${template?.tabs?.length || 0} field(s)`"></p>
+                        <p class="text-lg text-primary" x-text="`${template?.tabs?.length || 0} field(s)`"></p>
                     </div>
                 </div>
             </x-ui.card>

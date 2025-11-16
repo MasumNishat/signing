@@ -161,7 +161,7 @@
                         <span class="text-3xl font-bold text-primary-600" x-text="user?.name?.charAt(0).toUpperCase()"></span>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-text-primary" x-text="user?.name"></h1>
+                        <h1 class="text-2xl font-bold text-primary" x-text="user?.name"></h1>
                         <p class="text-sm text-text-secondary" x-text="user?.email"></p>
                         <div class="flex items-center space-x-2 mt-2">
                             <x-ui.badge x-bind:variant="getRoleBadgeColor(user?.role)" x-text="user?.role?.toUpperCase()"></x-ui.badge>
@@ -176,28 +176,28 @@
                 <nav class="flex space-x-8">
                     <button
                         @click="activeTab = 'profile'"
-                        :class="activeTab === 'profile' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-primary'"
+                        :class="activeTab === 'profile' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                     >
                         Profile Information
                     </button>
                     <button
                         @click="activeTab = 'image'"
-                        :class="activeTab === 'image' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-primary'"
+                        :class="activeTab === 'image' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                     >
                         Profile Image
                     </button>
                     <button
                         @click="activeTab = 'password'"
-                        :class="activeTab === 'password' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-primary'"
+                        :class="activeTab === 'password' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                     >
                         Change Password
                     </button>
                     <button
                         @click="activeTab = 'account'"
-                        :class="activeTab === 'account' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-primary'"
+                        :class="activeTab === 'account' ? 'border-primary-600 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-primary'"
                         class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm"
                     >
                         Account Details
@@ -208,12 +208,12 @@
             <!-- Profile Information Tab -->
             <div x-show="activeTab === 'profile'">
                 <x-ui.card class="mb-6">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Update Profile Information</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Update Profile Information</h3>
                     <div class="space-y-4">
                         <!-- Name & Email -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-text-primary mb-1">Full Name *</label>
+                                <label class="block text-sm font-medium text-primary mb-1">Full Name *</label>
                                 <x-ui.input
                                     type="text"
                                     x-model="profileData.name"
@@ -223,7 +223,7 @@
                                 <p x-show="errors.name" class="mt-1 text-sm text-red-600" x-text="errors.name?.[0]"></p>
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-text-primary mb-1">Email *</label>
+                                <label class="block text-sm font-medium text-primary mb-1">Email *</label>
                                 <x-ui.input
                                     type="email"
                                     x-model="profileData.email"
@@ -237,7 +237,7 @@
                         <!-- Phone & Title -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-text-primary mb-1">Phone</label>
+                                <label class="block text-sm font-medium text-primary mb-1">Phone</label>
                                 <x-ui.input
                                     type="tel"
                                     x-model="profileData.phone"
@@ -245,7 +245,7 @@
                                 />
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-text-primary mb-1">Job Title</label>
+                                <label class="block text-sm font-medium text-primary mb-1">Job Title</label>
                                 <x-ui.input
                                     type="text"
                                     x-model="profileData.title"
@@ -256,7 +256,7 @@
 
                         <!-- Company -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Company</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Company</label>
                             <x-ui.input
                                 type="text"
                                 x-model="profileData.company"
@@ -278,7 +278,7 @@
             <!-- Profile Image Tab -->
             <div x-show="activeTab === 'image'">
                 <x-ui.card class="mb-6">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Profile Image</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Profile Image</h3>
 
                     <!-- Current Image -->
                     <div class="mb-6 text-center">
@@ -290,7 +290,7 @@
 
                     <!-- Upload New Image -->
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-2">Upload New Image</label>
+                        <label class="block text-sm font-medium text-primary mb-2">Upload New Image</label>
                         <input
                             type="file"
                             @change="profileImage = $event.target.files[0]"
@@ -304,7 +304,7 @@
                                 dark:file:bg-primary-900/30 dark:file:text-primary-400"
                         />
                         <p class="mt-1 text-xs text-text-secondary">PNG, JPG up to 10MB</p>
-                        <p x-show="profileImage" class="mt-2 text-sm text-text-primary">
+                        <p x-show="profileImage" class="mt-2 text-sm text-primary">
                             Selected: <span x-text="profileImage?.name"></span>
                         </p>
                     </div>
@@ -325,10 +325,10 @@
             <!-- Change Password Tab -->
             <div x-show="activeTab === 'password'">
                 <x-ui.card class="mb-6">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Change Password</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Change Password</h3>
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Current Password *</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Current Password *</label>
                             <x-ui.input
                                 type="password"
                                 x-model="passwordData.current_password"
@@ -338,7 +338,7 @@
                             <p x-show="errors.current_password" class="mt-1 text-sm text-red-600" x-text="errors.current_password?.[0]"></p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">New Password *</label>
+                            <label class="block text-sm font-medium text-primary mb-1">New Password *</label>
                             <x-ui.input
                                 type="password"
                                 x-model="passwordData.new_password"
@@ -348,7 +348,7 @@
                             <p x-show="errors.new_password" class="mt-1 text-sm text-red-600" x-text="errors.new_password?.[0]"></p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Confirm New Password *</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Confirm New Password *</label>
                             <x-ui.input
                                 type="password"
                                 x-model="passwordData.new_password_confirmation"
@@ -371,11 +371,11 @@
             <!-- Account Details Tab -->
             <div x-show="activeTab === 'account'">
                 <x-ui.card class="mb-6">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Account Information</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Account Information</h3>
                     <dl class="space-y-3">
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">User ID</dt>
-                            <dd class="mt-1 text-sm text-text-primary font-mono" x-text="user?.id"></dd>
+                            <dd class="mt-1 text-sm text-primary font-mono" x-text="user?.id"></dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Role</dt>
@@ -391,11 +391,11 @@
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Created</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="user?.created_at ? new Date(user.created_at).toLocaleString() : 'N/A'"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="user?.created_at ? new Date(user.created_at).toLocaleString() : 'N/A'"></dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Last Login</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="user?.last_login_at ? new Date(user.last_login_at).toLocaleString() : 'Never'"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="user?.last_login_at ? new Date(user.last_login_at).toLocaleString() : 'Never'"></dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Email Verified</dt>
@@ -408,7 +408,7 @@
 
                 <!-- Permissions -->
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">My Permissions</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">My Permissions</h3>
                     <div x-show="user?.permissions && user.permissions.length > 0" class="flex flex-wrap gap-2">
                         <template x-for="permission in user?.permissions" :key="permission">
                             <x-ui.badge variant="secondary" x-text="permission.replace('_', ' ').toUpperCase()"></x-ui.badge>

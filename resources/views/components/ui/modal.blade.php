@@ -109,7 +109,7 @@ Usage Examples:
 4. Large modal for forms:
 <x-ui.modal name="create-envelope" max-width="2xl">
     <div class="bg-modal-header px-6 py-4 border-b border-modal-border">
-        <h2 class="text-xl font-bold text-text-primary">Create New Envelope</h2>
+        <h2 class="text-xl font-bold text-primary">Create New Envelope</h2>
     </div>
 
     <div class="p-6">
@@ -132,7 +132,7 @@ Usage Examples:
 <x-ui.modal name="view-details" max-width="lg">
     <!-- Header -->
     <div class="bg-modal-header px-6 py-4 border-b border-modal-border flex items-center justify-between">
-        <h2 class="text-xl font-bold text-text-primary">Envelope Details</h2>
+        <h2 class="text-xl font-bold text-primary">Envelope Details</h2>
         <button @click="$dispatch('close-modal', 'view-details')" class="text-gray-400 hover:text-gray-600">
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

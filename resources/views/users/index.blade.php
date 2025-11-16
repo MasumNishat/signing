@@ -20,7 +20,7 @@
     x-init="init()">
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Users</h1>
+                <h1 class="text-2xl font-bold text-primary">Users</h1>
                 <p class="mt-1 text-sm text-text-secondary">Manage team members and permissions</p>
             </div>
             <x-ui.button variant="primary" onclick="window.location.href='/users/create'">
@@ -45,7 +45,7 @@
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-bg-primary divide-y divide-border-primary">
+                    <tbody class="bg-primary divide-y divide-border-primary">
                         <template x-for="user in users" :key="user.id">
                             <tr class="hover:bg-bg-hover">
                                 <td class="px-6 py-4">
@@ -53,7 +53,7 @@
                                         <div class="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center mr-3">
                                             <span class="font-semibold text-primary-600" x-text="user.name.charAt(0).toUpperCase()"></span>
                                         </div>
-                                        <span class="font-medium text-text-primary" x-text="user.name"></span>
+                                        <span class="font-medium text-primary" x-text="user.name"></span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-text-secondary" x-text="user.email"></td>

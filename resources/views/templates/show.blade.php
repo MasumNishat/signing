@@ -61,7 +61,7 @@
             <!-- Header -->
             <div class="flex items-start justify-between">
                 <div class="flex-1">
-                    <h1 class="text-2xl font-bold text-text-primary mb-2" x-text="template.name"></h1>
+                    <h1 class="text-2xl font-bold text-primary mb-2" x-text="template.name"></h1>
                     <p class="text-sm text-text-secondary" x-text="template.description || 'No description'"></p>
                     <p class="mt-2 text-xs text-text-secondary">
                         Created on <span x-text="template.created_at ? new Date(template.created_at).toLocaleDateString() : ''"></span>
@@ -92,38 +92,38 @@
 
             <!-- Template Details -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Template Details</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Template Details</h2>
                 <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Template ID</dt>
-                        <dd class="mt-1 text-sm text-text-primary font-mono" x-text="template.template_id"></dd>
+                        <dd class="mt-1 text-sm text-primary font-mono" x-text="template.template_id"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Name</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="template.name"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="template.name"></dd>
                     </div>
                     <div class="md:col-span-2">
                         <dt class="text-sm font-medium text-text-secondary">Description</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="template.description || 'No description'"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="template.description || 'No description'"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Default Email Subject</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="template.email_subject || 'Not set'"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="template.email_subject || 'Not set'"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Created</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="template.created_at ? new Date(template.created_at).toLocaleString() : ''"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="template.created_at ? new Date(template.created_at).toLocaleString() : ''"></dd>
                     </div>
                     <div class="md:col-span-2" x-show="template.email_blurb">
                         <dt class="text-sm font-medium text-text-secondary">Default Email Message</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="template.email_blurb"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="template.email_blurb"></dd>
                     </div>
                 </dl>
             </x-ui.card>
 
             <!-- Documents -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Documents (<span x-text="documents.length"></span>)</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Documents (<span x-text="documents.length"></span>)</h2>
                 <div class="space-y-4">
                     <template x-for="doc in documents" :key="doc.id">
                         <div class="flex items-center justify-between p-4 border border-border-primary rounded-lg">
@@ -132,7 +132,7 @@
                                     <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
                                 </svg>
                                 <div>
-                                    <p class="font-medium text-text-primary" x-text="doc.name"></p>
+                                    <p class="font-medium text-primary" x-text="doc.name"></p>
                                     <p class="text-sm text-text-secondary">
                                         Document #<span x-text="doc.document_id"></span>
                                         <span x-show="doc.file_extension"> • <span x-text="doc.file_extension.toUpperCase()"></span></span>
@@ -151,13 +151,13 @@
 
             <!-- Recipient Roles -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Recipient Roles (<span x-text="recipients.length"></span>)</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Recipient Roles (<span x-text="recipients.length"></span>)</h2>
                 <div class="space-y-4">
                     <template x-for="recipient in recipients" :key="recipient.id">
                         <div class="p-4 border border-border-primary rounded-lg">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
-                                    <p class="font-medium text-text-primary" x-text="recipient.role_name || 'Unnamed Role'"></p>
+                                    <p class="font-medium text-primary" x-text="recipient.role_name || 'Unnamed Role'"></p>
                                     <p class="text-sm text-text-secondary mt-1">
                                         Type: <span x-text="recipient.recipient_type ? recipient.recipient_type.replace('_', ' ').charAt(0).toUpperCase() + recipient.recipient_type.slice(1).replace('_', ' ') : ''"></span>
                                         <span x-show="recipient.routing_order"> • Routing Order: <span x-text="recipient.routing_order"></span></span>
@@ -175,7 +175,7 @@
 
             <!-- Usage Stats (Placeholder) -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Usage Statistics</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Usage Statistics</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="text-center">
                         <p class="text-3xl font-bold text-primary-600">0</p>

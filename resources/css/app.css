@@ -1,4 +1,10 @@
 @import 'tailwindcss';
+@import './themes/ocean.css';
+@import './themes/purple.css';
+@import './themes/green.css';
+@import './themes/blue.css';
+@import './themes/dark.css';
+@import './themes/default.css';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -61,7 +67,7 @@
     }
 
     body {
-        @apply bg-bg-primary text-text-primary;
+        @apply bg-primary-100 text-primary;
         min-height: 100vh;
         font-feature-settings: 'kern' 1, 'liga' 1;
     }
@@ -242,9 +248,3 @@
 }
 
 /* Import theme files */
-@import './themes/default.css';
-@import './themes/dark.css';
-@import './themes/blue.css';
-@import './themes/green.css';
-@import './themes/purple.css';
-@import './themes/ocean.css';

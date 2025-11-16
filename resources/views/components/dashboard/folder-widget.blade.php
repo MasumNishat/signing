@@ -5,7 +5,7 @@
 
 <x-ui.card>
     <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-text-primary">Folders</h3>
+        <h3 class="text-lg font-semibold text-primary">Folders</h3>
         <a href="/folders" class="text-sm font-medium text-primary-600 hover:text-primary-500">Manage</a>
     </div>
 
@@ -33,7 +33,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                             </svg>
                             <div>
-                                <p class="text-sm font-medium text-text-primary">{{ $folder['name'] }}</p>
+                                <p class="text-sm font-medium text-primary">{{ $folder['name'] }}</p>
                                 @if(isset($folder['item_count']))
                                     <p class="text-xs text-text-secondary">{{ $folder['item_count'] }} items</p>
                                 @endif

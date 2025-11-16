@@ -63,7 +63,7 @@
         <!-- Header -->
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">System Health</h1>
+                <h1 class="text-2xl font-bold text-primary">System Health</h1>
                 <p class="mt-1 text-sm text-text-secondary">Monitor system status and performance</p>
             </div>
             <div class="flex items-center gap-4">
@@ -73,7 +73,7 @@
                         x-model="autoRefresh"
                         class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                     >
-                    <span class="ml-2 text-sm text-text-primary">Auto-refresh (30s)</span>
+                    <span class="ml-2 text-sm text-primary">Auto-refresh (30s)</span>
                 </label>
                 <x-ui.button variant="secondary" @click="loadHealth()" :disabled="loading">
                     <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -112,21 +112,21 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <h3 class="text-lg font-semibold text-text-primary capitalize" x-text="health?.status || 'Unknown'"></h3>
+                        <h3 class="text-lg font-semibold text-primary capitalize" x-text="health?.status || 'Unknown'"></h3>
                         <p class="mt-1 text-sm text-text-secondary">Overall System Status</p>
                     </div>
                 </x-ui.card>
 
                 <x-ui.card>
                     <div class="text-center">
-                        <p class="text-3xl font-bold text-text-primary" x-text="formatUptime(health?.uptime || 0)"></p>
+                        <p class="text-3xl font-bold text-primary" x-text="formatUptime(health?.uptime || 0)"></p>
                         <p class="mt-1 text-sm text-text-secondary">System Uptime</p>
                     </div>
                 </x-ui.card>
 
                 <x-ui.card>
                     <div class="text-center">
-                        <p class="text-3xl font-bold text-text-primary" x-text="health?.request_count?.toLocaleString() || 0"></p>
+                        <p class="text-3xl font-bold text-primary" x-text="health?.request_count?.toLocaleString() || 0"></p>
                         <p class="mt-1 text-sm text-text-secondary">Total Requests (24h)</p>
                     </div>
                 </x-ui.card>
@@ -134,41 +134,41 @@
 
             <!-- Service Health -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Service Health</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Service Health</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Database -->
                     <div class="p-4 border border-border-primary rounded-md">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="font-medium text-text-primary">Database</h3>
+                            <h3 class="font-medium text-primary">Database</h3>
                             <x-ui.badge x-bind:variant="getStatusColor(health?.services?.database?.status)" x-text="health?.services?.database?.status?.toUpperCase()"></x-ui.badge>
                         </div>
                         <div class="space-y-1 text-sm text-text-secondary">
-                            <div>Response: <span class="text-text-primary" x-text="health?.services?.database?.response_time || 'N/A'"></span>ms</div>
-                            <div>Connections: <span class="text-text-primary" x-text="health?.services?.database?.connections || 'N/A'"></span></div>
+                            <div>Response: <span class="text-primary" x-text="health?.services?.database?.response_time || 'N/A'"></span>ms</div>
+                            <div>Connections: <span class="text-primary" x-text="health?.services?.database?.connections || 'N/A'"></span></div>
                         </div>
                     </div>
 
                     <!-- Cache (Redis) -->
                     <div class="p-4 border border-border-primary rounded-md">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="font-medium text-text-primary">Cache (Redis)</h3>
+                            <h3 class="font-medium text-primary">Cache (Redis)</h3>
                             <x-ui.badge x-bind:variant="getStatusColor(health?.services?.cache?.status)" x-text="health?.services?.cache?.status?.toUpperCase()"></x-ui.badge>
                         </div>
                         <div class="space-y-1 text-sm text-text-secondary">
-                            <div>Response: <span class="text-text-primary" x-text="health?.services?.cache?.response_time || 'N/A'"></span>ms</div>
-                            <div>Memory: <span class="text-text-primary" x-text="formatBytes(health?.services?.cache?.memory_used || 0)"></span></div>
+                            <div>Response: <span class="text-primary" x-text="health?.services?.cache?.response_time || 'N/A'"></span>ms</div>
+                            <div>Memory: <span class="text-primary" x-text="formatBytes(health?.services?.cache?.memory_used || 0)"></span></div>
                         </div>
                     </div>
 
                     <!-- Storage -->
                     <div class="p-4 border border-border-primary rounded-md">
                         <div class="flex items-center justify-between mb-2">
-                            <h3 class="font-medium text-text-primary">Storage</h3>
+                            <h3 class="font-medium text-primary">Storage</h3>
                             <x-ui.badge x-bind:variant="getStatusColor(health?.services?.storage?.status)" x-text="health?.services?.storage?.status?.toUpperCase()"></x-ui.badge>
                         </div>
                         <div class="space-y-1 text-sm text-text-secondary">
-                            <div>Free Space: <span class="text-text-primary" x-text="formatBytes(health?.services?.storage?.free_space || 0)"></span></div>
-                            <div>Total: <span class="text-text-primary" x-text="formatBytes(health?.services?.storage?.total_space || 0)"></span></div>
+                            <div>Free Space: <span class="text-primary" x-text="formatBytes(health?.services?.storage?.free_space || 0)"></span></div>
+                            <div>Total: <span class="text-primary" x-text="formatBytes(health?.services?.storage?.total_space || 0)"></span></div>
                         </div>
                     </div>
                 </div>
@@ -176,12 +176,12 @@
 
             <!-- System Resources -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">System Resources</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">System Resources</h2>
                 <div class="space-y-4">
                     <!-- CPU Usage -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-text-primary">CPU Usage</span>
+                            <span class="text-sm font-medium text-primary">CPU Usage</span>
                             <span class="text-sm" :class="getPercentageColor(health?.resources?.cpu_usage || 0)" x-text="`${Math.round(health?.resources?.cpu_usage || 0)}%`"></span>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
@@ -196,7 +196,7 @@
                     <!-- Memory Usage -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-text-primary">Memory Usage</span>
+                            <span class="text-sm font-medium text-primary">Memory Usage</span>
                             <span class="text-sm" :class="getPercentageColor(health?.resources?.memory_usage || 0)">
                                 <span x-text="formatBytes(health?.resources?.memory_used || 0)"></span> /
                                 <span x-text="formatBytes(health?.resources?.memory_total || 0)"></span>
@@ -215,7 +215,7 @@
                     <!-- Disk Usage -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-text-primary">Disk Usage</span>
+                            <span class="text-sm font-medium text-primary">Disk Usage</span>
                             <span class="text-sm" :class="getPercentageColor(health?.resources?.disk_usage || 0)">
                                 <span x-text="formatBytes(health?.resources?.disk_used || 0)"></span> /
                                 <span x-text="formatBytes(health?.resources?.disk_total || 0)"></span>
@@ -235,10 +235,10 @@
 
             <!-- Queue Statistics -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Queue Statistics</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Queue Statistics</h2>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div class="text-center p-4 border border-border-primary rounded-md">
-                        <p class="text-2xl font-bold text-text-primary" x-text="health?.queues?.pending || 0"></p>
+                        <p class="text-2xl font-bold text-primary" x-text="health?.queues?.pending || 0"></p>
                         <p class="text-sm text-text-secondary">Pending Jobs</p>
                     </div>
                     <div class="text-center p-4 border border-border-primary rounded-md">
@@ -250,7 +250,7 @@
                         <p class="text-sm text-text-secondary">Failed (24h)</p>
                     </div>
                     <div class="text-center p-4 border border-border-primary rounded-md">
-                        <p class="text-2xl font-bold text-text-primary" x-text="`${Math.round(health?.queues?.success_rate || 0)}%`"></p>
+                        <p class="text-2xl font-bold text-primary" x-text="`${Math.round(health?.queues?.success_rate || 0)}%`"></p>
                         <p class="text-sm text-text-secondary">Success Rate</p>
                     </div>
                 </div>
@@ -258,7 +258,7 @@
 
             <!-- Recent Issues -->
             <x-ui.card x-show="health?.issues && health.issues.length > 0">
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Recent Issues</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Recent Issues</h2>
                 <div class="space-y-3">
                     <template x-for="issue in health?.issues || []" :key="issue.id">
                         <div class="p-3 border-l-4 rounded" :class="{

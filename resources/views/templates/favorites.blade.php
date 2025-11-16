@@ -33,7 +33,7 @@
         <!-- Header -->
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Favorite Templates</h1>
+                <h1 class="text-2xl font-bold text-primary">Favorite Templates</h1>
                 <p class="mt-1 text-sm text-text-secondary">Quick access to your favorite templates</p>
             </div>
             <x-ui.button variant="secondary" onclick="window.location.href='/templates'">
@@ -65,7 +65,7 @@
                     <!-- Template Content -->
                     <div @click="window.location.href=`/templates/${template.id}`" class="cursor-pointer">
                         <!-- Template Name -->
-                        <h3 class="text-lg font-semibold text-text-primary mb-2" x-text="template.name"></h3>
+                        <h3 class="text-lg font-semibold text-primary mb-2" x-text="template.name"></h3>
                         <p class="text-sm text-text-secondary mb-4 line-clamp-2" x-text="template.description || 'No description'"></p>
 
                         <!-- Stats -->

@@ -157,7 +157,7 @@ getStatusColor(status) {
 ```blade
 <nav class="flex -mb-px">
     <button @click="activeTab = 'details'"
-            :class="activeTab === 'details' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-gray-300'"
+            :class="activeTab === 'details' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
             class="px-6 py-4 border-b-2 font-medium text-sm transition-colors">
         Details
     </button>
@@ -404,7 +404,7 @@ Phase F4 implements a complete template management system that allows users to c
                 </x-table.actions>
             </div>
 
-            <h3 class="text-lg font-semibold text-text-primary mb-2" x-text="template.name"></h3>
+            <h3 class="text-lg font-semibold text-primary mb-2" x-text="template.name"></h3>
             <p class="text-sm text-text-secondary mb-4 line-clamp-2" x-text="template.description || 'No description'"></p>
 
             <div class="flex items-center justify-between text-sm text-text-secondary">
@@ -492,7 +492,7 @@ addRecipientRole() {
 #### Template Creation Flow
 ```blade
 <x-ui.card>
-    <h2 class="text-lg font-semibold text-text-primary mb-4">Recipient Roles</h2>
+    <h2 class="text-lg font-semibold text-primary mb-4">Recipient Roles</h2>
     <p class="text-sm text-text-secondary mb-4">Define placeholder roles for recipients (actual recipients will be specified when using the template)</p>
 
     <div class="space-y-4 mb-6">

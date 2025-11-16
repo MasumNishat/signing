@@ -80,13 +80,13 @@
         <div class="mb-6 flex items-center justify-between">
             <div>
                 <div class="flex items-center space-x-2">
-                    <a href="/powerforms" class="text-text-secondary hover:text-text-primary">PowerForms</a>
+                    <a href="/powerforms" class="text-text-secondary hover:text-primary">PowerForms</a>
                     <span class="text-text-secondary">/</span>
-                    <a :href="`/powerforms/${powerform?.id}`" class="text-text-secondary hover:text-text-primary" x-text="powerform?.name"></a>
+                    <a :href="`/powerforms/${powerform?.id}`" class="text-text-secondary hover:text-primary" x-text="powerform?.name"></a>
                     <span class="text-text-secondary">/</span>
-                    <span class="text-text-primary">Submissions</span>
+                    <span class="text-primary">Submissions</span>
                 </div>
-                <h1 class="mt-2 text-2xl font-bold text-text-primary">Submissions</h1>
+                <h1 class="mt-2 text-2xl font-bold text-primary">Submissions</h1>
                 <p class="mt-1 text-sm text-text-secondary">
                     <span x-text="submissions.length"></span> total submissions
                 </p>
@@ -103,7 +103,7 @@
         <x-ui.card class="mb-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">Search</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Search</label>
                     <x-ui.input
                         type="text"
                         x-model="filter.search"
@@ -112,7 +112,7 @@
                     />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">Status</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Status</label>
                     <x-ui.select x-model="filter.status" @change="loadSubmissions()">
                         <option value="">All Statuses</option>
                         <option value="pending">Pending</option>
@@ -152,16 +152,16 @@
                     <tbody class="divide-y divide-border-primary">
                         <template x-for="(submission, index) in submissions" :key="submission.id">
                             <tr class="hover:bg-bg-secondary">
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="index + 1"></td>
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="submission.submitted_by || 'Anonymous'"></td>
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="submission.submitted_email || 'N/A'"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="index + 1"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="submission.submitted_by || 'Anonymous'"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="submission.submitted_email || 'N/A'"></td>
                                 <td class="px-4 py-3 text-sm">
                                     <x-ui.badge
                                         x-bind:variant="getStatusColor(submission.status)"
                                         x-text="submission.status?.toUpperCase()"
                                     ></x-ui.badge>
                                 </td>
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="formatDate(submission.created_at)"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="formatDate(submission.created_at)"></td>
                                 <td class="px-4 py-3 text-sm">
                                     <template x-if="submission.envelope_id">
                                         <a :href="`/envelopes/${submission.envelope_id}`" class="text-primary-600 hover:underline">
@@ -182,7 +182,7 @@
                     <svg class="mx-auto h-12 w-12 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-text-primary">No submissions</h3>
+                    <h3 class="mt-2 text-sm font-medium text-primary">No submissions</h3>
                     <p class="mt-1 text-sm text-text-secondary">No one has submitted this PowerForm yet</p>
                 </div>
             </div>

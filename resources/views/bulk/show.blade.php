@@ -75,7 +75,7 @@
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <div class="flex items-center space-x-3">
-                        <h1 class="text-2xl font-bold text-text-primary" x-text="batch?.batch_name"></h1>
+                        <h1 class="text-2xl font-bold text-primary" x-text="batch?.batch_name"></h1>
                         <x-ui.badge x-bind:variant="getBatchStatusColor(batch?.status)" x-text="batch?.status?.toUpperCase()"></x-ui.badge>
                     </div>
                     <p class="mt-1 text-sm text-text-secondary">
@@ -99,13 +99,13 @@
 
             <!-- Progress Card -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Progress</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Progress</h2>
                 <div class="space-y-4">
                     <!-- Progress Bar -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm text-text-secondary">Overall Progress</span>
-                            <span class="text-sm font-medium text-text-primary" x-text="getProgress() + '%'"></span>
+                            <span class="text-sm font-medium text-primary" x-text="getProgress() + '%'"></span>
                         </div>
                         <div class="w-full bg-bg-secondary rounded-full h-2">
                             <div class="bg-primary-600 h-2 rounded-full transition-all duration-300" x-bind:style="`width: ${getProgress()}%`"></div>
@@ -116,7 +116,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
                         <div class="p-4 bg-bg-secondary rounded-lg">
                             <dt class="text-sm font-medium text-text-secondary">Total Recipients</dt>
-                            <dd class="mt-1 text-2xl font-bold text-text-primary" x-text="batch?.total_recipients || 0"></dd>
+                            <dd class="mt-1 text-2xl font-bold text-primary" x-text="batch?.total_recipients || 0"></dd>
                         </div>
                         <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                             <dt class="text-sm font-medium text-green-600">Sent</dt>
@@ -128,7 +128,7 @@
                         </div>
                         <div class="p-4 bg-gray-50 dark:bg-gray-900/20 rounded-lg">
                             <dt class="text-sm font-medium text-text-secondary">Pending</dt>
-                            <dd class="mt-1 text-2xl font-bold text-text-primary" x-text="(batch?.total_recipients || 0) - ((batch?.sent_count || 0) + (batch?.failed_count || 0))"></dd>
+                            <dd class="mt-1 text-2xl font-bold text-primary" x-text="(batch?.total_recipients || 0) - ((batch?.sent_count || 0) + (batch?.failed_count || 0))"></dd>
                         </div>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
 
             <!-- Recipients Table -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Recipients (<span x-text="recipients.length"></span>)</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Recipients (<span x-text="recipients.length"></span>)</h2>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-border-primary">
                         <thead>
@@ -152,9 +152,9 @@
                         <tbody class="divide-y divide-border-primary">
                             <template x-for="(recipient, index) in recipients" :key="recipient.id">
                                 <tr>
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="index + 1"></td>
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="recipient.name"></td>
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="recipient.email"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="index + 1"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="recipient.name"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="recipient.email"></td>
                                     <td class="px-4 py-3 text-sm">
                                         <x-ui.badge variant="secondary" x-text="recipient.role?.toUpperCase()"></x-ui.badge>
                                     </td>
@@ -182,27 +182,27 @@
 
             <!-- Batch Details -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Batch Details</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Batch Details</h2>
                 <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Batch ID</dt>
-                        <dd class="mt-1 text-sm text-text-primary font-mono" x-text="batch?.id"></dd>
+                        <dd class="mt-1 text-sm text-primary font-mono" x-text="batch?.id"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Template</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="batch?.template_name || 'N/A'"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="batch?.template_name || 'N/A'"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Created</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="formatDate(batch?.created_at)"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="formatDate(batch?.created_at)"></dd>
                     </div>
                     <div x-show="batch?.started_at">
                         <dt class="text-sm font-medium text-text-secondary">Started</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="formatDate(batch?.started_at)"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="formatDate(batch?.started_at)"></dd>
                     </div>
                     <div x-show="batch?.completed_at">
                         <dt class="text-sm font-medium text-text-secondary">Completed</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="formatDate(batch?.completed_at)"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="formatDate(batch?.completed_at)"></dd>
                     </div>
                 </dl>
             </x-ui.card>

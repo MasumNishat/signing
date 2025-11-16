@@ -90,7 +90,7 @@
         <!-- Document Viewer -->
         <div x-show="!loading" class="h-screen flex flex-col">
             <!-- Toolbar -->
-            <div class="bg-bg-primary border-b border-border-primary px-4 py-3">
+            <div class="bg-primary border-b border-border-primary px-4 py-3">
                 <div class="flex items-center justify-between">
                     <!-- Left Side - Document Info -->
                     <div class="flex items-center space-x-4">
@@ -101,7 +101,7 @@
                             Back
                         </x-ui.button>
                         <div>
-                            <h2 class="text-sm font-semibold text-text-primary" x-text="document?.name"></h2>
+                            <h2 class="text-sm font-semibold text-primary" x-text="document?.name"></h2>
                             <p class="text-xs text-text-secondary" x-text="document ? formatFileSize(document.size) : ''"></p>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                                 </svg>
                             </button>
-                            <span class="text-sm text-text-primary">
+                            <span class="text-sm text-primary">
                                 Page <span x-text="currentPage"></span> of <span x-text="totalPages"></span>
                             </span>
                             <button
@@ -146,7 +146,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"/>
                                 </svg>
                             </button>
-                            <button @click="resetZoom()" class="text-sm text-text-primary px-2 py-1 rounded hover:bg-bg-hover">
+                            <button @click="resetZoom()" class="text-sm text-primary px-2 py-1 rounded hover:bg-bg-hover">
                                 <span x-text="zoom"></span>%
                             </button>
                             <button

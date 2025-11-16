@@ -6,7 +6,7 @@
 
 <x-ui.card :padding="false">
     <div class="px-6 py-4 border-b border-card-border">
-        <h3 class="text-lg font-semibold text-text-primary">Recent Activity</h3>
+        <h3 class="text-lg font-semibold text-primary">Recent Activity</h3>
         <p class="text-sm text-text-secondary">Latest actions and events</p>
     </div>
 
@@ -22,7 +22,7 @@
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-text-primary">No recent activity</h3>
+                <h3 class="mt-2 text-sm font-medium text-primary">No recent activity</h3>
                 <p class="mt-1 text-sm text-text-secondary">Activity will appear here as you work.</p>
             </div>
         @else
@@ -59,7 +59,7 @@
                                         </div>
                                         <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
                                             <div>
-                                                <p class="text-sm text-text-primary">
+                                                <p class="text-sm text-primary">
                                                     {{ $activity['description'] }}
                                                     @if(isset($activity['envelope_id']))
                                                         <a href="/envelopes/{{ $activity['envelope_id'] }}" class="font-medium text-primary-600 hover:text-primary-500">

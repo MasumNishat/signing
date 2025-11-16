@@ -552,7 +552,7 @@ All dashboard components follow consistent patterns:
 
 **4. Dark Mode Support:**
 ```blade
-class="bg-bg-primary text-text-primary dark:bg-gray-800 dark:text-gray-200"
+class="bg-primary text-primary dark:bg-gray-800 dark:text-gray-200"
 ```
 
 ### Routing Pattern

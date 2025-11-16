@@ -36,12 +36,12 @@
                 <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
                     <span class="text-white font-bold text-lg">D</span>
                 </div>
-                <span class="text-xl font-bold text-text-primary">DocuSign</span>
+                <span class="text-xl font-bold text-primary">DocuSign</span>
             </div>
 
             <!-- Close Button -->
             <button @click="open = false"
-                    class="p-2 rounded-lg hover:bg-sidebar-hover text-text-primary transition-colors">
+                    class="p-2 rounded-lg hover:bg-sidebar-hover text-primary transition-colors">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>

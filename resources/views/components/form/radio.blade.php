@@ -18,7 +18,7 @@
     />
 
     @if($label)
-        <label for="{{ $name }}_{{ $value }}" class="ml-3 text-sm font-medium text-text-primary cursor-pointer">
+        <label for="{{ $name }}_{{ $value }}" class="ml-3 text-sm font-medium text-primary cursor-pointer">
             {{ $label }}
         </label>
     @endif

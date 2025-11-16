@@ -9,8 +9,8 @@
     <!-- Accordion Header -->
     <button @click="open = !open"
             type="button"
-            class="flex items-center justify-between w-full px-4 py-3 text-left bg-bg-primary hover:bg-bg-hover transition-colors">
-        <span class="font-medium text-text-primary">{{ $title }}</span>
+            class="flex items-center justify-between w-full px-4 py-3 text-left bg-primary hover:bg-bg-hover transition-colors">
+        <span class="font-medium text-primary">{{ $title }}</span>
 
         <!-- Toggle Icon -->
         <svg class="w-5 h-5 text-text-secondary transition-transform duration-200"
@@ -66,15 +66,15 @@ Usage Examples:
     <dl class="space-y-2">
         <div>
             <dt class="text-sm font-medium text-text-secondary">Status</dt>
-            <dd class="text-sm text-text-primary">Completed</dd>
+            <dd class="text-sm text-primary">Completed</dd>
         </div>
         <div>
             <dt class="text-sm font-medium text-text-secondary">Created</dt>
-            <dd class="text-sm text-text-primary">Jan 15, 2025</dd>
+            <dd class="text-sm text-primary">Jan 15, 2025</dd>
         </div>
         <div>
             <dt class="text-sm font-medium text-text-secondary">Recipients</dt>
-            <dd class="text-sm text-text-primary">3 signers</dd>
+            <dd class="text-sm text-primary">3 signers</dd>
         </div>
     </dl>
 </x-ui.accordion>

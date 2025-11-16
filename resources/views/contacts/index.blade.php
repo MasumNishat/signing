@@ -54,7 +54,7 @@
 
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Contacts</h1>
+                <h1 class="text-2xl font-bold text-primary">Contacts</h1>
                 <p class="mt-1 text-sm text-text-secondary">Manage your contact list</p>
             </div>
             <div class="flex space-x-3">
@@ -75,7 +75,7 @@
             <div class="flex items-center justify-center min-h-screen px-4">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75" @click="showImport = false"></div>
                 <x-ui.card class="relative z-10 max-w-md w-full">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Import Contacts</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Import Contacts</h3>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-text-secondary mb-2">Upload File</label>
@@ -110,7 +110,7 @@
                                 <span class="text-lg font-semibold text-primary-600" x-text="contact.name.charAt(0).toUpperCase()"></span>
                             </div>
                             <div>
-                                <h3 class="font-medium text-text-primary" x-text="contact.name"></h3>
+                                <h3 class="font-medium text-primary" x-text="contact.name"></h3>
                                 <p class="text-sm text-text-secondary" x-text="contact.email"></p>
                             </div>
                         </div>
@@ -128,7 +128,7 @@
             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            <h3 class="mt-2 text-sm font-medium text-text-primary">No contacts</h3>
+            <h3 class="mt-2 text-sm font-medium text-primary">No contacts</h3>
             <p class="mt-1 text-sm text-text-secondary">Get started by adding or importing contacts.</p>
         </div>
     </div>

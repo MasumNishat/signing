@@ -63,7 +63,7 @@
     }" x-init="init()">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Create PowerForm</h1>
+            <h1 class="text-2xl font-bold text-primary">Create PowerForm</h1>
             <p class="mt-1 text-sm text-text-secondary">Create a public form for document signing</p>
         </div>
 
@@ -96,10 +96,10 @@
         <!-- Step 1: Basic Information -->
         <div x-show="step === 1">
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">PowerForm Information</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">PowerForm Information</h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">PowerForm Name *</label>
+                        <label class="block text-sm font-medium text-primary mb-1">PowerForm Name *</label>
                         <x-ui.input
                             type="text"
                             x-model="powerformData.name"
@@ -110,7 +110,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Select Template *</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Select Template *</label>
                         <x-ui.select x-model="powerformData.template_id" required>
                             <option value="">Choose a template...</option>
                             <template x-for="template in templates" :key="template.id">
@@ -121,7 +121,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Signing Mode</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Signing Mode</label>
                         <x-ui.select x-model="powerformData.signing_mode">
                             <option value="email">Email (requires email address)</option>
                             <option value="direct">Direct (no email required)</option>
@@ -130,7 +130,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Status</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Status</label>
                         <x-ui.select x-model="powerformData.status">
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
@@ -144,7 +144,7 @@
                             id="allow-multiple"
                             class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                         >
-                        <label for="allow-multiple" class="ml-2 text-sm text-text-primary">
+                        <label for="allow-multiple" class="ml-2 text-sm text-primary">
                             Allow multiple submissions from same email
                         </label>
                     </div>
@@ -155,10 +155,10 @@
         <!-- Step 2: Email Settings -->
         <div x-show="step === 2">
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Email Settings</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Email Settings</h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Email Subject</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Email Subject</label>
                         <x-ui.input
                             type="text"
                             x-model="emailSettings.subject"
@@ -168,12 +168,12 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Email Message</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Email Message</label>
                         <textarea
                             x-model="emailSettings.message"
                             rows="4"
                             placeholder="Thank you for completing this form..."
-                            class="w-full px-3 py-2 border border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-bg-primary text-text-primary"
+                            class="w-full px-3 py-2 border border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-primary text-primary"
                         ></textarea>
                         <p class="mt-1 text-xs text-text-secondary">Message included in email notifications</p>
                     </div>
@@ -184,15 +184,15 @@
         <!-- Step 3: Review -->
         <div x-show="step === 3">
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Review PowerForm</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Review PowerForm</h3>
                 <dl class="space-y-3">
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">PowerForm Name</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="powerformData.name"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="powerformData.name"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Template</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="templates.find(t => t.id === powerformData.template_id)?.name || 'N/A'"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="templates.find(t => t.id === powerformData.template_id)?.name || 'N/A'"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Signing Mode</dt>
@@ -208,11 +208,11 @@
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Multiple Submissions</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="powerformData.allow_multiple_submissions ? 'Allowed' : 'Not Allowed'"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="powerformData.allow_multiple_submissions ? 'Allowed' : 'Not Allowed'"></dd>
                     </div>
                     <div x-show="emailSettings.subject">
                         <dt class="text-sm font-medium text-text-secondary">Email Subject</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="emailSettings.subject"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="emailSettings.subject"></dd>
                     </div>
                 </dl>
             </x-ui.card>

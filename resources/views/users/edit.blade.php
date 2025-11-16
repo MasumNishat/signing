@@ -21,7 +21,7 @@
                 const userId = window.location.pathname.split('/')[2];
                 const response = await $api.get(`/accounts/${$store.auth.user.account_id}/users/${userId}`);
                 this.user = response.data;
-                
+
                 // Populate form
                 this.userData = {
                     name: this.user.name || '',
@@ -74,18 +74,18 @@
         <div x-show="!loading || user">
             <!-- Header -->
             <div class="mb-6">
-                <h1 class="text-2xl font-bold text-text-primary">Edit User</h1>
+                <h1 class="text-2xl font-bold text-primary">Edit User</h1>
                 <p class="mt-1 text-sm text-text-secondary">Update user information and permissions</p>
             </div>
 
             <!-- Form -->
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">User Information</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">User Information</h3>
                 <div class="space-y-4">
                     <!-- Name & Email -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Full Name *</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Full Name *</label>
                             <x-ui.input
                                 type="text"
                                 x-model="userData.name"
@@ -95,7 +95,7 @@
                             <p x-show="errors.name" class="mt-1 text-sm text-red-600" x-text="errors.name?.[0]"></p>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Email *</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Email *</label>
                             <x-ui.input
                                 type="email"
                                 x-model="userData.email"
@@ -109,7 +109,7 @@
                     <!-- Role & Status -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Role *</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Role *</label>
                             <x-ui.select x-model="userData.role">
                                 <option value="viewer">Viewer</option>
                                 <option value="sender">Sender</option>
@@ -118,7 +118,7 @@
                             </x-ui.select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Status *</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Status *</label>
                             <x-ui.select x-model="userData.status">
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
@@ -130,7 +130,7 @@
                     <!-- Phone & Title -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Phone</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Phone</label>
                             <x-ui.input
                                 type="tel"
                                 x-model="userData.phone"
@@ -138,7 +138,7 @@
                             />
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Job Title</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Job Title</label>
                             <x-ui.input
                                 type="text"
                                 x-model="userData.title"
@@ -149,7 +149,7 @@
 
                     <!-- Company -->
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Company</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Company</label>
                         <x-ui.input
                             type="text"
                             x-model="userData.company"

@@ -117,7 +117,7 @@
     }" x-init="init()">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Workflow Builder</h1>
+            <h1 class="text-2xl font-bold text-primary">Workflow Builder</h1>
             <p class="mt-1 text-sm text-text-secondary">Design custom routing workflows for your documents</p>
         </div>
 
@@ -125,12 +125,12 @@
             <!-- Left: Workflow Configuration -->
             <div class="lg:col-span-1">
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Workflow Settings</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Workflow Settings</h3>
 
                     <div class="space-y-4">
                         <!-- Workflow Name -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">
+                            <label class="block text-sm font-medium text-primary mb-1">
                                 Workflow Name <span class="text-red-500">*</span>
                             </label>
                             <x-ui.input
@@ -143,18 +143,18 @@
 
                         <!-- Description -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Description</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Description</label>
                             <textarea
                                 x-model="workflow.description"
                                 rows="3"
                                 placeholder="Optional description"
-                                class="w-full px-3 py-2 border border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-bg-primary text-text-primary"
+                                class="w-full px-3 py-2 border border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-primary text-primary"
                             ></textarea>
                         </div>
 
                         <!-- Routing Type -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Routing Type</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Routing Type</label>
                             <x-ui.select x-model="workflow.type">
                                 <option value="sequential">Sequential (one at a time)</option>
                                 <option value="parallel">Parallel (all at once)</option>
@@ -164,7 +164,7 @@
 
                         <!-- Scheduled Send -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Schedule Send (Optional)</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Schedule Send (Optional)</label>
                             <x-ui.input
                                 type="datetime-local"
                                 x-model="workflow.scheduled_send_at"
@@ -201,7 +201,7 @@
             <!-- Middle: Visual Workflow -->
             <div class="lg:col-span-1">
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Workflow Steps</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Workflow Steps</h3>
 
                     <div x-show="workflow.steps.length === 0" class="text-center py-12 text-text-secondary">
                         <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -222,17 +222,17 @@
                                     <div class="flex items-center space-x-2">
                                         <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-600 text-white text-sm font-medium" x-text="step.order"></div>
                                         <div>
-                                            <p class="text-sm font-medium text-text-primary capitalize" x-text="step.action"></p>
+                                            <p class="text-sm font-medium text-primary capitalize" x-text="step.action"></p>
                                             <p class="text-xs text-text-secondary" x-text="step.recipient_id ? getRecipientName(step.recipient_id) : 'No recipient'"></p>
                                         </div>
                                     </div>
                                     <div class="flex space-x-1">
-                                        <button @click.stop="moveStepUp(step.id)" :disabled="index === 0" class="p-1 text-text-secondary hover:text-text-primary disabled:opacity-30">
+                                        <button @click.stop="moveStepUp(step.id)" :disabled="index === 0" class="p-1 text-text-secondary hover:text-primary disabled:opacity-30">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                                             </svg>
                                         </button>
-                                        <button @click.stop="moveStepDown(step.id)" :disabled="index === workflow.steps.length - 1" class="p-1 text-text-secondary hover:text-text-primary disabled:opacity-30">
+                                        <button @click.stop="moveStepDown(step.id)" :disabled="index === workflow.steps.length - 1" class="p-1 text-text-secondary hover:text-primary disabled:opacity-30">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                             </svg>
@@ -266,7 +266,7 @@
             <!-- Right: Step Configuration -->
             <div class="lg:col-span-1">
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Step Configuration</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Step Configuration</h3>
 
                     <div x-show="!selectedStep" class="text-center py-12 text-text-secondary">
                         <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -279,7 +279,7 @@
                     <div x-show="selectedStep" class="space-y-4">
                         <!-- Action Type -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Action</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Action</label>
                             <div class="grid grid-cols-2 gap-2">
                                 <template x-for="action in availableActions" :key="action.id">
                                     <button
@@ -292,7 +292,7 @@
                                             <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" x-bind:d="action.icon" />
                                             </svg>
-                                            <span class="text-sm font-medium text-text-primary" x-text="action.name"></span>
+                                            <span class="text-sm font-medium text-primary" x-text="action.name"></span>
                                         </div>
                                     </button>
                                 </template>
@@ -301,7 +301,7 @@
 
                         <!-- Recipient -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Recipient</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Recipient</label>
                             <x-ui.select x-model="selectedStep.recipient_id">
                                 <option value="">Select recipient...</option>
                                 <template x-for="recipient in recipients" :key="recipient.id">
@@ -319,14 +319,14 @@
                                 id="parallel"
                                 class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                             >
-                            <label for="parallel" class="ml-2 text-sm text-text-primary">
+                            <label for="parallel" class="ml-2 text-sm text-primary">
                                 Run in parallel with previous step
                             </label>
                         </div>
 
                         <!-- Delay -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Delay (days)</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Delay (days)</label>
                             <x-ui.input
                                 type="number"
                                 x-model="selectedStep.delay_days"
@@ -341,7 +341,7 @@
 
                 <!-- Workflow Info -->
                 <x-ui.card class="mt-6">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Routing Guide</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Routing Guide</h3>
                     <ul class="space-y-2 text-sm text-text-secondary">
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

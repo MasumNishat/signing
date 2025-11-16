@@ -81,7 +81,7 @@
             <!-- Header -->
             <div class="flex items-start justify-between">
                 <div>
-                    <h1 class="text-2xl font-bold text-text-primary">Edit Envelope</h1>
+                    <h1 class="text-2xl font-bold text-primary">Edit Envelope</h1>
                     <p class="mt-1 text-sm text-text-secondary">Update envelope details (draft only)</p>
                 </div>
                 <x-ui.button variant="secondary" @click="window.location.href='/envelopes/{{ $envelopeId }}'">
@@ -91,7 +91,7 @@
 
             <!-- Documents (Read-only) -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Documents</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Documents</h2>
                 <div class="space-y-3">
                     <template x-for="doc in documents" :key="doc.id">
                         <div class="flex items-center justify-between p-4 border border-border-primary rounded-lg">
@@ -100,7 +100,7 @@
                                     <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
                                 </svg>
                                 <div>
-                                    <p class="font-medium text-text-primary" x-text="doc.name"></p>
+                                    <p class="font-medium text-primary" x-text="doc.name"></p>
                                     <p class="text-sm text-text-secondary">Order: <span x-text="doc.order"></span></p>
                                 </div>
                             </div>
@@ -112,11 +112,11 @@
 
             <!-- Recipients (Read-only) -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Recipients</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Recipients</h2>
                 <div class="space-y-3">
                     <template x-for="recipient in recipients" :key="recipient.id">
                         <div class="p-4 border border-border-primary rounded-lg">
-                            <p class="font-medium text-text-primary" x-text="recipient.name"></p>
+                            <p class="font-medium text-primary" x-text="recipient.name"></p>
                             <p class="text-sm text-text-secondary" x-text="recipient.email"></p>
                             <p class="text-sm text-text-secondary mt-1">
                                 Role: <span x-text="recipient.recipient_type ? recipient.recipient_type.replace('_', ' ').charAt(0).toUpperCase() + recipient.recipient_type.slice(1).replace('_', ' ') : ''"></span>
@@ -129,7 +129,7 @@
 
             <!-- Envelope Details (Editable) -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Envelope Details</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Envelope Details</h2>
                 <div class="space-y-4">
                     <x-form.input
                         name="email_subject"

@@ -47,7 +47,7 @@ $colorClasses = [
 @endphp
 
 <x-ui.card>
-    <h3 class="text-lg font-semibold text-text-primary mb-4">Quick Actions</h3>
+    <h3 class="text-lg font-semibold text-primary mb-4">Quick Actions</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         @foreach($actionsList as $action)
             <a href="{{ $action['url'] }}"
@@ -58,7 +58,7 @@ $colorClasses = [
                     </svg>
                 </div>
                 <div class="ml-4">
-                    <p class="font-medium text-text-primary">{{ $action['title'] }}</p>
+                    <p class="font-medium text-primary">{{ $action['title'] }}</p>
                     <p class="text-sm text-text-secondary">{{ $action['description'] }}</p>
                 </div>
             </a>

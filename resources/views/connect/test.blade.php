@@ -69,13 +69,13 @@
         <!-- Header -->
         <div class="mb-6">
             <div class="flex items-center space-x-2">
-                <a href="/connect" class="text-text-secondary hover:text-text-primary">Webhooks</a>
+                <a href="/connect" class="text-text-secondary hover:text-primary">Webhooks</a>
                 <span class="text-text-secondary">/</span>
-                <a :href="`/connect/${webhook?.id}`" class="text-text-secondary hover:text-text-primary" x-text="webhook?.name"></a>
+                <a :href="`/connect/${webhook?.id}`" class="text-text-secondary hover:text-primary" x-text="webhook?.name"></a>
                 <span class="text-text-secondary">/</span>
-                <span class="text-text-primary">Test</span>
+                <span class="text-primary">Test</span>
             </div>
-            <h1 class="mt-2 text-2xl font-bold text-text-primary">Test Webhook</h1>
+            <h1 class="mt-2 text-2xl font-bold text-primary">Test Webhook</h1>
             <p class="mt-1 text-sm text-text-secondary">Send a test webhook to verify your endpoint</p>
         </div>
 
@@ -83,20 +83,20 @@
             <!-- Test Configuration -->
             <div>
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Test Configuration</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Test Configuration</h3>
 
                     <div class="space-y-4">
                         <!-- Webhook URL -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Webhook URL</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Webhook URL</label>
                             <div class="p-3 bg-bg-secondary border border-border-primary rounded-md">
-                                <p class="text-sm font-mono text-text-primary" x-text="webhook?.url"></p>
+                                <p class="text-sm font-mono text-primary" x-text="webhook?.url"></p>
                             </div>
                         </div>
 
                         <!-- Event Type -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Event Type</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Event Type</label>
                             <x-ui.select x-model="testPayload.event_type">
                                 <template x-for="event in availableEvents" :key="event">
                                     <option x-bind:value="event" x-text="event"></option>
@@ -113,7 +113,7 @@
                                 id="test-mode"
                                 class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                             >
-                            <label for="test-mode" class="ml-2 text-sm text-text-primary">
+                            <label for="test-mode" class="ml-2 text-sm text-primary">
                                 Test Mode (includes test flag in payload)
                             </label>
                         </div>
@@ -130,9 +130,9 @@
 
                 <!-- Sample Payload -->
                 <x-ui.card class="mt-6">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Sample Payload</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Sample Payload</h3>
                     <div class="p-4 bg-gray-50 dark:bg-gray-900 border border-border-primary rounded-md overflow-x-auto">
-                        <pre class="text-xs text-text-primary" x-text="formatJson({
+                        <pre class="text-xs text-primary" x-text="formatJson({
                             event: testPayload.event_type,
                             timestamp: new Date().toISOString(),
                             account_id: '$store.auth.user.account_id',
@@ -151,7 +151,7 @@
             <!-- Test Result -->
             <div>
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Test Result</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Test Result</h3>
 
                     <div x-show="!testResult" class="text-center py-12 text-text-secondary">
                         <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -182,7 +182,7 @@
 
                         <!-- Result Details -->
                         <div>
-                            <h4 class="text-sm font-medium text-text-primary mb-2">Response Details</h4>
+                            <h4 class="text-sm font-medium text-primary mb-2">Response Details</h4>
                             <dl class="space-y-2">
                                 <div class="flex justify-between">
                                     <dt class="text-sm text-text-secondary">Status Code</dt>
@@ -190,16 +190,16 @@
                                 </div>
                                 <div class="flex justify-between">
                                     <dt class="text-sm text-text-secondary">Response Time</dt>
-                                    <dd class="text-sm text-text-primary" x-text="`${testResult?.response_time}ms`"></dd>
+                                    <dd class="text-sm text-primary" x-text="`${testResult?.response_time}ms`"></dd>
                                 </div>
                             </dl>
                         </div>
 
                         <!-- Response Body -->
                         <div>
-                            <h4 class="text-sm font-medium text-text-primary mb-2">Response Body</h4>
+                            <h4 class="text-sm font-medium text-primary mb-2">Response Body</h4>
                             <div class="p-3 bg-gray-50 dark:bg-gray-900 border border-border-primary rounded-md overflow-x-auto">
-                                <pre class="text-xs text-text-primary" x-text="testResult?.response_body || testResult?.error_message"></pre>
+                                <pre class="text-xs text-primary" x-text="testResult?.response_body || testResult?.error_message"></pre>
                             </div>
                         </div>
 
@@ -214,7 +214,7 @@
 
                 <!-- Testing Tips -->
                 <x-ui.card class="mt-6">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Testing Tips</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Testing Tips</h3>
                     <ul class="space-y-2 text-sm text-text-secondary">
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

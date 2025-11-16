@@ -38,7 +38,7 @@ $iconPaths = [
     <div x-show="{{ $loading ? 'false' : 'true' }}" class="flex items-center justify-between">
         <div class="flex-1">
             <p class="text-sm font-medium text-text-secondary">{{ $title }}</p>
-            <p class="mt-2 text-3xl font-bold text-text-primary">{{ $value }}</p>
+            <p class="mt-2 text-3xl font-bold text-primary">{{ $value }}</p>
 
             @if($change !== null)
                 <p class="mt-2 text-xs text-text-secondary">

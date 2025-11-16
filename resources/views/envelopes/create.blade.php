@@ -207,7 +207,7 @@
 
         <!-- Step 1: Upload Documents -->
         <x-ui.card x-show="currentStep === 1">
-            <h2 class="text-xl font-semibold text-text-primary mb-4">Upload Documents</h2>
+            <h2 class="text-xl font-semibold text-primary mb-4">Upload Documents</h2>
             <p class="text-sm text-text-secondary mb-6">Add the documents that need to be signed</p>
 
             <!-- Upload Area -->
@@ -233,7 +233,7 @@
                                 <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
                             </svg>
                             <div class="flex-1">
-                                <p class="font-medium text-text-primary" x-text="doc.name"></p>
+                                <p class="font-medium text-primary" x-text="doc.name"></p>
                                 <p class="text-sm text-text-secondary">
                                     Order: <span x-text="doc.order"></span> •
                                     <span x-text="(doc.size / 1024 / 1024).toFixed(2)"></span> MB
@@ -241,12 +241,12 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button @click="moveDocumentUp(doc.id)" class="p-2 text-text-secondary hover:text-text-primary" :disabled="doc.order === 1">
+                            <button @click="moveDocumentUp(doc.id)" class="p-2 text-text-secondary hover:text-primary" :disabled="doc.order === 1">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                                 </svg>
                             </button>
-                            <button @click="moveDocumentDown(doc.id)" class="p-2 text-text-secondary hover:text-text-primary" :disabled="doc.order === documents.length">
+                            <button @click="moveDocumentDown(doc.id)" class="p-2 text-text-secondary hover:text-primary" :disabled="doc.order === documents.length">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                 </svg>
@@ -268,7 +268,7 @@
 
         <!-- Step 2: Add Recipients -->
         <x-ui.card x-show="currentStep === 2">
-            <h2 class="text-xl font-semibold text-text-primary mb-4">Add Recipients</h2>
+            <h2 class="text-xl font-semibold text-primary mb-4">Add Recipients</h2>
             <p class="text-sm text-text-secondary mb-6">Specify who needs to sign or view this envelope</p>
 
             <!-- Recipients List -->
@@ -325,7 +325,7 @@
 
         <!-- Step 3: Envelope Details -->
         <x-ui.card x-show="currentStep === 3">
-            <h2 class="text-xl font-semibold text-text-primary mb-4">Envelope Details</h2>
+            <h2 class="text-xl font-semibold text-primary mb-4">Envelope Details</h2>
             <p class="text-sm text-text-secondary mb-6">Provide a subject and message for this envelope</p>
 
             <div class="space-y-4">
@@ -350,13 +350,13 @@
 
         <!-- Step 4: Review -->
         <x-ui.card x-show="currentStep === 4">
-            <h2 class="text-xl font-semibold text-text-primary mb-4">Review & Send</h2>
+            <h2 class="text-xl font-semibold text-primary mb-4">Review & Send</h2>
             <p class="text-sm text-text-secondary mb-6">Review your envelope before sending</p>
 
             <div class="space-y-6">
                 <!-- Documents Summary -->
                 <div>
-                    <h3 class="font-medium text-text-primary mb-2">Documents (<span x-text="documents.length"></span>)</h3>
+                    <h3 class="font-medium text-primary mb-2">Documents (<span x-text="documents.length"></span>)</h3>
                     <ul class="list-disc list-inside text-sm text-text-secondary space-y-1">
                         <template x-for="doc in documents" :key="doc.id">
                             <li x-text="doc.name"></li>
@@ -366,7 +366,7 @@
 
                 <!-- Recipients Summary -->
                 <div>
-                    <h3 class="font-medium text-text-primary mb-2">Recipients (<span x-text="recipients.length"></span>)</h3>
+                    <h3 class="font-medium text-primary mb-2">Recipients (<span x-text="recipients.length"></span>)</h3>
                     <ul class="list-disc list-inside text-sm text-text-secondary space-y-1">
                         <template x-for="recipient in recipients" :key="recipient.id">
                             <li>
@@ -379,7 +379,7 @@
 
                 <!-- Envelope Details Summary -->
                 <div>
-                    <h3 class="font-medium text-text-primary mb-2">Details</h3>
+                    <h3 class="font-medium text-primary mb-2">Details</h3>
                     <dl class="text-sm text-text-secondary space-y-1">
                         <div class="flex">
                             <dt class="font-medium w-32">Subject:</dt>

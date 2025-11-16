@@ -99,16 +99,16 @@
         <div x-show="!loading && template">
             <!-- Header -->
             <div class="mb-6">
-                <h1 class="text-2xl font-bold text-text-primary">Share Template: <span x-text="template?.name"></span></h1>
+                <h1 class="text-2xl font-bold text-primary">Share Template: <span x-text="template?.name"></span></h1>
                 <p class="mt-1 text-sm text-text-secondary">Share this template with other users in your account</p>
             </div>
 
             <!-- Add User -->
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Share with User</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Share with User</h3>
                 <div class="flex items-end space-x-3">
                     <div class="flex-1">
-                        <label class="block text-sm font-medium text-text-primary mb-1">User Email</label>
+                        <label class="block text-sm font-medium text-primary mb-1">User Email</label>
                         <x-ui.input
                             type="email"
                             x-model="newUserEmail"
@@ -123,7 +123,7 @@
                             id="can-edit"
                             class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                         >
-                        <label for="can-edit" class="text-sm text-text-primary">Can Edit</label>
+                        <label for="can-edit" class="text-sm text-primary">Can Edit</label>
                     </div>
                     <x-ui.button variant="primary" @click="shareTemplate()">
                         Share
@@ -133,7 +133,7 @@
 
             <!-- Shared Users List -->
             <x-ui.card>
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Shared With</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Shared With</h3>
                 <div x-show="sharedUsers.length > 0" class="space-y-3">
                     <template x-for="user in sharedUsers" :key="user.id">
                         <div class="flex items-center justify-between p-4 border border-border-primary rounded-lg">
@@ -142,7 +142,7 @@
                                     <span class="font-semibold text-primary-600" x-text="user.shared_with_email?.charAt(0).toUpperCase()"></span>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-text-primary" x-text="user.shared_with_name || user.shared_with_email"></p>
+                                    <p class="text-sm font-medium text-primary" x-text="user.shared_with_name || user.shared_with_email"></p>
                                     <p class="text-xs text-text-secondary" x-text="user.shared_with_email"></p>
                                 </div>
                             </div>

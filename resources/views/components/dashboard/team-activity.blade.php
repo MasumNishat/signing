@@ -5,7 +5,7 @@
 
 <x-ui.card>
     <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-text-primary">Team Activity</h3>
+        <h3 class="text-lg font-semibold text-primary">Team Activity</h3>
         <a href="/users" class="text-sm font-medium text-primary-600 hover:text-primary-500">View team</a>
     </div>
 
@@ -39,7 +39,7 @@
                             @endif
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm text-text-primary">
+                            <p class="text-sm text-primary">
                                 <span class="font-medium">{{ $activity['user_name'] }}</span>
                                 <span class="text-text-secondary">{{ $activity['action'] }}</span>
                             </p>

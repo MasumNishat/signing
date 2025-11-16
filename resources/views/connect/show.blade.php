@@ -70,7 +70,7 @@
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <div class="flex items-center space-x-3">
-                        <h1 class="text-2xl font-bold text-text-primary" x-text="webhook?.name"></h1>
+                        <h1 class="text-2xl font-bold text-primary" x-text="webhook?.name"></h1>
                         <x-ui.badge x-bind:variant="webhook?.status === 'active' ? 'success' : 'secondary'" x-text="webhook?.status?.toUpperCase()"></x-ui.badge>
                     </div>
                     <p class="mt-1 text-sm text-text-secondary font-mono" x-text="webhook?.url"></p>
@@ -86,7 +86,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6" x-show="stats">
                 <x-ui.card>
                     <div class="text-center">
-                        <p class="text-3xl font-bold text-text-primary" x-text="stats?.total_deliveries || 0"></p>
+                        <p class="text-3xl font-bold text-primary" x-text="stats?.total_deliveries || 0"></p>
                         <p class="mt-1 text-sm text-text-secondary">Total Deliveries</p>
                     </div>
                 </x-ui.card>
@@ -104,7 +104,7 @@
                 </x-ui.card>
                 <x-ui.card>
                     <div class="text-center">
-                        <p class="text-3xl font-bold text-text-primary" x-text="stats?.success_rate || '0%'"></p>
+                        <p class="text-3xl font-bold text-primary" x-text="stats?.success_rate || '0%'"></p>
                         <p class="mt-1 text-sm text-text-secondary">Success Rate</p>
                     </div>
                 </x-ui.card>
@@ -112,21 +112,21 @@
 
             <!-- Webhook Details -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Configuration</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Configuration</h2>
                 <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Webhook ID</dt>
-                        <dd class="mt-1 text-sm text-text-primary font-mono" x-text="webhook?.id"></dd>
+                        <dd class="mt-1 text-sm text-primary font-mono" x-text="webhook?.id"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Created</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="formatDate(webhook?.created_at)"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="formatDate(webhook?.created_at)"></dd>
                     </div>
                     <div class="md:col-span-2">
                         <dt class="text-sm font-medium text-text-secondary mb-2">Events (<span x-text="webhook?.events?.length || 0"></span>)</dt>
                         <dd class="flex flex-wrap gap-2">
                             <template x-for="event in webhook?.events" :key="event">
-                                <span class="px-2 py-1 text-xs bg-bg-secondary border border-border-primary rounded-md text-text-primary" x-text="event"></span>
+                                <span class="px-2 py-1 text-xs bg-bg-secondary border border-border-primary rounded-md text-primary" x-text="event"></span>
                             </template>
                         </dd>
                     </div>
@@ -136,7 +136,7 @@
             <!-- Recent Logs -->
             <x-ui.card>
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold text-text-primary">Recent Deliveries</h2>
+                    <h2 class="text-lg font-semibold text-primary">Recent Deliveries</h2>
                     <x-ui.button variant="secondary" size="sm" x-bind:onclick="`window.location.href='/connect/${webhook?.id}/logs'`">
                         View All
                     </x-ui.button>
@@ -155,12 +155,12 @@
                         <tbody class="divide-y divide-border-primary">
                             <template x-for="log in logs" :key="log.id">
                                 <tr class="hover:bg-bg-secondary">
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="log.event_type"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="log.event_type"></td>
                                     <td class="px-4 py-3 text-sm">
                                         <x-ui.badge x-bind:variant="getStatusColor(log.status)" x-text="log.status?.toUpperCase()"></x-ui.badge>
                                     </td>
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="log.response_code || '-'"></td>
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="formatDate(log.created_at)"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="log.response_code || '-'"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="formatDate(log.created_at)"></td>
                                 </tr>
                             </template>
                         </tbody>

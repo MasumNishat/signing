@@ -360,7 +360,7 @@
     <!-- Lines 21-30: Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
-  <body class="bg-bg-primary text-text-primary">
+  <body class="bg-primary text-primary">
     <!-- Lines 35-60: Header component -->
     <x-layout.header />
 

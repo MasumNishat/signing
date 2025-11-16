@@ -85,7 +85,7 @@
             <!-- Header -->
             <div class="flex items-start justify-between">
                 <div class="flex-1">
-                    <h1 class="text-2xl font-bold text-text-primary" x-text="workspace?.name"></h1>
+                    <h1 class="text-2xl font-bold text-primary" x-text="workspace?.name"></h1>
                     <p class="mt-1 text-sm text-text-secondary" x-text="workspace?.description || 'No description'"></p>
                     <p class="mt-1 text-xs text-text-secondary">
                         Created on <span x-text="formatDate(workspace?.created_at)"></span>
@@ -109,8 +109,8 @@
             <!-- Upload Progress -->
             <div x-show="uploadProgress > 0" class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md p-4">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm text-text-primary">Uploading...</span>
-                    <span class="text-sm text-text-primary" x-text="`${uploadProgress}%`"></span>
+                    <span class="text-sm text-primary">Uploading...</span>
+                    <span class="text-sm text-primary" x-text="`${uploadProgress}%`"></span>
                 </div>
                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div class="bg-blue-600 h-2 rounded-full transition-all" :style="`width: ${uploadProgress}%`"></div>
@@ -120,7 +120,7 @@
             <!-- Files List -->
             <x-ui.card>
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-semibold text-text-primary">Files</h2>
+                    <h2 class="text-lg font-semibold text-primary">Files</h2>
                     <span class="text-sm text-text-secondary"><span x-text="files.length"></span> files</span>
                 </div>
 
@@ -142,11 +142,11 @@
                                             <svg class="w-5 h-5 mr-2 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                             </svg>
-                                            <span class="text-text-primary" x-text="file.name"></span>
+                                            <span class="text-primary" x-text="file.name"></span>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="formatFileSize(file.size)"></td>
-                                    <td class="px-4 py-3 text-sm text-text-primary" x-text="formatDate(file.created_at)"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="formatFileSize(file.size)"></td>
+                                    <td class="px-4 py-3 text-sm text-primary" x-text="formatDate(file.created_at)"></td>
                                     <td class="px-4 py-3 text-sm">
                                         <div class="flex items-center space-x-2">
                                             <a :href="`/api/v2.1/accounts/${$store.auth.user.account_id}/workspaces/${workspace.id}/files/${file.id}/download`" class="text-primary-600 hover:underline">Download</a>
@@ -164,7 +164,7 @@
                     <svg class="mx-auto h-12 w-12 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-text-primary">No files</h3>
+                    <h3 class="mt-2 text-sm font-medium text-primary">No files</h3>
                     <p class="mt-1 text-sm text-text-secondary">Upload files to this workspace</p>
                 </div>
             </x-ui.card>

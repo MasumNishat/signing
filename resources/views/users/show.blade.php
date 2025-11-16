@@ -67,7 +67,7 @@
                         <span class="text-3xl font-bold text-primary-600" x-text="user?.name?.charAt(0).toUpperCase()"></span>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-text-primary" x-text="user?.name"></h1>
+                        <h1 class="text-2xl font-bold text-primary" x-text="user?.name"></h1>
                         <p class="text-sm text-text-secondary" x-text="user?.email"></p>
                         <div class="flex items-center space-x-2 mt-2">
                             <x-ui.badge x-bind:variant="getRoleBadgeColor(user?.role)" x-text="user?.role?.toUpperCase()"></x-ui.badge>
@@ -89,42 +89,42 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <!-- Contact Information -->
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Contact Information</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Contact Information</h3>
                     <dl class="space-y-3">
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Email</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="user?.email"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="user?.email"></dd>
                         </div>
                         <div x-show="user?.phone">
                             <dt class="text-sm font-medium text-text-secondary">Phone</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="user?.phone || 'Not provided'"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="user?.phone || 'Not provided'"></dd>
                         </div>
                         <div x-show="user?.title">
                             <dt class="text-sm font-medium text-text-secondary">Job Title</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="user?.title || 'Not provided'"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="user?.title || 'Not provided'"></dd>
                         </div>
                         <div x-show="user?.company">
                             <dt class="text-sm font-medium text-text-secondary">Company</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="user?.company || 'Not provided'"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="user?.company || 'Not provided'"></dd>
                         </div>
                     </dl>
                 </x-ui.card>
 
                 <!-- Account Details -->
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Account Details</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Account Details</h3>
                     <dl class="space-y-3">
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">User ID</dt>
-                            <dd class="mt-1 text-sm text-text-primary font-mono" x-text="user?.id"></dd>
+                            <dd class="mt-1 text-sm text-primary font-mono" x-text="user?.id"></dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Created</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="user?.created_at ? new Date(user.created_at).toLocaleString() : 'N/A'"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="user?.created_at ? new Date(user.created_at).toLocaleString() : 'N/A'"></dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Last Login</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="user?.last_login_at ? new Date(user.last_login_at).toLocaleString() : 'Never'"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="user?.last_login_at ? new Date(user.last_login_at).toLocaleString() : 'Never'"></dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Email Verified</dt>
@@ -138,7 +138,7 @@
 
             <!-- Permissions -->
             <x-ui.card class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Permissions</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Permissions</h3>
                 <div x-show="user?.permissions && user.permissions.length > 0" class="flex flex-wrap gap-2">
                     <template x-for="permission in user?.permissions" :key="permission">
                         <x-ui.badge variant="secondary" x-text="permission.replace('_', ' ').toUpperCase()"></x-ui.badge>

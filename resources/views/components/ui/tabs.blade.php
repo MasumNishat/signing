@@ -15,17 +15,17 @@ Usage Examples:
     <div class="border-b border-border-primary">
         <nav class="flex space-x-8" aria-label="Tabs">
             <button @click="activeTab = 1"
-                    :class="activeTab === 1 ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-secondary'"
+                    :class="activeTab === 1 ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-secondary'"
                     class="py-4 px-1 border-b-2 font-medium text-sm transition-colors">
                 Details
             </button>
             <button @click="activeTab = 2"
-                    :class="activeTab === 2 ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-secondary'"
+                    :class="activeTab === 2 ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-secondary'"
                     class="py-4 px-1 border-b-2 font-medium text-sm transition-colors">
                 Recipients
             </button>
             <button @click="activeTab = 3"
-                    :class="activeTab === 3 ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-secondary'"
+                    :class="activeTab === 3 ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-border-secondary'"
                     class="py-4 px-1 border-b-2 font-medium text-sm transition-colors">
                 Documents
             </button>
@@ -93,17 +93,17 @@ Usage Examples:
 <x-ui.tabs>
     <div class="flex space-x-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
         <button @click="activeTab = 1"
-                :class="activeTab === 1 ? 'bg-white dark:bg-gray-700 text-text-primary shadow' : 'text-text-secondary hover:text-text-primary'"
+                :class="activeTab === 1 ? 'bg-white dark:bg-gray-700 text-primary shadow' : 'text-text-secondary hover:text-primary'"
                 class="flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all">
                 Active
         </button>
         <button @click="activeTab = 2"
-                :class="activeTab === 2 ? 'bg-white dark:bg-gray-700 text-text-primary shadow' : 'text-text-secondary hover:text-text-primary'"
+                :class="activeTab === 2 ? 'bg-white dark:bg-gray-700 text-primary shadow' : 'text-text-secondary hover:text-primary'"
                 class="flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all">
                 Completed
         </button>
         <button @click="activeTab = 3"
-                :class="activeTab === 3 ? 'bg-white dark:bg-gray-700 text-text-primary shadow' : 'text-text-secondary hover:text-text-primary'"
+                :class="activeTab === 3 ? 'bg-white dark:bg-gray-700 text-primary shadow' : 'text-text-secondary hover:text-primary'"
                 class="flex-1 px-4 py-2 text-sm font-medium rounded-lg transition-all">
                 Archived
         </button>

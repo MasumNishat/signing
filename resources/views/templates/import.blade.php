@@ -56,7 +56,7 @@
     x-init="init()">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Import Template</h1>
+            <h1 class="text-2xl font-bold text-primary">Import Template</h1>
             <p class="mt-1 text-sm text-text-secondary">Import a template from JSON, XML, or DOCX file</p>
         </div>
 
@@ -84,8 +84,8 @@
         <!-- Step 1: Upload File -->
         <div x-show="step === 1">
             <x-ui.card>
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Select File to Import</h3>
-                
+                <h3 class="text-lg font-semibold text-primary mb-4">Select File to Import</h3>
+
                 <!-- File Upload Area -->
                 <div class="border-2 border-dashed border-border-primary rounded-lg p-12 text-center">
                     <input
@@ -111,7 +111,7 @@
                             </label>
                         </div>
 
-                        <p x-show="file" class="text-sm text-text-primary font-medium" x-text="file?.name"></p>
+                        <p x-show="file" class="text-sm text-primary font-medium" x-text="file?.name"></p>
 
                         <div class="text-xs text-text-secondary">
                             <p>Supported formats: JSON, XML, DOCX</p>
@@ -158,13 +158,13 @@
                         </svg>
                     </div>
 
-                    <h3 class="text-2xl font-bold text-text-primary mb-2">Template Imported Successfully!</h3>
+                    <h3 class="text-2xl font-bold text-primary mb-2">Template Imported Successfully!</h3>
                     <p class="text-text-secondary mb-8">Your template has been imported and is ready to use</p>
 
                     <!-- Template Info -->
                     <div x-show="template" class="max-w-md mx-auto mb-8">
                         <div class="bg-bg-secondary rounded-lg p-6 text-left">
-                            <h4 class="font-semibold text-text-primary mb-3" x-text="template?.name"></h4>
+                            <h4 class="font-semibold text-primary mb-3" x-text="template?.name"></h4>
                             <div class="space-y-2 text-sm text-text-secondary">
                                 <div class="flex justify-between">
                                     <span>Documents:</span>

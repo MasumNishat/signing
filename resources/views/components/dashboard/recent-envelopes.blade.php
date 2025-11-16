@@ -6,7 +6,7 @@
 
 <x-ui.card :padding="false">
     <div class="px-6 py-4 border-b border-card-border flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-text-primary">Recent Envelopes</h3>
+        <h3 class="text-lg font-semibold text-primary">Recent Envelopes</h3>
         <a href="/envelopes" class="text-sm font-medium text-primary-600 hover:text-primary-500">View all</a>
     </div>
 
@@ -22,7 +22,7 @@
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-text-primary">No envelopes yet</h3>
+                <h3 class="mt-2 text-sm font-medium text-primary">No envelopes yet</h3>
                 <p class="mt-1 text-sm text-text-secondary">Get started by sending your first envelope.</p>
                 <div class="mt-6">
                     <x-ui.button variant="primary" onclick="window.location.href='/envelopes/create'">
@@ -42,11 +42,11 @@
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-bg-primary divide-y divide-border-primary">
+                    <tbody class="bg-primary divide-y divide-border-primary">
                         @foreach(array_slice($envelopes, 0, $limit) as $envelope)
                             <tr class="hover:bg-bg-hover cursor-pointer transition-colors" onclick="window.location.href='/envelopes/{{ $envelope['id'] }}'">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <p class="font-medium text-text-primary">{{ $envelope['email_subject'] ?? 'Untitled' }}</p>
+                                    <p class="font-medium text-primary">{{ $envelope['email_subject'] ?? 'Untitled' }}</p>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full

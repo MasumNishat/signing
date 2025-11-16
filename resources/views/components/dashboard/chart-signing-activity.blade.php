@@ -7,10 +7,10 @@
 <x-ui.card>
     <div class="px-6 py-4 border-b border-card-border flex items-center justify-between">
         <div>
-            <h3 class="text-lg font-semibold text-text-primary">Signing Activity</h3>
+            <h3 class="text-lg font-semibold text-primary">Signing Activity</h3>
             <p class="text-sm text-text-secondary">Documents signed over time</p>
         </div>
-        <select class="text-sm border-border-primary rounded-md bg-bg-primary text-text-primary" x-model="period">
+        <select class="text-sm border-border-primary rounded-md bg-primary text-primary" x-model="period">
             <option value="week">Last 7 Days</option>
             <option value="month">Last 30 Days</option>
             <option value="year">Last 12 Months</option>
@@ -62,15 +62,15 @@
                     <div class="pt-4 border-t border-card-border">
                         <div class="grid grid-cols-3 gap-4 text-center">
                             <div>
-                                <p class="text-2xl font-bold text-text-primary">{{ array_sum(array_column($data, 'count')) }}</p>
+                                <p class="text-2xl font-bold text-primary">{{ array_sum(array_column($data, 'count')) }}</p>
                                 <p class="text-xs text-text-secondary">Total Signed</p>
                             </div>
                             <div>
-                                <p class="text-2xl font-bold text-text-primary">{{ count($data) > 0 ? round(array_sum(array_column($data, 'count')) / count($data), 1) : 0 }}</p>
+                                <p class="text-2xl font-bold text-primary">{{ count($data) > 0 ? round(array_sum(array_column($data, 'count')) / count($data), 1) : 0 }}</p>
                                 <p class="text-xs text-text-secondary">Daily Average</p>
                             </div>
                             <div>
-                                <p class="text-2xl font-bold text-text-primary">{{ max(array_column($data, 'count')) }}</p>
+                                <p class="text-2xl font-bold text-primary">{{ max(array_column($data, 'count')) }}</p>
                                 <p class="text-xs text-text-secondary">Peak Day</p>
                             </div>
                         </div>

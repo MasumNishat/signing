@@ -424,8 +424,8 @@ All pages implement responsive design:
 
 All pages support dark mode using CSS variables:
 ```css
-bg-bg-primary        /* white / dark-gray-900 */
-text-text-primary    /* gray-900 / white */
+bg-primary        /* white / dark-gray-900 */
+text-primary    /* gray-900 / white */
 border-border-primary /* gray-200 / gray-700 */
 ```
 

@@ -143,7 +143,7 @@
     }" x-init="init()">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Advanced Search</h1>
+            <h1 class="text-2xl font-bold text-primary">Advanced Search</h1>
             <p class="mt-1 text-sm text-text-secondary">Search envelopes with advanced filters and criteria</p>
         </div>
 
@@ -151,12 +151,12 @@
             <!-- Left Sidebar: Search Criteria -->
             <div class="lg:col-span-1">
                 <x-ui.card class="mb-6">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Search Filters</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Search Filters</h3>
 
                     <div class="space-y-4">
                         <!-- Text Search -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Keywords</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Keywords</label>
                             <x-ui.input
                                 type="text"
                                 x-model="searchCriteria.query"
@@ -166,7 +166,7 @@
 
                         <!-- Status -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-2">Status</label>
+                            <label class="block text-sm font-medium text-primary mb-2">Status</label>
                             <div class="space-y-2">
                                 <template x-for="status in ['draft', 'sent', 'delivered', 'completed', 'declined', 'voided']" :key="status">
                                     <label class="flex items-center cursor-pointer">
@@ -176,7 +176,7 @@
                                             @change="toggleStatus(status)"
                                             class="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                         >
-                                        <span class="ml-2 text-sm text-text-primary capitalize" x-text="status"></span>
+                                        <span class="ml-2 text-sm text-primary capitalize" x-text="status"></span>
                                     </label>
                                 </template>
                             </div>
@@ -184,7 +184,7 @@
 
                         <!-- Date Range -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Date Range</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Date Range</label>
                             <div class="space-y-2">
                                 <x-ui.input type="date" x-model="searchCriteria.date_from" placeholder="From" />
                                 <x-ui.input type="date" x-model="searchCriteria.date_to" placeholder="To" />
@@ -193,7 +193,7 @@
 
                         <!-- Sender -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Sender</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Sender</label>
                             <x-ui.input
                                 type="text"
                                 x-model="searchCriteria.sender"
@@ -203,7 +203,7 @@
 
                         <!-- Recipient -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Recipient</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Recipient</label>
                             <x-ui.input
                                 type="text"
                                 x-model="searchCriteria.recipient"
@@ -213,7 +213,7 @@
 
                         <!-- Subject -->
                         <div>
-                            <label class="block text-sm font-medium text-text-primary mb-1">Subject</label>
+                            <label class="block text-sm font-medium text-primary mb-1">Subject</label>
                             <x-ui.input
                                 type="text"
                                 x-model="searchCriteria.subject"
@@ -229,7 +229,7 @@
                                     x-model="searchCriteria.has_attachments"
                                     class="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                 >
-                                <span class="ml-2 text-sm text-text-primary">Has Attachments</span>
+                                <span class="ml-2 text-sm text-primary">Has Attachments</span>
                             </label>
 
                             <label class="flex items-center cursor-pointer">
@@ -238,7 +238,7 @@
                                     x-model="searchCriteria.has_comments"
                                     class="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                 >
-                                <span class="ml-2 text-sm text-text-primary">Has Comments</span>
+                                <span class="ml-2 text-sm text-primary">Has Comments</span>
                             </label>
 
                             <label class="flex items-center cursor-pointer">
@@ -247,7 +247,7 @@
                                     x-model="searchCriteria.requires_action"
                                     class="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                                 >
-                                <span class="ml-2 text-sm text-text-primary">Requires My Action</span>
+                                <span class="ml-2 text-sm text-primary">Requires My Action</span>
                             </label>
                         </div>
                     </div>
@@ -272,7 +272,7 @@
 
                 <!-- Saved Searches -->
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Saved Searches</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Saved Searches</h3>
 
                     <div x-show="savedSearches.length === 0" class="text-center py-8 text-text-secondary text-sm">
                         No saved searches
@@ -284,7 +284,7 @@
                                 <div class="flex items-center justify-between">
                                     <button
                                         @click="loadSearch(search)"
-                                        class="flex-1 text-left text-sm font-medium text-text-primary hover:text-primary-600"
+                                        class="flex-1 text-left text-sm font-medium text-primary hover:text-primary-600"
                                         x-text="search.name"
                                     ></button>
                                     <button
@@ -306,7 +306,7 @@
             <div class="lg:col-span-3">
                 <!-- Results Header -->
                 <div class="mb-4 flex items-center justify-between">
-                    <h2 class="text-lg font-semibold text-text-primary">
+                    <h2 class="text-lg font-semibold text-primary">
                         Search Results
                         <span x-show="results.length > 0" class="text-text-secondary font-normal">
                             (<span x-text="results.length"></span> found)
@@ -327,7 +327,7 @@
                         <svg class="mx-auto h-16 w-16 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
-                        <h3 class="mt-4 text-lg font-medium text-text-primary">Start your search</h3>
+                        <h3 class="mt-4 text-lg font-medium text-primary">Start your search</h3>
                         <p class="mt-2 text-sm text-text-secondary">Use the filters on the left to search for envelopes</p>
                     </x-ui.card>
                 </div>
@@ -341,7 +341,7 @@
                                     <div class="flex items-center space-x-3">
                                         <a
                                             :href="`/envelopes/${envelope.id}`"
-                                            class="text-lg font-semibold text-text-primary hover:text-primary-600"
+                                            class="text-lg font-semibold text-primary hover:text-primary-600"
                                             x-text="envelope.subject || 'Untitled Envelope'"
                                         ></a>
                                         <x-ui.badge
@@ -353,19 +353,19 @@
                                     <div class="mt-2 grid grid-cols-2 gap-3 text-sm">
                                         <div>
                                             <span class="text-text-secondary">Sent by:</span>
-                                            <span class="ml-1 text-text-primary" x-text="envelope.sender_name"></span>
+                                            <span class="ml-1 text-primary" x-text="envelope.sender_name"></span>
                                         </div>
                                         <div>
                                             <span class="text-text-secondary">Created:</span>
-                                            <span class="ml-1 text-text-primary" x-text="formatDate(envelope.created_at)"></span>
+                                            <span class="ml-1 text-primary" x-text="formatDate(envelope.created_at)"></span>
                                         </div>
                                         <div>
                                             <span class="text-text-secondary">Recipients:</span>
-                                            <span class="ml-1 text-text-primary" x-text="envelope.recipients_count || 0"></span>
+                                            <span class="ml-1 text-primary" x-text="envelope.recipients_count || 0"></span>
                                         </div>
                                         <div>
                                             <span class="text-text-secondary">Documents:</span>
-                                            <span class="ml-1 text-text-primary" x-text="envelope.documents_count || 0"></span>
+                                            <span class="ml-1 text-primary" x-text="envelope.documents_count || 0"></span>
                                         </div>
                                     </div>
 
@@ -396,10 +396,10 @@
             @click.self="showSaveDialog = false"
         >
             <x-ui.card class="max-w-md w-full mx-4">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Save Search</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Save Search</h3>
 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-text-primary mb-1">Search Name</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Search Name</label>
                     <x-ui.input
                         type="text"
                         x-model="saveName"

@@ -86,7 +86,7 @@
         <!-- Header -->
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Create Template</h1>
+                <h1 class="text-2xl font-bold text-primary">Create Template</h1>
                 <p class="mt-1 text-sm text-text-secondary">Create a reusable template for frequently used documents</p>
             </div>
             <x-ui.button variant="secondary" onclick="window.location.href='/templates'">
@@ -97,7 +97,7 @@
         <div class="space-y-6">
             <!-- Template Details -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Template Details</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Template Details</h2>
                 <div class="space-y-4">
                     <x-form.input
                         name="name"
@@ -135,7 +135,7 @@
 
             <!-- Documents -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Documents</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Documents</h2>
                 <p class="text-sm text-text-secondary mb-4">Add the documents that will be included in this template</p>
 
                 <!-- Upload Area -->
@@ -161,7 +161,7 @@
                                     <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
                                 </svg>
                                 <div>
-                                    <p class="font-medium text-text-primary" x-text="doc.name"></p>
+                                    <p class="font-medium text-primary" x-text="doc.name"></p>
                                     <p class="text-sm text-text-secondary">
                                         Order: <span x-text="doc.order"></span> •
                                         <span x-text="(doc.size / 1024 / 1024).toFixed(2)"></span> MB
@@ -184,7 +184,7 @@
 
             <!-- Recipient Roles -->
             <x-ui.card>
-                <h2 class="text-lg font-semibold text-text-primary mb-4">Recipient Roles</h2>
+                <h2 class="text-lg font-semibold text-primary mb-4">Recipient Roles</h2>
                 <p class="text-sm text-text-secondary mb-4">Define placeholder roles for recipients (actual recipients will be specified when using the template)</p>
 
                 <!-- Recipients List -->
@@ -212,7 +212,7 @@
                                 <div>
                                     <label class="block text-sm font-medium text-text-secondary mb-1">Routing Order</label>
                                     <div class="flex items-center gap-2">
-                                        <span class="text-sm text-text-primary" x-text="recipient.routing_order"></span>
+                                        <span class="text-sm text-primary" x-text="recipient.routing_order"></span>
                                         <button @click="removeRecipient(recipient.id)" class="ml-auto text-sm text-red-600 hover:text-red-700">
                                             Remove
                                         </button>

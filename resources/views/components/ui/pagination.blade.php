@@ -10,11 +10,11 @@
             <!-- Results Text -->
             <div class="text-sm text-text-secondary">
                 Showing
-                <span class="font-medium text-text-primary">{{ $data->firstItem() }}</span>
+                <span class="font-medium text-primary">{{ $data->firstItem() }}</span>
                 to
-                <span class="font-medium text-text-primary">{{ $data->lastItem() }}</span>
+                <span class="font-medium text-primary">{{ $data->lastItem() }}</span>
                 of
-                <span class="font-medium text-text-primary">{{ $data->total() }}</span>
+                <span class="font-medium text-primary">{{ $data->total() }}</span>
                 results
             </div>
         @endif
@@ -34,7 +34,7 @@
                 @else
                     <li>
                         <a href="{{ $data->previousPageUrl() }}"
-                           class="px-3 py-2 ml-0 leading-tight text-text-secondary bg-bg-primary border border-border-primary rounded-l-lg hover:bg-bg-hover hover:text-text-primary transition-colors">
+                           class="px-3 py-2 ml-0 leading-tight text-text-secondary bg-primary border border-border-primary rounded-l-lg hover:bg-bg-hover hover:text-primary transition-colors">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
                             </svg>
@@ -54,7 +54,7 @@
                         @else
                             <li>
                                 <a href="{{ $url }}"
-                                   class="px-3 py-2 leading-tight text-text-secondary bg-bg-primary border border-border-primary hover:bg-bg-hover hover:text-text-primary transition-colors">
+                                   class="px-3 py-2 leading-tight text-text-secondary bg-primary border border-border-primary hover:bg-bg-hover hover:text-primary transition-colors">
                                     {{ $page }}
                                 </a>
                             </li>
@@ -66,7 +66,7 @@
                 @if($data->hasMorePages())
                     <li>
                         <a href="{{ $data->nextPageUrl() }}"
-                           class="px-3 py-2 leading-tight text-text-secondary bg-bg-primary border border-border-primary rounded-r-lg hover:bg-bg-hover hover:text-text-primary transition-colors">
+                           class="px-3 py-2 leading-tight text-text-secondary bg-primary border border-border-primary rounded-r-lg hover:bg-bg-hover hover:text-primary transition-colors">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                             </svg>
@@ -133,11 +133,11 @@ public function index()
     <div class="mt-6 flex items-center justify-between">
         <div class="text-sm text-text-secondary">
             Showing
-            <span class="font-medium text-text-primary" x-text="((currentPage - 1) * perPage) + 1"></span>
+            <span class="font-medium text-primary" x-text="((currentPage - 1) * perPage) + 1"></span>
             to
-            <span class="font-medium text-text-primary" x-text="Math.min(currentPage * perPage, total)"></span>
+            <span class="font-medium text-primary" x-text="Math.min(currentPage * perPage, total)"></span>
             of
-            <span class="font-medium text-text-primary" x-text="total"></span>
+            <span class="font-medium text-primary" x-text="total"></span>
             results
         </div>
 

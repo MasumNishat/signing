@@ -30,7 +30,7 @@
     }">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Create Workspace</h1>
+            <h1 class="text-2xl font-bold text-primary">Create Workspace</h1>
             <p class="mt-1 text-sm text-text-secondary">Create a new workspace for document collaboration</p>
         </div>
 
@@ -40,7 +40,7 @@
                 <div class="space-y-6">
                     <!-- Workspace Name -->
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">
+                        <label class="block text-sm font-medium text-primary mb-1">
                             Workspace Name <span class="text-red-500">*</span>
                         </label>
                         <x-ui.input
@@ -54,12 +54,12 @@
 
                     <!-- Description -->
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Description</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Description</label>
                         <textarea
                             x-model="workspaceData.description"
                             rows="4"
                             placeholder="Enter workspace description (optional)"
-                            class="w-full px-3 py-2 border border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-bg-primary text-text-primary"
+                            class="w-full px-3 py-2 border border-border-primary rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 bg-primary text-primary"
                         ></textarea>
                         <p x-show="errors.description" class="mt-1 text-sm text-red-600" x-text="errors.description?.[0]"></p>
                     </div>

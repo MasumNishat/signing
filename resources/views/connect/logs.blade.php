@@ -75,13 +75,13 @@
         <div class="mb-6 flex items-center justify-between">
             <div>
                 <div class="flex items-center space-x-2">
-                    <a href="/connect" class="text-text-secondary hover:text-text-primary">Webhooks</a>
+                    <a href="/connect" class="text-text-secondary hover:text-primary">Webhooks</a>
                     <span class="text-text-secondary">/</span>
-                    <a :href="`/connect/${webhook?.id}`" class="text-text-secondary hover:text-text-primary" x-text="webhook?.name"></a>
+                    <a :href="`/connect/${webhook?.id}`" class="text-text-secondary hover:text-primary" x-text="webhook?.name"></a>
                     <span class="text-text-secondary">/</span>
-                    <span class="text-text-primary">Logs</span>
+                    <span class="text-primary">Logs</span>
                 </div>
-                <h1 class="mt-2 text-2xl font-bold text-text-primary">Delivery Logs</h1>
+                <h1 class="mt-2 text-2xl font-bold text-primary">Delivery Logs</h1>
                 <p class="mt-1 text-sm text-text-secondary">
                     <span x-text="pagination.total"></span> total deliveries
                 </p>
@@ -95,7 +95,7 @@
         <x-ui.card class="mb-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">Status</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Status</label>
                     <x-ui.select x-model="filter.status" @change="loadLogs()">
                         <option value="">All Statuses</option>
                         <option value="success">Success</option>
@@ -104,7 +104,7 @@
                     </x-ui.select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">Event Type</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Event Type</label>
                     <x-ui.input
                         type="text"
                         x-model="filter.event_type"
@@ -113,11 +113,11 @@
                     />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">From Date</label>
+                    <label class="block text-sm font-medium text-primary mb-1">From Date</label>
                     <x-ui.input type="date" x-model="filter.date_from" @change="loadLogs()" />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">To Date</label>
+                    <label class="block text-sm font-medium text-primary mb-1">To Date</label>
                     <x-ui.input type="date" x-model="filter.date_to" @change="loadLogs()" />
                 </div>
             </div>
@@ -151,14 +151,14 @@
                     <tbody class="divide-y divide-border-primary">
                         <template x-for="log in logs" :key="log.id">
                             <tr class="hover:bg-bg-secondary">
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="log.event_type"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="log.event_type"></td>
                                 <td class="px-4 py-3 text-sm">
                                     <x-ui.badge x-bind:variant="getStatusColor(log.status)" x-text="log.status?.toUpperCase()"></x-ui.badge>
                                 </td>
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="log.response_code || '-'"></td>
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="log.response_time ? `${log.response_time}ms` : '-'"></td>
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="formatDate(log.created_at)"></td>
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="log.retry_count || 0"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="log.response_code || '-'"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="log.response_time ? `${log.response_time}ms` : '-'"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="formatDate(log.created_at)"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="log.retry_count || 0"></td>
                             </tr>
                         </template>
                     </tbody>
@@ -169,7 +169,7 @@
                     <svg class="mx-auto h-12 w-12 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-text-primary">No logs</h3>
+                    <h3 class="mt-2 text-sm font-medium text-primary">No logs</h3>
                     <p class="mt-1 text-sm text-text-secondary">No delivery logs found</p>
                 </div>
             </div>

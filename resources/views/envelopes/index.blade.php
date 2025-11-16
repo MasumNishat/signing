@@ -137,7 +137,7 @@
         <!-- Page Header -->
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Envelopes</h1>
+                <h1 class="text-2xl font-bold text-primary">Envelopes</h1>
                 <p class="mt-1 text-sm text-text-secondary">Manage and track your document envelopes</p>
             </div>
             <x-ui.button variant="primary" onclick="window.location.href='/envelopes/create'">
@@ -205,7 +205,7 @@
         <!-- Bulk Actions -->
         <div x-show="selectedEnvelopes.length > 0" class="mb-4 p-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg border border-primary-200 dark:border-primary-800">
             <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-text-primary">
+                <span class="text-sm font-medium text-primary">
                     <span x-text="selectedEnvelopes.length"></span> envelope(s) selected
                 </span>
                 <div class="flex gap-2">
@@ -235,7 +235,7 @@
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-text-primary">No envelopes found</h3>
+                    <h3 class="mt-2 text-sm font-medium text-primary">No envelopes found</h3>
                     <p class="mt-1 text-sm text-text-secondary">Try adjusting your filters or create a new envelope.</p>
                     <div class="mt-6">
                         <x-ui.button variant="primary" onclick="window.location.href='/envelopes/create'">

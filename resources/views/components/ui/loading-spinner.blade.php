@@ -68,7 +68,7 @@ Usage Examples:
 <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 text-center">
         <x-ui.loading-spinner size="xl" />
-        <p class="mt-4 text-text-primary">Processing your request...</p>
+        <p class="mt-4 text-primary">Processing your request...</p>
     </div>
 </div>
 

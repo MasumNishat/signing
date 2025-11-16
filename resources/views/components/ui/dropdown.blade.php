@@ -63,9 +63,9 @@ Usage Examples:
     </x-slot>
 
     <x-slot name="content">
-        <a href="/profile" class="block px-4 py-2 text-sm text-text-primary hover:bg-dropdown-hover">Profile</a>
-        <a href="/settings" class="block px-4 py-2 text-sm text-text-primary hover:bg-dropdown-hover">Settings</a>
-        <a href="/logout" class="block px-4 py-2 text-sm text-text-primary hover:bg-dropdown-hover">Logout</a>
+        <a href="/profile" class="block px-4 py-2 text-sm text-primary hover:bg-dropdown-hover">Profile</a>
+        <a href="/settings" class="block px-4 py-2 text-sm text-primary hover:bg-dropdown-hover">Settings</a>
+        <a href="/logout" class="block px-4 py-2 text-sm text-primary hover:bg-dropdown-hover">Logout</a>
     </x-slot>
 </x-ui.dropdown>
 
@@ -80,14 +80,14 @@ Usage Examples:
 
     <x-slot name="content">
         <div class="px-4 py-3 border-b border-dropdown-border">
-            <p class="text-sm font-medium text-text-primary">John Doe</p>
+            <p class="text-sm font-medium text-primary">John Doe</p>
             <p class="text-xs text-text-secondary">john@example.com</p>
         </div>
 
-        <a href="/profile" class="block px-4 py-2 text-sm text-text-primary hover:bg-dropdown-hover">
+        <a href="/profile" class="block px-4 py-2 text-sm text-primary hover:bg-dropdown-hover">
             Profile
         </a>
-        <a href="/settings" class="block px-4 py-2 text-sm text-text-primary hover:bg-dropdown-hover">
+        <a href="/settings" class="block px-4 py-2 text-sm text-primary hover:bg-dropdown-hover">
             Settings
         </a>
 
@@ -111,13 +111,13 @@ Usage Examples:
     </x-slot>
 
     <x-slot name="content">
-        <button @click="editItem()" class="block w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-dropdown-hover">
+        <button @click="editItem()" class="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-dropdown-hover">
             Edit
         </button>
-        <button @click="duplicateItem()" class="block w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-dropdown-hover">
+        <button @click="duplicateItem()" class="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-dropdown-hover">
             Duplicate
         </button>
-        <button @click="archiveItem()" class="block w-full text-left px-4 py-2 text-sm text-text-primary hover:bg-dropdown-hover">
+        <button @click="archiveItem()" class="block w-full text-left px-4 py-2 text-sm text-primary hover:bg-dropdown-hover">
             Archive
         </button>
         <div class="border-t border-dropdown-border my-1"></div>
@@ -140,21 +140,21 @@ Usage Examples:
 
     <x-slot name="content">
         <div class="px-4 py-3 border-b border-dropdown-border">
-            <p class="text-sm font-medium text-text-primary">Filter by Status</p>
+            <p class="text-sm font-medium text-primary">Filter by Status</p>
         </div>
 
         <div class="px-4 py-2 space-y-2">
             <label class="flex items-center">
                 <input type="checkbox" class="rounded" x-model="filters.sent">
-                <span class="ml-2 text-sm text-text-primary">Sent</span>
+                <span class="ml-2 text-sm text-primary">Sent</span>
             </label>
             <label class="flex items-center">
                 <input type="checkbox" class="rounded" x-model="filters.draft">
-                <span class="ml-2 text-sm text-text-primary">Draft</span>
+                <span class="ml-2 text-sm text-primary">Draft</span>
             </label>
             <label class="flex items-center">
                 <input type="checkbox" class="rounded" x-model="filters.completed">
-                <span class="ml-2 text-sm text-text-primary">Completed</span>
+                <span class="ml-2 text-sm text-primary">Completed</span>
             </label>
         </div>
 

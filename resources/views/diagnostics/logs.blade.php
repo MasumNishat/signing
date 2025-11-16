@@ -110,7 +110,7 @@
         <!-- Header -->
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Request Logs</h1>
+                <h1 class="text-2xl font-bold text-primary">Request Logs</h1>
                 <p class="mt-1 text-sm text-text-secondary">Monitor API requests and performance</p>
             </div>
             <div class="flex gap-2">
@@ -130,7 +130,7 @@
         <x-ui.card class="mb-6">
             <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">Method</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Method</label>
                     <x-ui.select x-model="filter.method" @change="loadLogs()">
                         <option value="">All Methods</option>
                         <option value="GET">GET</option>
@@ -142,7 +142,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">Status</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Status</label>
                     <x-ui.select x-model="filter.status_code" @change="loadLogs()">
                         <option value="">All Statuses</option>
                         <option value="200">200 OK</option>
@@ -155,7 +155,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">Endpoint</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Endpoint</label>
                     <x-ui.input
                         type="text"
                         x-model="filter.endpoint"
@@ -165,7 +165,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">Min Duration (ms)</label>
+                    <label class="block text-sm font-medium text-primary mb-1">Min Duration (ms)</label>
                     <x-ui.input
                         type="number"
                         x-model="filter.min_duration"
@@ -175,12 +175,12 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">From Date</label>
+                    <label class="block text-sm font-medium text-primary mb-1">From Date</label>
                     <x-ui.input type="date" x-model="filter.date_from" @change="loadLogs()" />
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-text-primary mb-1">To Date</label>
+                    <label class="block text-sm font-medium text-primary mb-1">To Date</label>
                     <x-ui.input type="date" x-model="filter.date_to" @change="loadLogs()" />
                 </div>
             </div>
@@ -221,37 +221,37 @@
                     <tbody class="divide-y divide-border-primary">
                         <template x-for="log in logs" :key="log.id">
                             <tr class="hover:bg-bg-secondary cursor-pointer" @click="$refs[`details-${log.id}`].classList.toggle('hidden')">
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="formatDate(log.created_at)"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="formatDate(log.created_at)"></td>
                                 <td class="px-4 py-3 text-sm">
                                     <x-ui.badge x-bind:variant="getMethodColor(log.method)" x-text="log.method"></x-ui.badge>
                                 </td>
-                                <td class="px-4 py-3 text-sm font-mono text-text-primary" x-text="log.endpoint"></td>
+                                <td class="px-4 py-3 text-sm font-mono text-primary" x-text="log.endpoint"></td>
                                 <td class="px-4 py-3 text-sm">
                                     <x-ui.badge x-bind:variant="getStatusColor(log.status_code)" x-text="log.status_code"></x-ui.badge>
                                 </td>
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="formatDuration(log.duration)"></td>
-                                <td class="px-4 py-3 text-sm text-text-primary" x-text="log.user_email || 'Guest'"></td>
-                                <td class="px-4 py-3 text-sm font-mono text-text-primary" x-text="log.ip_address"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="formatDuration(log.duration)"></td>
+                                <td class="px-4 py-3 text-sm text-primary" x-text="log.user_email || 'Guest'"></td>
+                                <td class="px-4 py-3 text-sm font-mono text-primary" x-text="log.ip_address"></td>
                             </tr>
                             <!-- Expandable Details Row -->
                             <tr :x-ref="`details-${log.id}`" class="hidden bg-bg-secondary">
                                 <td colspan="7" class="px-4 py-4">
                                     <div class="grid grid-cols-2 gap-4 text-sm">
                                         <div>
-                                            <h4 class="font-semibold text-text-primary mb-2">Request Headers</h4>
-                                            <pre class="text-xs bg-bg-primary p-2 rounded border border-border-primary overflow-auto max-h-32" x-text="JSON.stringify(log.request_headers || {}, null, 2)"></pre>
+                                            <h4 class="font-semibold text-primary mb-2">Request Headers</h4>
+                                            <pre class="text-xs bg-primary p-2 rounded border border-border-primary overflow-auto max-h-32" x-text="JSON.stringify(log.request_headers || {}, null, 2)"></pre>
                                         </div>
                                         <div>
-                                            <h4 class="font-semibold text-text-primary mb-2">Response Headers</h4>
-                                            <pre class="text-xs bg-bg-primary p-2 rounded border border-border-primary overflow-auto max-h-32" x-text="JSON.stringify(log.response_headers || {}, null, 2)"></pre>
+                                            <h4 class="font-semibold text-primary mb-2">Response Headers</h4>
+                                            <pre class="text-xs bg-primary p-2 rounded border border-border-primary overflow-auto max-h-32" x-text="JSON.stringify(log.response_headers || {}, null, 2)"></pre>
                                         </div>
                                         <div x-show="log.request_body">
-                                            <h4 class="font-semibold text-text-primary mb-2">Request Body</h4>
-                                            <pre class="text-xs bg-bg-primary p-2 rounded border border-border-primary overflow-auto max-h-32" x-text="JSON.stringify(log.request_body || {}, null, 2)"></pre>
+                                            <h4 class="font-semibold text-primary mb-2">Request Body</h4>
+                                            <pre class="text-xs bg-primary p-2 rounded border border-border-primary overflow-auto max-h-32" x-text="JSON.stringify(log.request_body || {}, null, 2)"></pre>
                                         </div>
                                         <div x-show="log.response_body">
-                                            <h4 class="font-semibold text-text-primary mb-2">Response Body</h4>
-                                            <pre class="text-xs bg-bg-primary p-2 rounded border border-border-primary overflow-auto max-h-32" x-text="JSON.stringify(log.response_body || {}, null, 2)"></pre>
+                                            <h4 class="font-semibold text-primary mb-2">Response Body</h4>
+                                            <pre class="text-xs bg-primary p-2 rounded border border-border-primary overflow-auto max-h-32" x-text="JSON.stringify(log.response_body || {}, null, 2)"></pre>
                                         </div>
                                     </div>
                                 </td>
@@ -265,7 +265,7 @@
                     <svg class="mx-auto h-12 w-12 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-text-primary">No logs found</h3>
+                    <h3 class="mt-2 text-sm font-medium text-primary">No logs found</h3>
                     <p class="mt-1 text-sm text-text-secondary">Try adjusting your filters</p>
                 </div>
             </div>

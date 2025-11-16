@@ -29,7 +29,7 @@
 
         <!-- Page Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Dashboard</h1>
+            <h1 class="text-2xl font-bold text-primary">Dashboard</h1>
             <p class="mt-1 text-sm text-text-secondary">Welcome back, <span x-text="$store.auth.user?.name"></span></p>
         </div>
 
@@ -53,7 +53,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-text-secondary">Total Envelopes</p>
-                            <p class="mt-2 text-3xl font-bold text-text-primary" x-text="statistics.total"></p>
+                            <p class="mt-2 text-3xl font-bold text-primary" x-text="statistics.total"></p>
                             <p class="mt-2 text-xs text-text-secondary">
                                 <span class="text-green-600 font-medium">+12.5%</span> from last month
                             </p>
@@ -71,7 +71,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-text-secondary">Sent</p>
-                            <p class="mt-2 text-3xl font-bold text-text-primary" x-text="statistics.sent"></p>
+                            <p class="mt-2 text-3xl font-bold text-primary" x-text="statistics.sent"></p>
                             <p class="mt-2 text-xs text-text-secondary">
                                 Awaiting signatures
                             </p>
@@ -89,7 +89,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-text-secondary">Completed</p>
-                            <p class="mt-2 text-3xl font-bold text-text-primary" x-text="statistics.completed"></p>
+                            <p class="mt-2 text-3xl font-bold text-primary" x-text="statistics.completed"></p>
                             <p class="mt-2 text-xs text-text-secondary">
                                 Fully executed
                             </p>
@@ -107,7 +107,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-text-secondary">Voided</p>
-                            <p class="mt-2 text-3xl font-bold text-text-primary" x-text="statistics.voided"></p>
+                            <p class="mt-2 text-3xl font-bold text-primary" x-text="statistics.voided"></p>
                             <p class="mt-2 text-xs text-text-secondary">
                                 Cancelled envelopes
                             </p>
@@ -123,7 +123,7 @@
 
             <!-- Quick Actions -->
             <x-ui.card>
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Quick Actions</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Quick Actions</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="/envelopes/create" class="flex items-center p-4 rounded-lg border-2 border-dashed border-border-primary hover:border-primary-500 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors group">
                         <div class="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-lg group-hover:bg-primary-200 transition-colors">
@@ -132,7 +132,7 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <p class="font-medium text-text-primary">Send Envelope</p>
+                            <p class="font-medium text-primary">Send Envelope</p>
                             <p class="text-sm text-text-secondary">Create and send new envelope</p>
                         </div>
                     </a>
@@ -144,7 +144,7 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <p class="font-medium text-text-primary">Create Template</p>
+                            <p class="font-medium text-primary">Create Template</p>
                             <p class="text-sm text-text-secondary">Save time with templates</p>
                         </div>
                     </a>
@@ -156,7 +156,7 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <p class="font-medium text-text-primary">Manage Recipients</p>
+                            <p class="font-medium text-primary">Manage Recipients</p>
                             <p class="text-sm text-text-secondary">View and organize contacts</p>
                         </div>
                     </a>
@@ -166,7 +166,7 @@
             <!-- Recent Envelopes -->
             <x-ui.card :padding="false">
                 <div class="px-6 py-4 border-b border-card-border flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-text-primary">Recent Envelopes</h3>
+                    <h3 class="text-lg font-semibold text-primary">Recent Envelopes</h3>
                     <a href="/envelopes" class="text-sm font-medium text-primary-600 hover:text-primary-500">View all</a>
                 </div>
 
@@ -174,7 +174,7 @@
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-text-primary">No envelopes yet</h3>
+                    <h3 class="mt-2 text-sm font-medium text-primary">No envelopes yet</h3>
                     <p class="mt-1 text-sm text-text-secondary">Get started by sending your first envelope.</p>
                     <div class="mt-6">
                         <x-ui.button variant="primary" onclick="window.location.href='/envelopes/create'">
@@ -198,7 +198,7 @@
                             <template x-for="envelope in recentEnvelopes" :key="envelope.id">
                                 <x-table.row class="hover:bg-bg-hover cursor-pointer" @click="window.location.href='/envelopes/' + envelope.id">
                                     <x-table.cell>
-                                        <p class="font-medium text-text-primary" x-text="envelope.email_subject"></p>
+                                        <p class="font-medium text-primary" x-text="envelope.email_subject"></p>
                                     </x-table.cell>
                                     <x-table.cell>
                                         <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"

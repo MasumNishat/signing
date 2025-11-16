@@ -127,7 +127,7 @@
     x-init="init()">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Upload Documents</h1>
+            <h1 class="text-2xl font-bold text-primary">Upload Documents</h1>
             <p class="mt-1 text-sm text-text-secondary">Upload one or more documents (max 50MB each)</p>
         </div>
 
@@ -159,7 +159,7 @@
 
                     <!-- Instructions -->
                     <div>
-                        <p class="text-lg font-medium text-text-primary">
+                        <p class="text-lg font-medium text-primary">
                             Drag and drop files here
                         </p>
                         <p class="mt-1 text-sm text-text-secondary">
@@ -189,7 +189,7 @@
         <div x-show="files.length > 0">
             <x-ui.card>
                 <div class="mb-4 flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-text-primary">
+                    <h3 class="text-lg font-semibold text-primary">
                         Files (<span x-text="files.length"></span>)
                     </h3>
                     <div class="flex items-center space-x-3">
@@ -212,7 +212,7 @@
 
                                 <!-- File Info -->
                                 <div class="flex-1">
-                                    <p class="text-sm font-medium text-text-primary" x-text="fileObj.name"></p>
+                                    <p class="text-sm font-medium text-primary" x-text="fileObj.name"></p>
                                     <p class="text-xs text-text-secondary" x-text="formatFileSize(fileObj.size)"></p>
 
                                     <!-- Progress Bar -->

@@ -67,7 +67,7 @@
         <!-- Page Header -->
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Templates</h1>
+                <h1 class="text-2xl font-bold text-primary">Templates</h1>
                 <p class="mt-1 text-sm text-text-secondary">Reusable document templates for faster envelope creation</p>
             </div>
             <x-ui.button variant="primary" onclick="window.location.href='/templates/create'">
@@ -114,7 +114,7 @@
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-text-primary">No templates found</h3>
+                    <h3 class="mt-2 text-sm font-medium text-primary">No templates found</h3>
                     <p class="mt-1 text-sm text-text-secondary">Create your first template to get started.</p>
                     <div class="mt-6">
                         <x-ui.button variant="primary" onclick="window.location.href='/templates/create'">
@@ -149,7 +149,7 @@
                             </x-table.actions>
                         </div>
 
-                        <h3 class="text-lg font-semibold text-text-primary mb-2" x-text="template.name"></h3>
+                        <h3 class="text-lg font-semibold text-primary mb-2" x-text="template.name"></h3>
                         <p class="text-sm text-text-secondary mb-4 line-clamp-2" x-text="template.description || 'No description'"></p>
 
                         <div class="flex items-center justify-between text-sm text-text-secondary">

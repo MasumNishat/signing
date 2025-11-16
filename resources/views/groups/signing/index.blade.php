@@ -29,7 +29,7 @@
     }" x-init="init()">
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Signing Groups</h1>
+                <h1 class="text-2xl font-bold text-primary">Signing Groups</h1>
                 <p class="mt-1 text-sm text-text-secondary">Manage groups of signers for routing</p>
             </div>
             <x-ui.button variant="primary" onclick="window.location.href='/groups/signing/create'">
@@ -42,7 +42,7 @@
         <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <template x-for="group in groups" :key="group.id">
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary" x-text="group.name"></h3>
+                    <h3 class="text-lg font-semibold text-primary" x-text="group.name"></h3>
                     <p class="mt-2 text-sm text-text-secondary">
                         <span x-text="group.member_count || 0"></span> members
                     </p>

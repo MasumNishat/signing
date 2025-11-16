@@ -119,7 +119,7 @@
         <!-- Header -->
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Documents</h1>
+                <h1 class="text-2xl font-bold text-primary">Documents</h1>
                 <p class="mt-1 text-sm text-text-secondary">Manage and organize your documents</p>
             </div>
             <div class="flex items-center space-x-3">
@@ -232,7 +232,7 @@
 
                         <!-- Document Info -->
                         <div class="space-y-2">
-                            <h3 class="font-semibold text-text-primary text-sm truncate" x-text="document.name"></h3>
+                            <h3 class="font-semibold text-primary text-sm truncate" x-text="document.name"></h3>
                             <div class="flex items-center justify-between text-xs text-text-secondary">
                                 <span x-text="formatFileSize(document.size)"></span>
                                 <span x-text="new Date(document.created_at).toLocaleDateString()"></span>
@@ -246,7 +246,7 @@
                             View
                         </a>
                         <div class="flex items-center space-x-3">
-                            <a :href="`/documents/${document.id}/download`" class="text-text-secondary hover:text-text-primary">
+                            <a :href="`/documents/${document.id}/download`" class="text-text-secondary hover:text-primary">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                 </svg>
@@ -281,7 +281,7 @@
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-bg-primary divide-y divide-border-primary">
+                    <tbody class="bg-primary divide-y divide-border-primary">
                         <template x-for="document in documents" :key="document.id">
                             <tr class="hover:bg-bg-hover">
                                 <td class="px-6 py-4">
@@ -293,7 +293,7 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
                                         <span class="mr-3 text-2xl" x-text="getFileIcon(document.mime_type)"></span>
-                                        <span class="text-sm font-medium text-text-primary" x-text="document.name"></span>
+                                        <span class="text-sm font-medium text-primary" x-text="document.name"></span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-text-secondary">
@@ -306,7 +306,7 @@
                                         <a :href="`/documents/${document.id}/viewer`" class="text-primary-600 hover:text-primary-500 text-sm font-medium">
                                             View
                                         </a>
-                                        <a :href="`/documents/${document.id}/download`" class="text-text-secondary hover:text-text-primary">
+                                        <a :href="`/documents/${document.id}/download`" class="text-text-secondary hover:text-primary">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                             </svg>

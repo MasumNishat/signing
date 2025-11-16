@@ -63,7 +63,7 @@
         <!-- Page Header -->
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Dashboard Widgets</h1>
+                <h1 class="text-2xl font-bold text-primary">Dashboard Widgets</h1>
                 <p class="mt-1 text-sm text-text-secondary">Customize your dashboard layout and widgets</p>
             </div>
             <div class="flex items-center space-x-3">
@@ -85,7 +85,7 @@
         <div x-show="!loading" class="space-y-6">
             <!-- Layout Options -->
             <x-ui.card>
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Dashboard Layout</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Dashboard Layout</h3>
                 <div class="flex items-center space-x-4">
                     <button @click="layout = 'grid'"
                             :class="layout === 'grid' ? 'bg-primary-100 text-primary-700 border-primary-500' : 'bg-bg-secondary text-text-secondary border-border-primary'"
@@ -109,7 +109,7 @@
             <!-- Available Widgets -->
             <x-ui.card>
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-semibold text-text-primary">Available Widgets</h3>
+                    <h3 class="text-lg font-semibold text-primary">Available Widgets</h3>
                     <span class="text-sm text-text-secondary" x-text="availableWidgets.filter(w => w.enabled).length + ' active'"></span>
                 </div>
 
@@ -119,7 +119,7 @@
                              :class="widget.enabled ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/10' : 'border-border-primary bg-bg-secondary'">
                             <div class="flex items-start justify-between mb-2">
                                 <div class="flex-1">
-                                    <h4 class="font-medium text-text-primary" x-text="widget.name"></h4>
+                                    <h4 class="font-medium text-primary" x-text="widget.name"></h4>
                                     <p class="text-sm text-text-secondary mt-1" x-text="widget.description"></p>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer ml-3">
@@ -146,7 +146,7 @@
 
             <!-- Widget Preview -->
             <x-ui.card>
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Dashboard Preview</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Dashboard Preview</h3>
                 <p class="text-sm text-text-secondary mb-4">
                     This is how your dashboard will look with the current widget configuration:
                 </p>
@@ -154,10 +154,10 @@
                 <div class="border-2 border-dashed border-border-primary rounded-lg p-6 bg-bg-secondary">
                     <div :class="layout === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-4'">
                         <template x-for="widget in availableWidgets.filter(w => w.enabled)" :key="widget.id">
-                            <div class="p-4 bg-bg-primary border border-card-border rounded-lg">
+                            <div class="p-4 bg-primary border border-card-border rounded-lg">
                                 <div class="flex items-center space-x-2">
                                     <div class="h-2 w-2 bg-primary-600 rounded-full"></div>
-                                    <span class="text-sm font-medium text-text-primary" x-text="widget.name"></span>
+                                    <span class="text-sm font-medium text-primary" x-text="widget.name"></span>
                                 </div>
                                 <div class="mt-2 h-20 bg-bg-hover rounded"></div>
                             </div>
@@ -172,7 +172,7 @@
 
             <!-- Help Text -->
             <x-ui.card>
-                <h3 class="text-lg font-semibold text-text-primary mb-2">How to use</h3>
+                <h3 class="text-lg font-semibold text-primary mb-2">How to use</h3>
                 <ul class="space-y-2 text-sm text-text-secondary">
                     <li class="flex items-start">
                         <svg class="w-5 h-5 text-primary-600 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

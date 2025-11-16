@@ -28,7 +28,7 @@
 <div {{ $attributes }}>
     @if($showLabel)
         <div class="flex justify-between mb-1">
-            <span class="text-sm font-medium text-text-primary">{{ $slot }}</span>
+            <span class="text-sm font-medium text-primary">{{ $slot }}</span>
             <span class="text-sm font-medium text-text-secondary">{{ round($percentage) }}%</span>
         </div>
     @endif

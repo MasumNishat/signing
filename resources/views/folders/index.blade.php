@@ -43,7 +43,7 @@
         }
     }" x-init="init()">
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Folders</h1>
+            <h1 class="text-2xl font-bold text-primary">Folders</h1>
             <p class="mt-1 text-sm text-text-secondary">Organize your envelopes with folders</p>
         </div>
 
@@ -51,10 +51,10 @@
             <!-- Folder Tree -->
             <div class="col-span-3">
                 <x-ui.card>
-                    <h3 class="font-semibold text-text-primary mb-4">Folders</h3>
+                    <h3 class="font-semibold text-primary mb-4">Folders</h3>
                     <div class="space-y-2">
                         <template x-for="folder in folders" :key="folder.id">
-                            <div @click="selectFolder(folder.id)" :class="selectedFolder === folder.id ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : 'text-text-primary hover:bg-bg-secondary'" class="px-3 py-2 rounded cursor-pointer">
+                            <div @click="selectFolder(folder.id)" :class="selectedFolder === folder.id ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : 'text-primary hover:bg-bg-secondary'" class="px-3 py-2 rounded cursor-pointer">
                                 <div class="flex items-center justify-between">
                                     <span x-text="folder.name"></span>
                                     <span class="text-xs text-text-secondary" x-text="folder.item_count || 0"></span>
@@ -69,13 +69,13 @@
             <div class="col-span-9">
                 <x-ui.card>
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="font-semibold text-text-primary">Envelopes</h3>
+                        <h3 class="font-semibold text-primary">Envelopes</h3>
                     </div>
                     <div class="space-y-2">
                         <template x-for="envelope in envelopes" :key="envelope.id">
                             <div class="flex items-center justify-between p-3 border border-border-primary rounded hover:bg-bg-secondary">
                                 <div>
-                                    <p class="font-medium text-text-primary" x-text="envelope.email_subject"></p>
+                                    <p class="font-medium text-primary" x-text="envelope.email_subject"></p>
                                     <p class="text-sm text-text-secondary" x-text="new Date(envelope.created_at).toLocaleDateString()"></p>
                                 </div>
                                 <x-ui.button variant="secondary" size="sm" x-bind:onclick="`window.location.href='/envelopes/${envelope.id}'`">View</x-ui.button>

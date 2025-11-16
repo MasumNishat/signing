@@ -27,7 +27,7 @@
     }"
     x-init="init()">
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Account Settings</h1>
+            <h1 class="text-2xl font-bold text-primary">Account Settings</h1>
             <p class="mt-1 text-sm text-text-secondary">Manage your account preferences and configuration</p>
         </div>
 
@@ -59,7 +59,7 @@
             <div class="lg:col-span-3 space-y-6">
                 <!-- General Settings -->
                 <x-ui.card id="general">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">General Settings</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">General Settings</h3>
                     <div class="space-y-4">
                         <x-form.input
                             label="Account Name"
@@ -81,7 +81,7 @@
 
                 <!-- Notification Settings -->
                 <x-ui.card id="notifications">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Notification Settings</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Notification Settings</h3>
                     <div class="space-y-4">
                         <x-form.checkbox
                             label="Email notifications for envelope events"
@@ -100,7 +100,7 @@
 
                 <!-- Security Settings -->
                 <x-ui.card id="security">
-                    <h3 class="text-lg font-semibold text-text-primary mb-4">Security Settings</h3>
+                    <h3 class="text-lg font-semibold text-primary mb-4">Security Settings</h3>
                     <div class="space-y-4">
                         <x-form.checkbox
                             label="Require two-factor authentication"

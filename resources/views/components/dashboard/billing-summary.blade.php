@@ -5,7 +5,7 @@
 
 <x-ui.card>
     <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-text-primary">Billing Summary</h3>
+        <h3 class="text-lg font-semibold text-primary">Billing Summary</h3>
         <a href="/billing" class="text-sm font-medium text-primary-600 hover:text-primary-500">View details</a>
     </div>
 
@@ -20,7 +20,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-text-secondary">Current Plan</p>
-                <p class="mt-1 text-lg font-semibold text-text-primary">{{ $summary['plan_name'] ?? 'Free' }}</p>
+                <p class="mt-1 text-lg font-semibold text-primary">{{ $summary['plan_name'] ?? 'Free' }}</p>
             </div>
             @if(isset($summary['plan_name']) && $summary['plan_name'] !== 'Free')
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
@@ -33,7 +33,7 @@
             <!-- Envelope Usage -->
             <div class="flex items-center justify-between mb-2">
                 <p class="text-sm text-text-secondary">Envelopes Used</p>
-                <p class="text-sm font-medium text-text-primary">
+                <p class="text-sm font-medium text-primary">
                     {{ $summary['envelopes_used'] ?? 0 }} / {{ $summary['envelopes_limit'] ?? 'Unlimited' }}
                 </p>
             </div>
@@ -53,7 +53,7 @@
             @if(isset($summary['next_billing_date']))
                 <div class="flex items-center justify-between">
                     <p class="text-sm text-text-secondary">Next Billing</p>
-                    <p class="text-sm font-medium text-text-primary">
+                    <p class="text-sm font-medium text-primary">
                         {{ \Carbon\Carbon::parse($summary['next_billing_date'])->format('M d, Y') }}
                     </p>
                 </div>
@@ -63,7 +63,7 @@
             @if(isset($summary['current_balance']))
                 <div class="flex items-center justify-between mt-2">
                     <p class="text-sm text-text-secondary">Current Balance</p>
-                    <p class="text-lg font-semibold {{ $summary['current_balance'] > 0 ? 'text-green-600' : 'text-text-primary' }}">
+                    <p class="text-lg font-semibold {{ $summary['current_balance'] > 0 ? 'text-green-600' : 'text-primary' }}">
                         ${{ number_format($summary['current_balance'], 2) }}
                     </p>
                 </div>

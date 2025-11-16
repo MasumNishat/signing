@@ -31,7 +31,7 @@
                     @change="toggle('{{ $value }}')"
                     class="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                 />
-                <span class="ml-2 text-sm text-text-primary">{{ $label }}</span>
+                <span class="ml-2 text-sm text-primary">{{ $label }}</span>
             </label>
         @endforeach
 

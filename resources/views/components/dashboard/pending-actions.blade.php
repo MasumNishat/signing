@@ -5,7 +5,7 @@
 
 <x-ui.card>
     <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-semibold text-text-primary">Pending Actions</h3>
+        <h3 class="text-lg font-semibold text-primary">Pending Actions</h3>
         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
             {{ count($actions) }} pending
         </span>
@@ -23,7 +23,7 @@
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <h3 class="mt-2 text-sm font-medium text-text-primary">All caught up!</h3>
+                <h3 class="mt-2 text-sm font-medium text-primary">All caught up!</h3>
                 <p class="mt-1 text-sm text-text-secondary">No pending actions at this time.</p>
             </div>
         @else
@@ -50,7 +50,7 @@
                                     </span>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-sm font-medium text-text-primary">{{ $action['title'] }}</p>
+                                    <p class="text-sm font-medium text-primary">{{ $action['title'] }}</p>
                                     <p class="text-xs text-text-secondary mt-1">{{ $action['description'] }}</p>
                                     <div class="flex items-center space-x-4 mt-2">
                                         <span class="inline-flex items-center text-xs text-text-secondary">

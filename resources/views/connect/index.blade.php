@@ -44,7 +44,7 @@
     }" x-init="init()">
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Webhooks</h1>
+                <h1 class="text-2xl font-bold text-primary">Webhooks</h1>
                 <p class="mt-1 text-sm text-text-secondary">Configure webhooks to receive real-time event notifications</p>
             </div>
             <x-ui.button variant="primary" onclick="window.location.href='/connect/create'">New Webhook</x-ui.button>
@@ -58,13 +58,13 @@
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
                             <div class="flex items-center space-x-3">
-                                <h3 class="text-lg font-semibold text-text-primary" x-text="webhook.name"></h3>
+                                <h3 class="text-lg font-semibold text-primary" x-text="webhook.name"></h3>
                                 <x-ui.badge x-bind:variant="getStatusColor(webhook.status)" x-text="webhook.status?.toUpperCase()"></x-ui.badge>
                             </div>
                             <p class="mt-1 text-sm text-text-secondary font-mono" x-text="webhook.url"></p>
                             <div class="mt-2 flex flex-wrap gap-2">
                                 <template x-for="event in webhook.events" :key="event">
-                                    <span class="px-2 py-1 text-xs bg-bg-secondary border border-border-primary rounded-md text-text-primary" x-text="event"></span>
+                                    <span class="px-2 py-1 text-xs bg-bg-secondary border border-border-primary rounded-md text-primary" x-text="event"></span>
                                 </template>
                             </div>
                         </div>

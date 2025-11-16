@@ -110,7 +110,7 @@
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <div class="flex items-center gap-3 mb-2">
-                        <h1 class="text-2xl font-bold text-text-primary" x-text="envelope.email_subject"></h1>
+                        <h1 class="text-2xl font-bold text-primary" x-text="envelope.email_subject"></h1>
                         <span class="inline-flex px-3 py-1 text-sm font-medium rounded-full"
                               :class="getStatusColor(envelope.status)"
                               x-text="envelope.status ? envelope.status.charAt(0).toUpperCase() + envelope.status.slice(1) : ''">
@@ -158,22 +158,22 @@
                 <div class="border-b border-card-border">
                     <nav class="flex -mb-px">
                         <button @click="activeTab = 'details'"
-                                :class="activeTab === 'details' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-gray-300'"
+                                :class="activeTab === 'details' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
                                 class="px-6 py-4 border-b-2 font-medium text-sm transition-colors">
                             Details
                         </button>
                         <button @click="activeTab = 'documents'"
-                                :class="activeTab === 'documents' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-gray-300'"
+                                :class="activeTab === 'documents' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
                                 class="px-6 py-4 border-b-2 font-medium text-sm transition-colors">
                             Documents (<span x-text="documents.length"></span>)
                         </button>
                         <button @click="activeTab = 'recipients'"
-                                :class="activeTab === 'recipients' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-gray-300'"
+                                :class="activeTab === 'recipients' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
                                 class="px-6 py-4 border-b-2 font-medium text-sm transition-colors">
                             Recipients (<span x-text="recipients.length"></span>)
                         </button>
                         <button @click="activeTab = 'history'"
-                                :class="activeTab === 'history' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-text-primary hover:border-gray-300'"
+                                :class="activeTab === 'history' ? 'border-primary-500 text-primary-600' : 'border-transparent text-text-secondary hover:text-primary hover:border-gray-300'"
                                 class="px-6 py-4 border-b-2 font-medium text-sm transition-colors">
                             History
                         </button>
@@ -185,7 +185,7 @@
                     <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Envelope ID</dt>
-                            <dd class="mt-1 text-sm text-text-primary font-mono" x-text="envelope.envelope_id"></dd>
+                            <dd class="mt-1 text-sm text-primary font-mono" x-text="envelope.envelope_id"></dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Status</dt>
@@ -198,31 +198,31 @@
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Subject</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="envelope.email_subject"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="envelope.email_subject"></dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Message</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="envelope.email_blurb || 'No message'"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="envelope.email_blurb || 'No message'"></dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Created</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="envelope.created_at ? new Date(envelope.created_at).toLocaleString() : ''"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="envelope.created_at ? new Date(envelope.created_at).toLocaleString() : ''"></dd>
                         </div>
                         <div>
                             <dt class="text-sm font-medium text-text-secondary">Sent</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="envelope.sent_at ? new Date(envelope.sent_at).toLocaleString() : 'Not sent'"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="envelope.sent_at ? new Date(envelope.sent_at).toLocaleString() : 'Not sent'"></dd>
                         </div>
                         <div x-show="envelope.completed_at">
                             <dt class="text-sm font-medium text-text-secondary">Completed</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="envelope.completed_at ? new Date(envelope.completed_at).toLocaleString() : ''"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="envelope.completed_at ? new Date(envelope.completed_at).toLocaleString() : ''"></dd>
                         </div>
                         <div x-show="envelope.voided_at">
                             <dt class="text-sm font-medium text-text-secondary">Voided</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="envelope.voided_at ? new Date(envelope.voided_at).toLocaleString() : ''"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="envelope.voided_at ? new Date(envelope.voided_at).toLocaleString() : ''"></dd>
                         </div>
                         <div x-show="envelope.voided_reason" class="md:col-span-2">
                             <dt class="text-sm font-medium text-text-secondary">Void Reason</dt>
-                            <dd class="mt-1 text-sm text-text-primary" x-text="envelope.voided_reason"></dd>
+                            <dd class="mt-1 text-sm text-primary" x-text="envelope.voided_reason"></dd>
                         </div>
                     </dl>
                 </div>
@@ -237,7 +237,7 @@
                                         <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" />
                                     </svg>
                                     <div>
-                                        <p class="font-medium text-text-primary" x-text="doc.name"></p>
+                                        <p class="font-medium text-primary" x-text="doc.name"></p>
                                         <p class="text-sm text-text-secondary">
                                             Document #<span x-text="doc.document_id"></span>
                                             <span x-show="doc.file_extension"> • <span x-text="doc.file_extension.toUpperCase()"></span></span>
@@ -275,7 +275,7 @@
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1">
                                         <div class="flex items-center gap-3 mb-2">
-                                            <p class="font-medium text-text-primary" x-text="recipient.name"></p>
+                                            <p class="font-medium text-primary" x-text="recipient.name"></p>
                                             <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
                                                   :class="getRecipientStatusColor(recipient.status)"
                                                   x-text="recipient.status ? recipient.status.charAt(0).toUpperCase() + recipient.status.slice(1) : ''">
@@ -321,10 +321,10 @@
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <div>
-                                                    <p class="text-sm font-medium text-text-primary" x-text="event.event_type"></p>
+                                                    <p class="text-sm font-medium text-primary" x-text="event.event_type"></p>
                                                     <p class="text-sm text-text-secondary" x-text="event.user_name || 'System'"></p>
                                                 </div>
-                                                <p class="mt-2 text-sm text-text-primary" x-text="event.description"></p>
+                                                <p class="mt-2 text-sm text-primary" x-text="event.description"></p>
                                                 <p class="mt-1 text-xs text-text-secondary" x-text="new Date(event.timestamp).toLocaleString()"></p>
                                             </div>
                                         </div>

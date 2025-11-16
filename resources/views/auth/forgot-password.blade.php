@@ -27,7 +27,7 @@
             <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-lg mb-4">
                 <span class="text-3xl font-bold text-white">D</span>
             </div>
-            <h2 class="text-2xl font-bold text-text-primary">Forgot your password?</h2>
+            <h2 class="text-2xl font-bold text-primary">Forgot your password?</h2>
             <p class="mt-2 text-sm text-text-secondary">Enter your email and we'll send you a reset link</p>
         </div>
 

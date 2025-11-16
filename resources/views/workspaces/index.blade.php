@@ -29,7 +29,7 @@
     }" x-init="init()">
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-text-primary">Workspaces</h1>
+                <h1 class="text-2xl font-bold text-primary">Workspaces</h1>
                 <p class="mt-1 text-sm text-text-secondary">Manage document workspaces and files</p>
             </div>
             <x-ui.button variant="primary" onclick="window.location.href='/workspaces/create'">New Workspace</x-ui.button>
@@ -40,11 +40,11 @@
         <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <template x-for="workspace in workspaces" :key="workspace.id">
                 <x-ui.card>
-                    <h3 class="text-lg font-semibold text-text-primary" x-text="workspace.name"></h3>
+                    <h3 class="text-lg font-semibold text-primary" x-text="workspace.name"></h3>
                     <p class="mt-2 text-sm text-text-secondary" x-text="workspace.description || 'No description'"></p>
                     <div class="mt-3 text-sm">
                         <span class="text-text-secondary">Files: </span>
-                        <span class="font-medium text-text-primary" x-text="workspace.file_count || 0"></span>
+                        <span class="font-medium text-primary" x-text="workspace.file_count || 0"></span>
                     </div>
                     <div class="mt-4 flex space-x-2">
                         <x-ui.button variant="secondary" size="sm" x-bind:onclick="`window.location.href='/workspaces/${workspace.id}'`">Open</x-ui.button>

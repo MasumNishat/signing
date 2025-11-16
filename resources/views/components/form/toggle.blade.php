@@ -7,7 +7,7 @@
 
 <div x-data="{ enabled: @js($checked) }" {{ $attributes->merge(['class' => 'flex items-center justify-between']) }}>
     @if($label)
-        <label for="{{ $name }}" class="text-sm font-medium text-text-primary mr-4">{{ $label }}</label>
+        <label for="{{ $name }}" class="text-sm font-medium text-primary mr-4">{{ $label }}</label>
     @endif
 
     <button

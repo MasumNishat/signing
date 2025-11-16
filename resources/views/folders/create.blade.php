@@ -43,7 +43,7 @@
     }" x-init="init()">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Create Folder</h1>
+            <h1 class="text-2xl font-bold text-primary">Create Folder</h1>
             <p class="mt-1 text-sm text-text-secondary">Organize your envelopes into folders</p>
         </div>
 
@@ -53,7 +53,7 @@
                 <div class="space-y-6">
                     <!-- Folder Name -->
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">
+                        <label class="block text-sm font-medium text-primary mb-1">
                             Folder Name <span class="text-red-500">*</span>
                         </label>
                         <x-ui.input
@@ -67,7 +67,7 @@
 
                     <!-- Parent Folder -->
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Parent Folder (Optional)</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Parent Folder (Optional)</label>
                         <x-ui.select x-model="folderData.parent_folder_id">
                             <option value="">None (Top Level)</option>
                             <template x-for="folder in parentFolders" :key="folder.id">

@@ -5,7 +5,7 @@
 
 <x-ui.card>
     <div class="px-6 py-4 border-b border-card-border">
-        <h3 class="text-lg font-semibold text-text-primary">Envelope Status Distribution</h3>
+        <h3 class="text-lg font-semibold text-primary">Envelope Status Distribution</h3>
         <p class="text-sm text-text-secondary">Overview of envelope statuses</p>
     </div>
 
@@ -45,7 +45,7 @@
 
                 <div class="space-y-2">
                     <div class="flex items-center justify-between text-sm">
-                        <span class="font-medium text-text-primary">{{ $status['label'] }}</span>
+                        <span class="font-medium text-primary">{{ $status['label'] }}</span>
                         <span class="text-text-secondary">{{ $count }} ({{ $percentage }}%)</span>
                     </div>
                     <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">

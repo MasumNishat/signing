@@ -100,17 +100,17 @@
 
         <!-- Page Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Activity Feed</h1>
+            <h1 class="text-2xl font-bold text-primary">Activity Feed</h1>
             <p class="mt-1 text-sm text-text-secondary">View all system activity and events</p>
         </div>
 
         <!-- Filters -->
         <x-ui.card class="mb-6">
-            <h3 class="text-lg font-semibold text-text-primary mb-4">Filters</h3>
+            <h3 class="text-lg font-semibold text-primary mb-4">Filters</h3>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-text-secondary mb-2">Activity Type</label>
-                    <select x-model="filters.type" class="w-full rounded-md border-border-primary bg-bg-primary text-text-primary">
+                    <select x-model="filters.type" class="w-full rounded-md border-border-primary bg-primary text-primary">
                         <option value="all">All Types</option>
                         <option value="envelope">Envelopes</option>
                         <option value="template">Templates</option>
@@ -121,7 +121,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-text-secondary mb-2">Date Range</label>
-                    <select x-model="filters.dateRange" class="w-full rounded-md border-border-primary bg-bg-primary text-text-primary">
+                    <select x-model="filters.dateRange" class="w-full rounded-md border-border-primary bg-primary text-primary">
                         <option value="today">Today</option>
                         <option value="7days">Last 7 Days</option>
                         <option value="30days">Last 30 Days</option>
@@ -131,7 +131,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-text-secondary mb-2">User</label>
-                    <select x-model="filters.user" class="w-full rounded-md border-border-primary bg-bg-primary text-text-primary">
+                    <select x-model="filters.user" class="w-full rounded-md border-border-primary bg-primary text-primary">
                         <option value="all">All Users</option>
                         <option value="me">My Activity</option>
                         <!-- More users would be loaded dynamically -->
@@ -183,7 +183,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="min-w-0 flex-1 py-1.5">
-                                                    <div class="text-sm text-text-primary">
+                                                    <div class="text-sm text-primary">
                                                         <span class="font-medium" x-text="activity.user"></span>
                                                         <span x-text="activity.type.replace('_', ' ')"></span>
                                                         <template x-if="activity.envelope_subject">
@@ -240,7 +240,7 @@
                         <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <h3 class="mt-2 text-sm font-medium text-text-primary">No activity found</h3>
+                        <h3 class="mt-2 text-sm font-medium text-primary">No activity found</h3>
                         <p class="mt-1 text-sm text-text-secondary">Try adjusting your filters or check back later.</p>
                     </div>
                 @endif

@@ -64,7 +64,7 @@ Usage Examples:
     <div class="flex items-center justify-between">
         <div>
             <p class="text-sm text-text-secondary">Total Envelopes</p>
-            <p class="text-3xl font-bold text-text-primary mt-1">1,234</p>
+            <p class="text-3xl font-bold text-primary mt-1">1,234</p>
         </div>
         <div class="p-3 bg-primary-100 rounded-full">
             <svg class="w-8 h-8 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -82,7 +82,7 @@ Usage Examples:
 <x-ui.card :padding="false">
     <!-- Header -->
     <div class="px-6 py-4 border-b border-card-border">
-        <h3 class="text-lg font-bold text-text-primary">Envelope Details</h3>
+        <h3 class="text-lg font-bold text-primary">Envelope Details</h3>
     </div>
 
     <!-- Body -->
@@ -90,11 +90,11 @@ Usage Examples:
         <dl class="space-y-3">
             <div>
                 <dt class="text-sm text-text-secondary">Status</dt>
-                <dd class="text-sm font-medium text-text-primary">Completed</dd>
+                <dd class="text-sm font-medium text-primary">Completed</dd>
             </div>
             <div>
                 <dt class="text-sm text-text-secondary">Sent Date</dt>
-                <dd class="text-sm font-medium text-text-primary">Jan 15, 2025</dd>
+                <dd class="text-sm font-medium text-primary">Jan 15, 2025</dd>
             </div>
         </dl>
     </div>
@@ -133,7 +133,7 @@ Usage Examples:
     <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
     </svg>
-    <h3 class="text-lg font-medium text-text-primary mb-2">No envelopes found</h3>
+    <h3 class="text-lg font-medium text-primary mb-2">No envelopes found</h3>
     <p class="text-sm text-text-secondary mb-6">Get started by sending your first envelope.</p>
     <x-ui.button variant="primary">Send Envelope</x-ui.button>
 </x-ui.card>

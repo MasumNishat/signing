@@ -73,7 +73,7 @@
     }">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-text-primary">Create Webhook</h1>
+            <h1 class="text-2xl font-bold text-primary">Create Webhook</h1>
             <p class="mt-1 text-sm text-text-secondary">Configure a webhook to receive real-time event notifications</p>
         </div>
 
@@ -106,23 +106,23 @@
         <!-- Step 1: Configuration -->
         <div x-show="step === 1">
             <x-ui.card class="mb-6 max-w-2xl">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Webhook Configuration</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Webhook Configuration</h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Webhook Name *</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Webhook Name *</label>
                         <x-ui.input type="text" x-model="webhookData.name" placeholder="Production Webhook" required />
                         <p x-show="errors.name" class="mt-1 text-sm text-red-600" x-text="errors.name?.[0]"></p>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Endpoint URL *</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Endpoint URL *</label>
                         <x-ui.input type="url" x-model="webhookData.url" placeholder="https://yourapp.com/webhooks/docusign" required />
                         <p class="mt-1 text-xs text-text-secondary">Must be a valid HTTPS URL</p>
                         <p x-show="errors.url" class="mt-1 text-sm text-red-600" x-text="errors.url?.[0]"></p>
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-text-primary mb-1">Status</label>
+                        <label class="block text-sm font-medium text-primary mb-1">Status</label>
                         <x-ui.select x-model="webhookData.status">
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
@@ -135,13 +135,13 @@
         <!-- Step 2: Events -->
         <div x-show="step === 2">
             <x-ui.card class="mb-6 max-w-2xl">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Select Events</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Select Events</h3>
                 <p class="text-sm text-text-secondary mb-4">Choose which events should trigger this webhook</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <template x-for="event in availableEvents" :key="event.id">
                         <div class="flex items-center p-3 border border-border-primary rounded-md hover:bg-bg-secondary cursor-pointer" @click="toggleEvent(event.id)">
                             <input type="checkbox" :checked="isEventSelected(event.id)" class="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
-                            <label class="ml-2 text-sm text-text-primary cursor-pointer" x-text="event.name"></label>
+                            <label class="ml-2 text-sm text-primary cursor-pointer" x-text="event.name"></label>
                         </div>
                     </template>
                 </div>
@@ -154,15 +154,15 @@
         <!-- Step 3: Review -->
         <div x-show="step === 3">
             <x-ui.card class="mb-6 max-w-2xl">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">Review Webhook</h3>
+                <h3 class="text-lg font-semibold text-primary mb-4">Review Webhook</h3>
                 <dl class="space-y-3">
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Webhook Name</dt>
-                        <dd class="mt-1 text-sm text-text-primary" x-text="webhookData.name"></dd>
+                        <dd class="mt-1 text-sm text-primary" x-text="webhookData.name"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Endpoint URL</dt>
-                        <dd class="mt-1 text-sm text-text-primary font-mono" x-text="webhookData.url"></dd>
+                        <dd class="mt-1 text-sm text-primary font-mono" x-text="webhookData.url"></dd>
                     </div>
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Status</dt>
@@ -172,7 +172,7 @@
                         <dt class="text-sm font-medium text-text-secondary">Events (<span x-text="webhookData.events.length"></span>)</dt>
                         <dd class="mt-2 flex flex-wrap gap-2">
                             <template x-for="eventId in webhookData.events" :key="eventId">
-                                <span class="px-2 py-1 text-xs bg-bg-secondary border border-border-primary rounded-md text-text-primary" x-text="availableEvents.find(e => e.id === eventId)?.name"></span>
+                                <span class="px-2 py-1 text-xs bg-bg-secondary border border-border-primary rounded-md text-primary" x-text="availableEvents.find(e => e.id === eventId)?.name"></span>
                             </template>
                         </dd>
                     </div>

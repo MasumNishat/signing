@@ -219,7 +219,7 @@ async resetPassword() {
         <div class="flex items-center justify-between">
             <div>
                 <p class="text-sm font-medium text-text-secondary">Total Envelopes</p>
-                <p class="mt-2 text-3xl font-bold text-text-primary" x-text="statistics.total"></p>
+                <p class="mt-2 text-3xl font-bold text-primary" x-text="statistics.total"></p>
                 <p class="mt-2 text-xs text-text-secondary">
                     <span class="text-green-600 font-medium">+12.5%</span> from last month
                 </p>
@@ -255,7 +255,7 @@ this.statistics = statsResponse.data;
 #### Quick Actions Section
 ```blade
 <x-ui.card>
-    <h3 class="text-lg font-semibold text-text-primary mb-4">Quick Actions</h3>
+    <h3 class="text-lg font-semibold text-primary mb-4">Quick Actions</h3>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Send Envelope -->
         <a href="/envelopes/create" class="flex items-center p-4 rounded-lg border-2 border-dashed border-border-primary hover:border-primary-500 hover:bg-primary-50 transition-colors group">
@@ -263,7 +263,7 @@ this.statistics = statsResponse.data;
                 <svg class="w-6 h-6 text-primary-600"><!-- Plus icon --></svg>
             </div>
             <div class="ml-4">
-                <p class="font-medium text-text-primary">Send Envelope</p>
+                <p class="font-medium text-primary">Send Envelope</p>
                 <p class="text-sm text-text-secondary">Create and send new envelope</p>
             </div>
         </a>
@@ -279,14 +279,14 @@ this.statistics = statsResponse.data;
 ```blade
 <x-ui.card :padding="false">
     <div class="px-6 py-4 border-b border-card-border flex items-center justify-between">
-        <h3 class="text-lg font-semibold text-text-primary">Recent Envelopes</h3>
+        <h3 class="text-lg font-semibold text-primary">Recent Envelopes</h3>
         <a href="/envelopes" class="text-sm font-medium text-primary-600 hover:text-primary-500">View all</a>
     </div>
 
     <!-- Empty State -->
     <div x-show="recentEnvelopes.length === 0" class="px-6 py-12 text-center">
         <svg class="mx-auto h-12 w-12 text-gray-400"><!-- Document icon --></svg>
-        <h3 class="mt-2 text-sm font-medium text-text-primary">No envelopes yet</h3>
+        <h3 class="mt-2 text-sm font-medium text-primary">No envelopes yet</h3>
         <p class="mt-1 text-sm text-text-secondary">Get started by sending your first envelope.</p>
         <div class="mt-6">
             <x-ui.button variant="primary" onclick="window.location.href='/envelopes/create'">
@@ -311,7 +311,7 @@ this.statistics = statsResponse.data;
                 <template x-for="envelope in recentEnvelopes" :key="envelope.id">
                     <x-table.row class="hover:bg-bg-hover cursor-pointer" @click="window.location.href='/envelopes/' + envelope.id">
                         <x-table.cell>
-                            <p class="font-medium text-text-primary" x-text="envelope.email_subject"></p>
+                            <p class="font-medium text-primary" x-text="envelope.email_subject"></p>
                         </x-table.cell>
                         <x-table.cell>
                             <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
