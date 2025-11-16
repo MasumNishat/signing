@@ -11,6 +11,7 @@ use App\Http\Controllers\Web\ContactController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\SettingsController;
 use App\Http\Controllers\Web\BillingController;
+use App\Http\Controllers\Web\BulkSendController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,5 +108,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/plans', [BillingController::class, 'plans'])->name('plans');
         Route::get('/invoices', [BillingController::class, 'invoices'])->name('invoices');
         Route::get('/payments', [BillingController::class, 'payments'])->name('payments');
+    });
+
+    // Bulk Send Routes (Phase F7)
+    Route::prefix('bulk')->name('bulk.')->group(function () {
+        Route::get('/', [BulkSendController::class, 'index'])->name('index');
+        Route::get('/create', [BulkSendController::class, 'create'])->name('create');
+        Route::get('/{id}', [BulkSendController::class, 'show'])->name('show');
     });
 });
