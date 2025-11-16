@@ -98,13 +98,13 @@ public function index()
 }
 
 // View
-<x-ui.pagination x-bind:data="$envelopes" />
+<x-ui.pagination :data="$envelopes" />
 
 2. Simple pagination (prev/next only):
-<x-ui.pagination x-bind:data="$envelopes" x-bind:simple="true" />
+<x-ui.pagination :data="$envelopes" x-bind:simple="true" />
 
 3. Without results text:
-<x-ui.pagination x-bind:data="$envelopes" x-bind:show-text="false" />
+<x-ui.pagination :data="$envelopes" x-bind:show-text="false" />
 
 4. With Alpine.js AJAX pagination:
 <div x-data="{
@@ -166,7 +166,7 @@ public function index()
 
 5. Centered pagination:
 <div class="flex justify-center">
-    <x-ui.pagination x-bind:data="$envelopes" x-bind:show-text="false" />
+    <x-ui.pagination :data="$envelopes" x-bind:show-text="false" />
 </div>
 
 6. With per-page selector:
@@ -182,7 +182,7 @@ public function index()
         <span class="text-sm text-text-secondary">entries</span>
     </div>
 
-    <x-ui.pagination x-bind:data="$envelopes" x-bind:show-text="false" />
+    <x-ui.pagination :data="$envelopes" x-bind:show-text="false" />
 </div>
 
 7. Mobile responsive:
@@ -191,6 +191,6 @@ public function index()
         Showing {{ $envelopes->firstItem() }} to {{ $envelopes->lastItem() }} of {{ $envelopes->total() }} results
     </div>
 
-    <x-ui.pagination x-bind:data="$envelopes" x-bind:show-text="false" />
+    <x-ui.pagination :data="$envelopes" x-bind:show-text="false" />
 </div>
 --}}

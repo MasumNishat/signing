@@ -15,7 +15,7 @@
 Usage Examples:
 
 1. Basic error:
-<x-form.validation-error x-bind:message="$errors->first('email')" for="email" />
+<x-form.validation-error :message="$errors->first('email')" for="email" />
 
 2. Custom error message:
 <x-form.validation-error message="This field is required" for="subject" />
@@ -28,6 +28,6 @@ Usage Examples:
 
 4. Multiple errors:
 @foreach($errors->get('email') as $error)
-    <x-form.validation-error x-bind:message="$error" for="email" />
+    <x-form.validation-error message="{{ $error }}" for="email" />
 @endforeach
 --}}

@@ -27,7 +27,7 @@
                 {{ $label }}
             </label>
             @if($error)
-                <x-form.validation-error x-bind:message="$error" x-bind:for="$name" />
+                <x-form.validation-error message="{{ $error }}" for="{{ $name }}" />
             @endif
         </div>
     @endif

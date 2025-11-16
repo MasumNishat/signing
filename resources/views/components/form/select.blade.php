@@ -22,7 +22,7 @@
 
 <div {{ $attributes->only('class') }}>
     @if($label)
-        <x-form.label x-bind:for="$name" x-bind:required="$required">
+        <x-form.label for="{{ $name }}" {{ $required ? "required" : "" }}>
             {{ $label }}
         </x-form.label>
     @endif
@@ -53,9 +53,9 @@
     </div>
 
     @if($error)
-        <x-form.validation-error x-bind:message="$error" x-bind:for="$name" />
+        <x-form.validation-error message="{{ $error }}" for="{{ $name }}" />
     @elseif($helpText)
-        <x-form.help-text x-bind:for="$name">{{ $helpText }}</x-form.help-text>
+        <x-form.help-text for="{{ $name }}">{{ $helpText }}</x-form.help-text>
     @endif
 </div>
 
@@ -74,7 +74,7 @@ Usage Examples:
     name="country"
     label="Country"
     placeholder="Select a country..."
-    x-bind:options="$countries"
+    :options="$countries"
 />
 
 3. With error:
@@ -82,7 +82,7 @@ Usage Examples:
     name="role"
     label="Role"
     x-bind:options="['admin' => 'Administrator', 'user' => 'User']"
-    x-bind:error="$errors->first('role')"
+    error="{{ $errors->first('role')"
 />
 
 4. Required select:

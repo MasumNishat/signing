@@ -32,7 +32,7 @@
 @endphp
 
 @if($tooltip)
-    <x-ui.tooltip x-bind:text="$tooltip">
+    <x-ui.tooltip :text="$tooltip">
         <button type="{{ $type }}"
                 {{ $attributes->merge(['class' => $classes]) }}
                 @if($disabled) disabled @endif>
