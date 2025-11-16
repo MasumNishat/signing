@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\SettingsController;
 use App\Http\Controllers\Web\BillingController;
 use App\Http\Controllers\Web\BulkSendController;
+use App\Http\Controllers\Web\PowerFormController;
 
 /*
 |--------------------------------------------------------------------------
@@ -115,5 +116,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [BulkSendController::class, 'index'])->name('index');
         Route::get('/create', [BulkSendController::class, 'create'])->name('create');
         Route::get('/{id}', [BulkSendController::class, 'show'])->name('show');
+    });
+
+    // PowerForms Routes (Phase F7)
+    Route::prefix('powerforms')->name('powerforms.')->group(function () {
+        Route::get('/', [PowerFormController::class, 'index'])->name('index');
+        Route::get('/create', [PowerFormController::class, 'create'])->name('create');
+        Route::get('/{id}', [PowerFormController::class, 'show'])->name('show');
+        Route::get('/{id}/submissions', [PowerFormController::class, 'submissions'])->name('submissions');
     });
 });
