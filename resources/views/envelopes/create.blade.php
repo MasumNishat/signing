@@ -1,5 +1,6 @@
 <x-layout.app title="Create Envelope">
     <div x-data="{
+        accountId: {{ $accountId }},
         currentStep: 1,
         loading: false,
         envelopeData: {
@@ -113,7 +114,7 @@
             this.errors = {};
 
             try {
-                const accountId = $store.auth.user.account_id;
+                const accountId = this.accountId;
 
                 // Create envelope
                 const envelopePayload = {

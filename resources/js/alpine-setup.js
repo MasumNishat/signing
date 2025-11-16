@@ -199,6 +199,7 @@ Alpine.magic('api', () => {
     return {
         async request(method, url, data = null, config = {}) {
             const token = Alpine.store('auth').token;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
             const defaultConfig = {
                 method,
@@ -206,8 +207,12 @@ Alpine.magic('api', () => {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
+                    // Use Bearer token if available (OAuth), otherwise use session auth with CSRF
                     ...(token && { Authorization: `Bearer ${token}` }),
+                    ...(csrfToken && !token && { 'X-CSRF-TOKEN': csrfToken }),
                 },
+                // For session auth, include credentials
+                withCredentials: !token,
                 ...config,
             };
 
@@ -221,7 +226,12 @@ Alpine.magic('api', () => {
             } catch (error) {
                 // Handle 401 Unauthorized
                 if (error.response?.status === 401) {
-                    Alpine.store('auth').logout();
+                    // For session auth, redirect to login
+                    if (!token) {
+                        window.location.href = '/login';
+                    } else {
+                        Alpine.store('auth').logout();
+                    }
                 }
                 throw error;
             }
