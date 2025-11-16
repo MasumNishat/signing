@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('account_number', 50)->unique();
+            $table->string('account_id', 100)->unique()->nullable();
+            $table->boolean('is_suspended')->default(false);
+            $table->string('account_number', 50)->unique()->nullable();
             $table->string('account_name');
             $table->string('status', 50)->default('active')->comment('active, suspended, closed');
             $table->foreignId('plan_id')->nullable()->constrained('plans')->nullOnDelete();

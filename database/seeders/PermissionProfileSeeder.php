@@ -24,7 +24,7 @@ class PermissionProfileSeeder extends Seeder
             [
                 'account_id' => $demoAccount->id,
                 'permission_profile_id' => 'perm_admin_' . \Str::random(16),
-                'permission_profile_name' => 'Administrator',
+                'profile_name' => 'Administrator',
                 'permissions' => json_encode([
                     'can_manage_account' => true,
                     'can_manage_users' => true,
@@ -39,7 +39,7 @@ class PermissionProfileSeeder extends Seeder
             [
                 'account_id' => $demoAccount->id,
                 'permission_profile_id' => 'perm_sender_' . \Str::random(16),
-                'permission_profile_name' => 'Sender',
+                'profile_name' => 'Sender',
                 'permissions' => json_encode([
                     'can_manage_account' => false,
                     'can_manage_users' => false,
@@ -54,7 +54,7 @@ class PermissionProfileSeeder extends Seeder
             [
                 'account_id' => $demoAccount->id,
                 'permission_profile_id' => 'perm_viewer_' . \Str::random(16),
-                'permission_profile_name' => 'Viewer',
+                'profile_name' => 'Viewer',
                 'permissions' => json_encode([
                     'can_manage_account' => false,
                     'can_manage_users' => false,

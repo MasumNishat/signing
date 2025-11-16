@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('permission_profiles', function (Blueprint $table) {
             $table->id();
+            $table->string('permission_profile_id', 100)->unique()->nullable();
+            $table->jsonb('permissions')->nullable();
             $table->foreignId('account_id')->nullable()->constrained('accounts')->cascadeOnDelete();
             $table->string('profile_name');
             $table->boolean('is_default')->default(false);

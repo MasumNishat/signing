@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class FileTypeSeeder extends Seeder
 {
@@ -54,7 +55,7 @@ class FileTypeSeeder extends Seeder
         ];
 
         foreach ($fileTypes as $fileType) {
-            \DB::table('file_types')->insert(array_merge($fileType, [
+            DB::table('file_types')->insert(array_merge($fileType, [
                 'created_at' => now(),
                 'updated_at' => now(),
             ]));

@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('plan_id', 100)->unique();
             $table->string('plan_name')->index();
             $table->string('plan_type', 50)->nullable()->comment('free, pro, business, enterprise');
+            $table->boolean('is_free')->default(false);
+            $table->integer('envelope_allowance')->nullable()->default(0);
+            $table->decimal('price_per_envelope', 10, 2)->nullable()->default(0.00);
 
             // Limits
             $table->integer('max_users')->default(1);

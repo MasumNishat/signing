@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('file_types', function (Blueprint $table) {
             $table->id();
-            $table->string('mime_type', 100)->unique();
+            $table->string('mime_type', 100);
             $table->string('file_extension', 20);
             $table->boolean('is_supported')->default(true);
 
             $table->timestamps();
+
+            $table->unique(['mime_type', 'file_extension']);
         });
     }
 
