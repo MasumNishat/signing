@@ -87,7 +87,7 @@ Usage Examples:
 </x-ui.button>
 
 8. With Alpine.js loading state:
-<x-ui.button x-bind:loading="$wire.loading">
+<x-ui.button :loading="$wire.loading">
     Process Payment
 </x-ui.button>
 

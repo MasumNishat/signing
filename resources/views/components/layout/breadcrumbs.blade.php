@@ -93,5 +93,5 @@ public function edit($id)
 }
 
 Then in view:
-<x-layout.breadcrumbs x-bind:items="$breadcrumbs" />
+<x-layout.breadcrumbs :items="$breadcrumbs" />
 --}}

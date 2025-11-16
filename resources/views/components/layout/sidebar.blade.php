@@ -1,6 +1,6 @@
 <aside class="fixed left-0 top-16 bottom-0 w-64 bg-sidebar-bg border-r border-sidebar-border transition-transform duration-300 z-30"
        x-data="{ activeMenu: null }"
-       x-bind:class="$store.sidebar.isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+       :class="$store.sidebar.isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
 
     <!-- Sidebar Content -->
     <div class="h-full flex flex-col">

@@ -74,7 +74,7 @@ Usage Examples:
     name="country"
     label="Country"
     placeholder="Select a country..."
-    x-bind:options="$countries"
+    :options="$countries"
 />
 
 3. With error:
