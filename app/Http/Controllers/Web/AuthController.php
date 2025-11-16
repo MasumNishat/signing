@@ -68,10 +68,24 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
+        // Get or create default account
+        $account = \App\Models\Account::first();
+        if (!$account) {
+            $account = \App\Models\Account::create([
+                'account_name' => 'Default Account',
+                'plan_id' => \App\Models\Plan::first()?->id ?? 1,
+            ]);
+        }
+
+        // Create user with account_id
         $user = User::create([
-            'name' => $validated['name'],
+            'account_id' => $account->id,
+            'user_name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'first_name' => $validated['name'],
+            'user_status' => 'active',
+            'user_type' => 'individual',
         ]);
 
         // Auto-login after registration

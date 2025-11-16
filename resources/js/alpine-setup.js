@@ -212,14 +212,22 @@ Alpine.magic('api', () => {
                 headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/json',
-                    // Use Bearer token if available (OAuth), otherwise use session auth with CSRF
-                    ...(token && { Authorization: `Bearer ${token}` }),
-                    ...(csrfToken && !token && { 'X-CSRF-TOKEN': csrfToken }),
+                    'X-Requested-With': 'XMLHttpRequest',
                 },
-                // For session auth, include credentials
-                withCredentials: !token,
+                // Always include credentials for session support
+                withCredentials: true,
                 ...config,
             };
+
+            // Add Authorization header if token exists
+            if (token) {
+                defaultConfig.headers.Authorization = `Bearer ${token}`;
+            }
+
+            // Add CSRF token for non-GET requests
+            if (csrfToken && method !== 'GET') {
+                defaultConfig.headers['X-CSRF-TOKEN'] = csrfToken;
+            }
 
             if (data) {
                 defaultConfig.data = data;

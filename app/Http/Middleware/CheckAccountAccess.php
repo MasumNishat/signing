@@ -17,12 +17,21 @@ class CheckAccountAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
+        // Try API guard (bearer token) first, then web guard (session) as fallback
+        $user = $request->user('api') ?? $request->user('web');
 
         if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthenticated',
+                'error' => [
+                    'code' => 'UNAUTHENTICATED',
+                    'message' => 'Unauthenticated.',
+                ],
+                'meta' => [
+                    'timestamp' => now()->toIso8601String(),
+                    'request_id' => $request->header('X-Request-ID') ?? \Str::uuid()->toString(),
+                    'version' => 'v2.1',
+                ],
             ], 401);
         }
 
