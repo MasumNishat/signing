@@ -1,0 +1,29 @@
+/* Green Theme - Nature Inspired */
+:root[data-theme='green'] {
+    /* Primary Colors - Emerald Green */
+    --color-primary-50: #ecfdf5;
+    --color-primary-100: #d1fae5;
+    --color-primary-200: #a7f3d0;
+    --color-primary-300: #6ee7b7;
+    --color-primary-400: #34d399;
+    --color-primary-500: #10b981;
+    --color-primary-600: #059669;
+    --color-primary-700: #047857;
+    --color-primary-800: #065f46;
+    --color-primary-900: #064e3b;
+    --color-primary-950: #022c22;
+
+    --color-button-primary-bg: #10b981;
+    --color-button-primary-hover: #059669;
+
+    --color-border-focus: #10b981;
+
+    --color-sidebar-active: #ecfdf5;
+    --color-sidebar-active-text: #047857;
+}
+
+/* Dark mode adjustments for green theme */
+:root[data-theme='green'][data-mode='dark'] {
+    --color-sidebar-active: #064e3b;
+    --color-sidebar-active-text: #6ee7b7;
+}
