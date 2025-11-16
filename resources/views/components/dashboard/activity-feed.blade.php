@@ -4,7 +4,7 @@
     'loading' => false
 ])
 
-<x-ui.card :padding="false">
+<x-ui.card x-bind:padding="false">
     <div class="px-6 py-4 border-b border-card-border">
         <h3 class="text-lg font-semibold text-primary">Recent Activity</h3>
         <p class="text-sm text-text-secondary">Latest actions and events</p>

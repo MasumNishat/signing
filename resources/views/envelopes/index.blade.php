@@ -165,7 +165,7 @@
                     name="status"
                     label="Status"
                     x-model="filters.status"
-                    :options="[
+                    x-bind:options="[
                         '' => 'All Statuses',
                         'draft' => 'Draft',
                         'sent' => 'Sent',
@@ -209,13 +209,13 @@
                     <span x-text="selectedEnvelopes.length"></span> envelope(s) selected
                 </span>
                 <div class="flex gap-2">
-                    <x-ui.button size="sm" variant="primary" @click="bulkSend()" :loading="bulkActionLoading">
+                    <x-ui.button size="sm" variant="primary" @click="bulkSend()" x-bind:loading="bulkActionLoading">
                         Send Selected
                     </x-ui.button>
-                    <x-ui.button size="sm" variant="secondary" @click="bulkVoid()" :loading="bulkActionLoading">
+                    <x-ui.button size="sm" variant="secondary" @click="bulkVoid()" x-bind:loading="bulkActionLoading">
                         Void Selected
                     </x-ui.button>
-                    <x-ui.button size="sm" variant="danger" @click="bulkDelete()" :loading="bulkActionLoading">
+                    <x-ui.button size="sm" variant="danger" @click="bulkDelete()" x-bind:loading="bulkActionLoading">
                         Delete Selected
                     </x-ui.button>
                 </div>
@@ -229,7 +229,7 @@
 
         <!-- Envelopes Table -->
         <div x-show="!loading">
-            <x-ui.card :padding="false">
+            <x-ui.card x-bind:padding="false">
                 <!-- Empty State -->
                 <div x-show="envelopes.length === 0" class="px-6 py-12 text-center">
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -252,7 +252,7 @@
                                 <th class="px-6 py-3 w-12">
                                     <input type="checkbox"
                                            @change="toggleSelectAll()"
-                                           :checked="selectedEnvelopes.length === envelopes.length && envelopes.length > 0"
+                                           x-bind:checked="selectedEnvelopes.length === envelopes.length && envelopes.length > 0"
                                            class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                                 </th>
                                 <x-table.sortable-header column="email_subject">Subject</x-table.sortable-header>
@@ -264,20 +264,20 @@
                             </x-table.row>
                         </x-table.thead>
                         <x-table.tbody>
-                            <template x-for="envelope in envelopes" :key="envelope.id">
+                            <template x-for="envelope in envelopes" x-bind:key="envelope.id">
                                 <x-table.row class="hover:bg-bg-hover">
                                     <x-table.cell>
                                         <input type="checkbox"
-                                               :value="envelope.id"
+                                               x-bind:value="envelope.id"
                                                x-model="selectedEnvelopes"
                                                class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                                     </x-table.cell>
                                     <x-table.cell>
-                                        <a :href="`/envelopes/${envelope.id}`" class="font-medium text-primary-600 hover:text-primary-500" x-text="envelope.email_subject"></a>
+                                        <a x-bind:href="`/envelopes/${envelope.id}`" class="font-medium text-primary-600 hover:text-primary-500" x-text="envelope.email_subject"></a>
                                     </x-table.cell>
                                     <x-table.cell>
                                         <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
-                                              :class="getStatusColor(envelope.status)"
+                                              x-bind:class="getStatusColor(envelope.status)"
                                               x-text="envelope.status.charAt(0).toUpperCase() + envelope.status.slice(1)">
                                         </span>
                                     </x-table.cell>
@@ -292,8 +292,8 @@
                                     </x-table.cell>
                                     <x-table.cell align="right">
                                         <x-table.actions>
-                                            <a :href="`/envelopes/${envelope.id}`" class="block px-4 py-2 text-sm hover:bg-dropdown-hover">View</a>
-                                            <a :href="`/envelopes/${envelope.id}/edit`"
+                                            <a x-bind:href="`/envelopes/${envelope.id}`" class="block px-4 py-2 text-sm hover:bg-dropdown-hover">View</a>
+                                            <a x-bind:href="`/envelopes/${envelope.id}/edit`"
                                                x-show="envelope.status === 'draft'"
                                                class="block px-4 py-2 text-sm hover:bg-dropdown-hover">Edit</a>
                                             <button @click="window.location.href=`/envelopes/${envelope.id}`"
@@ -324,14 +324,14 @@
                                     size="sm"
                                     variant="secondary"
                                     @click="loadEnvelopes(pagination.current_page - 1)"
-                                    :disabled="pagination.current_page === 1">
+                                    x-bind:disabled="pagination.current_page === 1">
                                     Previous
                                 </x-ui.button>
                                 <x-ui.button
                                     size="sm"
                                     variant="secondary"
                                     @click="loadEnvelopes(pagination.current_page + 1)"
-                                    :disabled="pagination.current_page === pagination.last_page">
+                                    x-bind:disabled="pagination.current_page === pagination.last_page">
                                     Next
                                 </x-ui.button>
                             </div>

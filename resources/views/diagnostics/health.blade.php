@@ -75,7 +75,7 @@
                     >
                     <span class="ml-2 text-sm text-primary">Auto-refresh (30s)</span>
                 </label>
-                <x-ui.button variant="secondary" @click="loadHealth()" :disabled="loading">
+                <x-ui.button variant="secondary" @click="loadHealth()" x-bind:disabled="loading">
                     <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
@@ -97,7 +97,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <x-ui.card>
                     <div class="text-center">
-                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-3" :class="{
+                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full mb-3" x-bind:class="{
                             'bg-green-100 dark:bg-green-900/20': health?.status === 'healthy',
                             'bg-yellow-100 dark:bg-yellow-900/20': health?.status === 'degraded',
                             'bg-red-100 dark:bg-red-900/20': health?.status === 'unhealthy'
@@ -182,10 +182,10 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm font-medium text-primary">CPU Usage</span>
-                            <span class="text-sm" :class="getPercentageColor(health?.resources?.cpu_usage || 0)" x-text="`${Math.round(health?.resources?.cpu_usage || 0)}%`"></span>
+                            <span class="text-sm" x-bind:class="getPercentageColor(health?.resources?.cpu_usage || 0)" x-text="`${Math.round(health?.resources?.cpu_usage || 0)}%`"></span>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                            <div class="h-2 rounded-full transition-all" :style="`width: ${health?.resources?.cpu_usage || 0}%`" :class="{
+                            <div class="h-2 rounded-full transition-all" x-bind:style="`width: ${health?.resources?.cpu_usage || 0}%`" x-bind:class="{
                                 'bg-green-600': (health?.resources?.cpu_usage || 0) < 70,
                                 'bg-yellow-600': (health?.resources?.cpu_usage || 0) >= 70 && (health?.resources?.cpu_usage || 0) < 90,
                                 'bg-red-600': (health?.resources?.cpu_usage || 0) >= 90
@@ -197,14 +197,14 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm font-medium text-primary">Memory Usage</span>
-                            <span class="text-sm" :class="getPercentageColor(health?.resources?.memory_usage || 0)">
+                            <span class="text-sm" x-bind:class="getPercentageColor(health?.resources?.memory_usage || 0)">
                                 <span x-text="formatBytes(health?.resources?.memory_used || 0)"></span> /
                                 <span x-text="formatBytes(health?.resources?.memory_total || 0)"></span>
                                 (<span x-text="Math.round(health?.resources?.memory_usage || 0)"></span>%)
                             </span>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                            <div class="h-2 rounded-full transition-all" :style="`width: ${health?.resources?.memory_usage || 0}%`" :class="{
+                            <div class="h-2 rounded-full transition-all" x-bind:style="`width: ${health?.resources?.memory_usage || 0}%`" x-bind:class="{
                                 'bg-green-600': (health?.resources?.memory_usage || 0) < 70,
                                 'bg-yellow-600': (health?.resources?.memory_usage || 0) >= 70 && (health?.resources?.memory_usage || 0) < 90,
                                 'bg-red-600': (health?.resources?.memory_usage || 0) >= 90
@@ -216,14 +216,14 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm font-medium text-primary">Disk Usage</span>
-                            <span class="text-sm" :class="getPercentageColor(health?.resources?.disk_usage || 0)">
+                            <span class="text-sm" x-bind:class="getPercentageColor(health?.resources?.disk_usage || 0)">
                                 <span x-text="formatBytes(health?.resources?.disk_used || 0)"></span> /
                                 <span x-text="formatBytes(health?.resources?.disk_total || 0)"></span>
                                 (<span x-text="Math.round(health?.resources?.disk_usage || 0)"></span>%)
                             </span>
                         </div>
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                            <div class="h-2 rounded-full transition-all" :style="`width: ${health?.resources?.disk_usage || 0}%`" :class="{
+                            <div class="h-2 rounded-full transition-all" x-bind:style="`width: ${health?.resources?.disk_usage || 0}%`" x-bind:class="{
                                 'bg-green-600': (health?.resources?.disk_usage || 0) < 70,
                                 'bg-yellow-600': (health?.resources?.disk_usage || 0) >= 70 && (health?.resources?.disk_usage || 0) < 90,
                                 'bg-red-600': (health?.resources?.disk_usage || 0) >= 90
@@ -260,23 +260,23 @@
             <x-ui.card x-show="health?.issues && health.issues.length > 0">
                 <h2 class="text-lg font-semibold text-primary mb-4">Recent Issues</h2>
                 <div class="space-y-3">
-                    <template x-for="issue in health?.issues || []" :key="issue.id">
-                        <div class="p-3 border-l-4 rounded" :class="{
+                    <template x-for="issue in health?.issues || []" x-bind:key="issue.id">
+                        <div class="p-3 border-l-4 rounded" x-bind:class="{
                             'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20': issue.severity === 'warning',
                             'border-red-500 bg-red-50 dark:bg-red-900/20': issue.severity === 'critical'
                         }">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
-                                    <p class="font-medium" :class="{
+                                    <p class="font-medium" x-bind:class="{
                                         'text-yellow-800 dark:text-yellow-200': issue.severity === 'warning',
                                         'text-red-800 dark:text-red-200': issue.severity === 'critical'
                                     }" x-text="issue.message"></p>
-                                    <p class="mt-1 text-sm" :class="{
+                                    <p class="mt-1 text-sm" x-bind:class="{
                                         'text-yellow-600 dark:text-yellow-300': issue.severity === 'warning',
                                         'text-red-600 dark:text-red-300': issue.severity === 'critical'
                                     }" x-text="issue.details"></p>
                                 </div>
-                                <span class="ml-4 text-xs" :class="{
+                                <span class="ml-4 text-xs" x-bind:class="{
                                     'text-yellow-600 dark:text-yellow-300': issue.severity === 'warning',
                                     'text-red-600 dark:text-red-300': issue.severity === 'critical'
                                 }" x-text="issue.timestamp"></span>

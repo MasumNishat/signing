@@ -40,7 +40,7 @@
         <div x-show="loading"><x-ui.skeleton type="card" class="h-32" /></div>
 
         <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <template x-for="group in groups" :key="group.id">
+            <template x-for="group in groups" x-bind:key="group.id">
                 <x-ui.card>
                     <h3 class="text-lg font-semibold text-primary" x-text="group.name"></h3>
                     <p class="mt-2 text-sm text-text-secondary">

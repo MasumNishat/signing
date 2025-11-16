@@ -68,14 +68,14 @@
                 </div>
             </template>
 
-            <template x-for="notification in notifications" :key="notification.id">
+            <template x-for="notification in notifications" x-bind:key="notification.id">
                 <div @click="markAsRead(notification.id)"
                      class="px-4 py-3 hover:bg-bg-hover cursor-pointer border-b border-card-border last:border-b-0"
-                     :class="!notification.read ? 'bg-primary-50 dark:bg-primary-900/10' : ''">
+                     x-bind:class="!notification.read ? 'bg-primary-50 dark:bg-primary-900/10' : ''">
                     <div class="flex items-start space-x-3">
                         <div class="flex-shrink-0">
                             <div class="h-8 w-8 rounded-full flex items-center justify-center"
-                                 :class="{
+                                 x-bind:class="{
                                      'bg-blue-100 text-blue-600': notification.type === 'envelope',
                                      'bg-green-100 text-green-600': notification.type === 'signature',
                                      'bg-purple-100 text-purple-600': notification.type === 'template',

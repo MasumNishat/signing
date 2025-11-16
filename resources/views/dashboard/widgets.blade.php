@@ -88,7 +88,7 @@
                 <h3 class="text-lg font-semibold text-primary mb-4">Dashboard Layout</h3>
                 <div class="flex items-center space-x-4">
                     <button @click="layout = 'grid'"
-                            :class="layout === 'grid' ? 'bg-primary-100 text-primary-700 border-primary-500' : 'bg-bg-secondary text-text-secondary border-border-primary'"
+                            x-bind:class="layout === 'grid' ? 'bg-primary-100 text-primary-700 border-primary-500' : 'bg-bg-secondary text-text-secondary border-border-primary'"
                             class="flex items-center px-4 py-2 border-2 rounded-lg transition-colors">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -96,7 +96,7 @@
                         Grid Layout
                     </button>
                     <button @click="layout = 'list'"
-                            :class="layout === 'list' ? 'bg-primary-100 text-primary-700 border-primary-500' : 'bg-bg-secondary text-text-secondary border-border-primary'"
+                            x-bind:class="layout === 'list' ? 'bg-primary-100 text-primary-700 border-primary-500' : 'bg-bg-secondary text-text-secondary border-border-primary'"
                             class="flex items-center px-4 py-2 border-2 rounded-lg transition-colors">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -114,9 +114,9 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <template x-for="widget in availableWidgets" :key="widget.id">
+                    <template x-for="widget in availableWidgets" x-bind:key="widget.id">
                         <div class="p-4 rounded-lg border-2 transition-all"
-                             :class="widget.enabled ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/10' : 'border-border-primary bg-bg-secondary'">
+                             x-bind:class="widget.enabled ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/10' : 'border-border-primary bg-bg-secondary'">
                             <div class="flex items-start justify-between mb-2">
                                 <div class="flex-1">
                                     <h4 class="font-medium text-primary" x-text="widget.name"></h4>
@@ -124,7 +124,7 @@
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer ml-3">
                                     <input type="checkbox"
-                                           :checked="widget.enabled"
+                                           x-bind:checked="widget.enabled"
                                            @change="toggleWidget(widget.id)"
                                            class="sr-only peer">
                                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
@@ -152,8 +152,8 @@
                 </p>
 
                 <div class="border-2 border-dashed border-border-primary rounded-lg p-6 bg-bg-secondary">
-                    <div :class="layout === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-4'">
-                        <template x-for="widget in availableWidgets.filter(w => w.enabled)" :key="widget.id">
+                    <div x-bind:class="layout === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-4'">
+                        <template x-for="widget in availableWidgets.filter(w => w.enabled)" x-bind:key="widget.id">
                             <div class="p-4 bg-primary border border-card-border rounded-lg">
                                 <div class="flex items-center space-x-2">
                                     <div class="h-2 w-2 bg-primary-600 rounded-full"></div>

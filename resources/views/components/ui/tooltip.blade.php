@@ -122,15 +122,15 @@ Usage Examples:
 5. On status badges:
 <div class="flex items-center space-x-2">
     <x-ui.tooltip text="Envelope has been sent to all recipients" position="bottom">
-        <x-ui.badge variant="primary" :dot="true">Sent</x-ui.badge>
+        <x-ui.badge variant="primary" x-bind:dot="true">Sent</x-ui.badge>
     </x-ui.tooltip>
 
     <x-ui.tooltip text="All recipients have signed" position="bottom">
-        <x-ui.badge variant="success" :dot="true">Completed</x-ui.badge>
+        <x-ui.badge variant="success" x-bind:dot="true">Completed</x-ui.badge>
     </x-ui.tooltip>
 
     <x-ui.tooltip text="Envelope was voided by sender" position="bottom">
-        <x-ui.badge variant="danger" :dot="true">Voided</x-ui.badge>
+        <x-ui.badge variant="danger" x-bind:dot="true">Voided</x-ui.badge>
     </x-ui.tooltip>
 </div>
 
@@ -168,7 +168,7 @@ Usage Examples:
 8. Disabled button with tooltip:
 <x-ui.tooltip text="You don't have permission to delete this envelope">
     <span class="inline-block">
-        <x-ui.button variant="danger" :disabled="true">
+        <x-ui.button variant="danger" x-bind:disabled="true">
             Delete
         </x-ui.button>
     </span>

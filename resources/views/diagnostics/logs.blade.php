@@ -219,7 +219,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-border-primary">
-                        <template x-for="log in logs" :key="log.id">
+                        <template x-for="log in logs" x-bind:key="log.id">
                             <tr class="hover:bg-bg-secondary cursor-pointer" @click="$refs[`details-${log.id}`].classList.toggle('hidden')">
                                 <td class="px-4 py-3 text-sm text-primary" x-text="formatDate(log.created_at)"></td>
                                 <td class="px-4 py-3 text-sm">
@@ -234,7 +234,7 @@
                                 <td class="px-4 py-3 text-sm font-mono text-primary" x-text="log.ip_address"></td>
                             </tr>
                             <!-- Expandable Details Row -->
-                            <tr :x-ref="`details-${log.id}`" class="hidden bg-bg-secondary">
+                            <tr x-bind:x-ref="`details-${log.id}`" class="hidden bg-bg-secondary">
                                 <td colspan="7" class="px-4 py-4">
                                     <div class="grid grid-cols-2 gap-4 text-sm">
                                         <div>
@@ -278,10 +278,10 @@
                     of <span x-text="pagination.total"></span> results
                 </div>
                 <div class="flex space-x-2">
-                    <x-ui.button variant="secondary" size="sm" @click="loadLogs(pagination.current_page - 1)" :disabled="pagination.current_page === 1">
+                    <x-ui.button variant="secondary" size="sm" @click="loadLogs(pagination.current_page - 1)" x-bind:disabled="pagination.current_page === 1">
                         Previous
                     </x-ui.button>
-                    <x-ui.button variant="secondary" size="sm" @click="loadLogs(pagination.current_page + 1)" :disabled="pagination.current_page * pagination.per_page >= pagination.total">
+                    <x-ui.button variant="secondary" size="sm" @click="loadLogs(pagination.current_page + 1)" x-bind:disabled="pagination.current_page * pagination.per_page >= pagination.total">
                         Next
                     </x-ui.button>
                 </div>

@@ -40,7 +40,7 @@ Usage Examples:
 </x-ui.card>
 
 2. Card without padding (for custom layouts):
-<x-ui.card :padding="false">
+<x-ui.card x-bind:padding="false">
     <div class="p-6 border-b border-card-border">
         <h3 class="text-lg font-bold">Header</h3>
     </div>
@@ -55,7 +55,7 @@ Usage Examples:
 </x-ui.card>
 
 4. Card without border:
-<x-ui.card :border="false">
+<x-ui.card x-bind:border="false">
     <p>Borderless card</p>
 </x-ui.card>
 
@@ -79,7 +79,7 @@ Usage Examples:
 </x-ui.card>
 
 6. Card with header and footer:
-<x-ui.card :padding="false">
+<x-ui.card x-bind:padding="false">
     <!-- Header -->
     <div class="px-6 py-4 border-b border-card-border">
         <h3 class="text-lg font-bold text-primary">Envelope Details</h3>

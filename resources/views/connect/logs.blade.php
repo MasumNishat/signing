@@ -1,4 +1,4 @@
-<x-layout.app :title="'Webhook Logs'">
+<x-layout.app x-bind:title="'Webhook Logs'">
     <div x-data="{
         loading: true,
         webhook: null,
@@ -77,7 +77,7 @@
                 <div class="flex items-center space-x-2">
                     <a href="/connect" class="text-text-secondary hover:text-primary">Webhooks</a>
                     <span class="text-text-secondary">/</span>
-                    <a :href="`/connect/${webhook?.id}`" class="text-text-secondary hover:text-primary" x-text="webhook?.name"></a>
+                    <a x-bind:href="`/connect/${webhook?.id}`" class="text-text-secondary hover:text-primary" x-text="webhook?.name"></a>
                     <span class="text-text-secondary">/</span>
                     <span class="text-primary">Logs</span>
                 </div>
@@ -149,7 +149,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-border-primary">
-                        <template x-for="log in logs" :key="log.id">
+                        <template x-for="log in logs" x-bind:key="log.id">
                             <tr class="hover:bg-bg-secondary">
                                 <td class="px-4 py-3 text-sm text-primary" x-text="log.event_type"></td>
                                 <td class="px-4 py-3 text-sm">
@@ -182,10 +182,10 @@
                     of <span x-text="pagination.total"></span> results
                 </div>
                 <div class="flex space-x-2">
-                    <x-ui.button variant="secondary" size="sm" @click="loadLogs(pagination.current_page - 1)" :disabled="pagination.current_page === 1">
+                    <x-ui.button variant="secondary" size="sm" @click="loadLogs(pagination.current_page - 1)" x-bind:disabled="pagination.current_page === 1">
                         Previous
                     </x-ui.button>
-                    <x-ui.button variant="secondary" size="sm" @click="loadLogs(pagination.current_page + 1)" :disabled="pagination.current_page * pagination.per_page >= pagination.total">
+                    <x-ui.button variant="secondary" size="sm" @click="loadLogs(pagination.current_page + 1)" x-bind:disabled="pagination.current_page * pagination.per_page >= pagination.total">
                         Next
                     </x-ui.button>
                 </div>

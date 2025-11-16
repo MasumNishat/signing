@@ -1,4 +1,4 @@
-<x-layout.app :title="'Workspace: ' . ($workspace->name ?? 'Details')">
+<x-layout.app x-bind:title="'Workspace: ' . ($workspace->name ?? 'Details')">
     <div x-data="{
         loading: true,
         workspace: null,
@@ -113,7 +113,7 @@
                     <span class="text-sm text-primary" x-text="`${uploadProgress}%`"></span>
                 </div>
                 <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div class="bg-blue-600 h-2 rounded-full transition-all" :style="`width: ${uploadProgress}%`"></div>
+                    <div class="bg-blue-600 h-2 rounded-full transition-all" x-bind:style="`width: ${uploadProgress}%`"></div>
                 </div>
             </div>
 
@@ -135,7 +135,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-border-primary">
-                            <template x-for="file in files" :key="file.id">
+                            <template x-for="file in files" x-bind:key="file.id">
                                 <tr class="hover:bg-bg-secondary">
                                     <td class="px-4 py-3 text-sm">
                                         <div class="flex items-center">
@@ -149,7 +149,7 @@
                                     <td class="px-4 py-3 text-sm text-primary" x-text="formatDate(file.created_at)"></td>
                                     <td class="px-4 py-3 text-sm">
                                         <div class="flex items-center space-x-2">
-                                            <a :href="`/api/v2.1/accounts/${$store.auth.user.account_id}/workspaces/${workspace.id}/files/${file.id}/download`" class="text-primary-600 hover:underline">Download</a>
+                                            <a x-bind:href="`/api/v2.1/accounts/${$store.auth.user.account_id}/workspaces/${workspace.id}/files/${file.id}/download`" class="text-primary-600 hover:underline">Download</a>
                                             <button @click="deleteFile(file.id)" class="text-red-600 hover:underline">Delete</button>
                                         </div>
                                     </td>

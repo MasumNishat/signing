@@ -1,4 +1,4 @@
-<x-layout.app :title="'Edit Envelope: ' . ($envelope->email_subject ?? 'Draft')">
+<x-layout.app x-bind:title="'Edit Envelope: ' . ($envelope->email_subject ?? 'Draft')">
     <div x-data="{
         loading: true,
         currentStep: 1,
@@ -93,7 +93,7 @@
             <x-ui.card>
                 <h2 class="text-lg font-semibold text-primary mb-4">Documents</h2>
                 <div class="space-y-3">
-                    <template x-for="doc in documents" :key="doc.id">
+                    <template x-for="doc in documents" x-bind:key="doc.id">
                         <div class="flex items-center justify-between p-4 border border-border-primary rounded-lg">
                             <div class="flex items-center space-x-4">
                                 <svg class="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -114,7 +114,7 @@
             <x-ui.card>
                 <h2 class="text-lg font-semibold text-primary mb-4">Recipients</h2>
                 <div class="space-y-3">
-                    <template x-for="recipient in recipients" :key="recipient.id">
+                    <template x-for="recipient in recipients" x-bind:key="recipient.id">
                         <div class="p-4 border border-border-primary rounded-lg">
                             <p class="font-medium text-primary" x-text="recipient.name"></p>
                             <p class="text-sm text-text-secondary" x-text="recipient.email"></p>
@@ -136,7 +136,7 @@
                         label="Email Subject"
                         x-model="envelopeData.email_subject"
                         placeholder="Please sign this document"
-                        :required="true"
+                        x-bind:required="true"
                         x-bind:error="errors.email_subject?.[0]"
                     />
 
@@ -155,7 +155,7 @@
                 <x-ui.button variant="secondary" @click="window.location.href='/envelopes/{{ $envelopeId }}'">
                     Cancel
                 </x-ui.button>
-                <x-ui.button variant="primary" @click="updateEnvelope()" :loading="loading">
+                <x-ui.button variant="primary" @click="updateEnvelope()" x-bind:loading="loading">
                     Save Changes
                 </x-ui.button>
             </div>

@@ -137,7 +137,7 @@
         </div>
 
         <!-- Recipients Table -->
-        <x-ui.card :padding="false">
+        <x-ui.card x-bind:padding="false">
             <div x-show="loading" class="p-6 space-y-4">
                 <x-ui.skeleton type="text" class="h-12 w-full" />
                 <x-ui.skeleton type="text" class="h-12 w-full" />
@@ -150,7 +150,7 @@
                         <tr>
                             <th scope="col" class="w-12 px-6 py-3">
                                 <input type="checkbox"
-                                       :checked="selectedRecipients.length === recipients.length && recipients.length > 0"
+                                       x-bind:checked="selectedRecipients.length === recipients.length && recipients.length > 0"
                                        @change="toggleSelectAll()"
                                        class="rounded border-gray-300">
                             </th>
@@ -162,11 +162,11 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-border-primary">
-                        <template x-for="recipient in recipients" :key="recipient.id">
+                        <template x-for="recipient in recipients" x-bind:key="recipient.id">
                             <tr class="hover:bg-bg-hover">
                                 <td class="px-6 py-4">
                                     <input type="checkbox"
-                                           :value="recipient.id"
+                                           x-bind:value="recipient.id"
                                            x-model="selectedRecipients"
                                            class="rounded border-gray-300">
                                 </td>
@@ -180,7 +180,7 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
-                                          :class="{
+                                          x-bind:class="{
                                               'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': recipient.status === 'completed',
                                               'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': recipient.status === 'sent',
                                               'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200': recipient.status === 'created'
@@ -225,10 +225,10 @@
                     of <span x-text="pagination.total"></span> recipients
                 </div>
                 <div class="flex space-x-2">
-                    <x-ui.button variant="secondary" size="sm" @click="loadRecipients(pagination.current_page - 1)" :disabled="pagination.current_page === 1">
+                    <x-ui.button variant="secondary" size="sm" @click="loadRecipients(pagination.current_page - 1)" x-bind:disabled="pagination.current_page === 1">
                         Previous
                     </x-ui.button>
-                    <x-ui.button variant="secondary" size="sm" @click="loadRecipients(pagination.current_page + 1)" :disabled="pagination.current_page === pagination.last_page">
+                    <x-ui.button variant="secondary" size="sm" @click="loadRecipients(pagination.current_page + 1)" x-bind:disabled="pagination.current_page === pagination.last_page">
                         Next
                     </x-ui.button>
                 </div>

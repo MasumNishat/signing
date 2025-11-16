@@ -59,7 +59,7 @@
 Usage Examples:
 
 1. Text skeleton (loading paragraph):
-<x-ui.skeleton type="text" :lines="5" />
+<x-ui.skeleton type="text" x-bind:lines="5" />
 
 2. Title skeleton:
 <x-ui.skeleton type="title" width="1/2" />
@@ -89,7 +89,7 @@ Usage Examples:
     <x-ui.skeleton type="avatar" />
     <div class="flex-1 space-y-2">
         <x-ui.skeleton type="title" width="1/3" />
-        <x-ui.skeleton type="text" :lines="2" />
+        <x-ui.skeleton type="text" x-bind:lines="2" />
     </div>
 </div>
 
@@ -112,7 +112,7 @@ Usage Examples:
         <div class="flex items-center justify-between pb-4 border-b last:border-0">
             <div class="flex-1">
                 <x-ui.skeleton type="title" width="1/2" class="mb-2" />
-                <x-ui.skeleton type="text" :lines="2" />
+                <x-ui.skeleton type="text" x-bind:lines="2" />
             </div>
             <x-ui.skeleton type="button" width="1/4" />
         </div>

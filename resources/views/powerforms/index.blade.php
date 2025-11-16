@@ -105,7 +105,7 @@
 
         <!-- PowerForms List -->
         <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <template x-for="powerform in powerforms" :key="powerform.id">
+            <template x-for="powerform in powerforms" x-bind:key="powerform.id">
                 <x-ui.card>
                     <div class="flex flex-col h-full">
                         <div class="flex items-start justify-between mb-4">

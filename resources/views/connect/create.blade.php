@@ -80,22 +80,22 @@
         <!-- Step Indicator -->
         <div class="mb-6">
             <div class="flex items-center">
-                <div class="flex items-center" :class="step >= 1 ? 'text-primary-600' : 'text-text-secondary'">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" :class="step >= 1 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
+                <div class="flex items-center" x-bind:class="step >= 1 ? 'text-primary-600' : 'text-text-secondary'">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" x-bind:class="step >= 1 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
                         <span class="text-sm font-medium">1</span>
                     </div>
                     <span class="ml-2 text-sm font-medium">Configuration</span>
                 </div>
                 <div class="mx-4 h-0.5 w-16 bg-border-primary"></div>
-                <div class="flex items-center" :class="step >= 2 ? 'text-primary-600' : 'text-text-secondary'">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" :class="step >= 2 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
+                <div class="flex items-center" x-bind:class="step >= 2 ? 'text-primary-600' : 'text-text-secondary'">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" x-bind:class="step >= 2 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
                         <span class="text-sm font-medium">2</span>
                     </div>
                     <span class="ml-2 text-sm font-medium">Events</span>
                 </div>
                 <div class="mx-4 h-0.5 w-16 bg-border-primary"></div>
-                <div class="flex items-center" :class="step >= 3 ? 'text-primary-600' : 'text-text-secondary'">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" :class="step >= 3 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
+                <div class="flex items-center" x-bind:class="step >= 3 ? 'text-primary-600' : 'text-text-secondary'">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" x-bind:class="step >= 3 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
                         <span class="text-sm font-medium">3</span>
                     </div>
                     <span class="ml-2 text-sm font-medium">Review</span>
@@ -138,9 +138,9 @@
                 <h3 class="text-lg font-semibold text-primary mb-4">Select Events</h3>
                 <p class="text-sm text-text-secondary mb-4">Choose which events should trigger this webhook</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <template x-for="event in availableEvents" :key="event.id">
+                    <template x-for="event in availableEvents" x-bind:key="event.id">
                         <div class="flex items-center p-3 border border-border-primary rounded-md hover:bg-bg-secondary cursor-pointer" @click="toggleEvent(event.id)">
-                            <input type="checkbox" :checked="isEventSelected(event.id)" class="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                            <input type="checkbox" x-bind:checked="isEventSelected(event.id)" class="w-4 h-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
                             <label class="ml-2 text-sm text-primary cursor-pointer" x-text="event.name"></label>
                         </div>
                     </template>
@@ -171,7 +171,7 @@
                     <div>
                         <dt class="text-sm font-medium text-text-secondary">Events (<span x-text="webhookData.events.length"></span>)</dt>
                         <dd class="mt-2 flex flex-wrap gap-2">
-                            <template x-for="eventId in webhookData.events" :key="eventId">
+                            <template x-for="eventId in webhookData.events" x-bind:key="eventId">
                                 <span class="px-2 py-1 text-xs bg-bg-secondary border border-border-primary rounded-md text-primary" x-text="availableEvents.find(e => e.id === eventId)?.name"></span>
                             </template>
                         </dd>
@@ -194,7 +194,7 @@
                 <x-ui.button variant="primary" @click="nextStep()" x-show="step < 3">
                     Continue
                 </x-ui.button>
-                <x-ui.button variant="primary" @click="createWebhook()" x-show="step === 3" :disabled="loading">
+                <x-ui.button variant="primary" @click="createWebhook()" x-show="step === 3" x-bind:disabled="loading">
                     <span x-show="!loading">Create Webhook</span>
                     <span x-show="loading">Creating...</span>
                 </x-ui.button>

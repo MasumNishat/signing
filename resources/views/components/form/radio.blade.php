@@ -27,5 +27,5 @@
 {{--
 Usage:
 <x-form.radio name="role" value="admin" label="Administrator" />
-<x-form.radio name="role" value="user" label="User" :checked="true" />
+<x-form.radio name="role" value="user" label="User" x-bind:checked="true" />
 --}}

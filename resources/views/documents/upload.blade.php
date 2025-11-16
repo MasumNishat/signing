@@ -137,7 +137,7 @@
                 @drop.prevent="handleDrop"
                 @dragover.prevent="dragActive = true"
                 @dragleave.prevent="dragActive = false"
-                :class="{ 'border-primary-500 bg-primary-50 dark:bg-primary-900/10': dragActive }"
+                x-bind:class="{ 'border-primary-500 bg-primary-50 dark:bg-primary-900/10': dragActive }"
                 class="border-2 border-dashed border-border-primary rounded-lg p-12 text-center transition-colors"
             >
                 <input
@@ -193,10 +193,10 @@
                         Files (<span x-text="files.length"></span>)
                     </h3>
                     <div class="flex items-center space-x-3">
-                        <x-ui.button variant="secondary" size="sm" @click="files = []" :disabled="uploading">
+                        <x-ui.button variant="secondary" size="sm" @click="files = []" x-bind:disabled="uploading">
                             Clear All
                         </x-ui.button>
-                        <x-ui.button variant="primary" size="sm" @click="uploadFiles()" :disabled="uploading || files.length === 0">
+                        <x-ui.button variant="primary" size="sm" @click="uploadFiles()" x-bind:disabled="uploading || files.length === 0">
                             <span x-show="!uploading">Upload All</span>
                             <span x-show="uploading">Uploading...</span>
                         </x-ui.button>
@@ -204,7 +204,7 @@
                 </div>
 
                 <div class="space-y-3">
-                    <template x-for="fileObj in files" :key="fileObj.id">
+                    <template x-for="fileObj in files" x-bind:key="fileObj.id">
                         <div class="flex items-center justify-between p-4 border border-border-primary rounded-lg">
                             <div class="flex items-center flex-1">
                                 <!-- Icon -->
@@ -219,7 +219,7 @@
                                     <div x-show="fileObj.status === 'uploading'" class="mt-2">
                                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                             <div class="bg-primary-500 h-2 rounded-full transition-all duration-300"
-                                                 :style="`width: ${uploadProgress[fileObj.id] || 0}%`"></div>
+                                                 x-bind:style="`width: ${uploadProgress[fileObj.id] || 0}%`"></div>
                                         </div>
                                         <p class="text-xs text-text-secondary mt-1">
                                             <span x-text="uploadProgress[fileObj.id] || 0"></span>% uploaded
@@ -258,7 +258,7 @@
                                 <!-- Remove Button -->
                                 <button
                                     @click="removeFile(fileObj.id)"
-                                    :disabled="uploading"
+                                    x-bind:disabled="uploading"
                                     class="ml-4 text-red-600 hover:text-red-500 disabled:opacity-50"
                                 >
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

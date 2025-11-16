@@ -47,7 +47,7 @@
                 type="email"
                 placeholder="you@example.com"
                 x-model="email"
-                :required="true"
+                x-bind:required="true"
                 x-bind:error="errors.email?.[0]"
                 icon="left">
                 <x-slot name="iconSlot">
@@ -62,7 +62,7 @@
                 type="submit"
                 variant="primary"
                 class="w-full"
-                :loading="loading"
+                x-bind:loading="loading"
                 x-bind:disabled="loading">
                 Send reset link
             </x-ui.button>

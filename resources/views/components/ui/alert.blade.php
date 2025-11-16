@@ -104,12 +104,12 @@ Usage Examples:
 </x-ui.alert>
 
 5. Dismissible alert:
-<x-ui.alert variant="success" :dismissible="true">
+<x-ui.alert variant="success" x-bind:dismissible="true">
     Settings saved successfully!
 </x-ui.alert>
 
 6. Alert without icon:
-<x-ui.alert variant="info" :icon="false" title="Note">
+<x-ui.alert variant="info" x-bind:icon="false" title="Note">
     Please review the document before signing.
 </x-ui.alert>
 
@@ -120,7 +120,7 @@ Usage Examples:
 
 8. Form validation errors:
 @if($errors->any())
-    <x-ui.alert variant="error" title="Validation Errors" :dismissible="true">
+    <x-ui.alert variant="error" title="Validation Errors" x-bind:dismissible="true">
         <ul class="list-disc list-inside space-y-1">
             @foreach($errors->all() as $error)
                 <li>{{ $error }}</li>

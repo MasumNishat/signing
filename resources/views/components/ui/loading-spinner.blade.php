@@ -73,7 +73,7 @@ Usage Examples:
 </div>
 
 6. Inline with button:
-<x-ui.button :disabled="loading">
+<x-ui.button x-bind:disabled="loading">
     <x-ui.loading-spinner v-if="loading" size="sm" color="white" />
     {{ loading ? 'Saving...' : 'Save' }}
 </x-ui.button>

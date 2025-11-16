@@ -1,4 +1,4 @@
-<x-layout.app :title="'Bulk Send: ' . ($batch->batch_name ?? 'Details')">
+<x-layout.app x-bind:title="'Bulk Send: ' . ($batch->batch_name ?? 'Details')">
     <div x-data="{
         loading: true,
         batch: null,
@@ -150,7 +150,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-border-primary">
-                            <template x-for="(recipient, index) in recipients" :key="recipient.id">
+                            <template x-for="(recipient, index) in recipients" x-bind:key="recipient.id">
                                 <tr>
                                     <td class="px-4 py-3 text-sm text-primary" x-text="index + 1"></td>
                                     <td class="px-4 py-3 text-sm text-primary" x-text="recipient.name"></td>
@@ -163,7 +163,7 @@
                                     </td>
                                     <td class="px-4 py-3 text-sm">
                                         <template x-if="recipient.envelope_id">
-                                            <a :href="`/envelopes/${recipient.envelope_id}`" class="text-primary-600 hover:underline">View</a>
+                                            <a x-bind:href="`/envelopes/${recipient.envelope_id}`" class="text-primary-600 hover:underline">View</a>
                                         </template>
                                         <template x-if="!recipient.envelope_id">
                                             <span class="text-text-secondary">-</span>

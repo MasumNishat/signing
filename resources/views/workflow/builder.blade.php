@@ -187,7 +187,7 @@
                 <!-- Actions -->
                 <x-ui.card class="mt-6">
                     <div class="space-y-3">
-                        <x-ui.button variant="primary" @click="saveWorkflow()" :disabled="loading" class="w-full">
+                        <x-ui.button variant="primary" @click="saveWorkflow()" x-bind:disabled="loading" class="w-full">
                             <span x-show="!loading">Save & Create Envelope</span>
                             <span x-show="loading">Saving...</span>
                         </x-ui.button>
@@ -211,11 +211,11 @@
                     </div>
 
                     <div x-show="workflow.steps.length > 0" class="space-y-3">
-                        <template x-for="(step, index) in workflow.steps" :key="step.id">
+                        <template x-for="(step, index) in workflow.steps" x-bind:key="step.id">
                             <div
                                 @click="selectStep(step)"
                                 class="p-4 border-2 rounded-md cursor-pointer transition-colors"
-                                :class="selectedStep?.id === step.id ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20' : 'border-border-primary hover:border-primary-300'"
+                                x-bind:class="selectedStep?.id === step.id ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20' : 'border-border-primary hover:border-primary-300'"
                             >
                                 <!-- Step Header -->
                                 <div class="flex items-start justify-between mb-2">
@@ -227,12 +227,12 @@
                                         </div>
                                     </div>
                                     <div class="flex space-x-1">
-                                        <button @click.stop="moveStepUp(step.id)" :disabled="index === 0" class="p-1 text-text-secondary hover:text-primary disabled:opacity-30">
+                                        <button @click.stop="moveStepUp(step.id)" x-bind:disabled="index === 0" class="p-1 text-text-secondary hover:text-primary disabled:opacity-30">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                                             </svg>
                                         </button>
-                                        <button @click.stop="moveStepDown(step.id)" :disabled="index === workflow.steps.length - 1" class="p-1 text-text-secondary hover:text-primary disabled:opacity-30">
+                                        <button @click.stop="moveStepDown(step.id)" x-bind:disabled="index === workflow.steps.length - 1" class="p-1 text-text-secondary hover:text-primary disabled:opacity-30">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                                             </svg>
@@ -281,12 +281,12 @@
                         <div>
                             <label class="block text-sm font-medium text-primary mb-1">Action</label>
                             <div class="grid grid-cols-2 gap-2">
-                                <template x-for="action in availableActions" :key="action.id">
+                                <template x-for="action in availableActions" x-bind:key="action.id">
                                     <button
                                         @click="selectedStep.action = action.id"
                                         type="button"
                                         class="p-3 border-2 rounded-md text-left transition-colors"
-                                        :class="selectedStep?.action === action.id ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20' : 'border-border-primary hover:border-primary-300'"
+                                        x-bind:class="selectedStep?.action === action.id ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20' : 'border-border-primary hover:border-primary-300'"
                                     >
                                         <div class="flex items-center space-x-2">
                                             <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -304,7 +304,7 @@
                             <label class="block text-sm font-medium text-primary mb-1">Recipient</label>
                             <x-ui.select x-model="selectedStep.recipient_id">
                                 <option value="">Select recipient...</option>
-                                <template x-for="recipient in recipients" :key="recipient.id">
+                                <template x-for="recipient in recipients" x-bind:key="recipient.id">
                                     <option x-bind:value="recipient.id" x-text="recipient.name"></option>
                                 </template>
                             </x-ui.select>
@@ -315,7 +315,7 @@
                             <input
                                 type="checkbox"
                                 x-model="selectedStep.parallel_with_previous"
-                                :disabled="selectedStep.order === 1"
+                                x-bind:disabled="selectedStep.order === 1"
                                 id="parallel"
                                 class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                             >

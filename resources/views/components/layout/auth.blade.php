@@ -60,7 +60,7 @@
     <div x-data
          class="fixed bottom-4 right-4 z-50 space-y-2"
          style="max-width: 24rem;">
-        <template x-for="notification in $store.toast.notifications" :key="notification.id">
+        <template x-for="notification in $store.toast.notifications" x-bind:key="notification.id">
             <div x-show="true"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0 transform translate-y-2"
@@ -69,7 +69,7 @@
                  x-transition:leave-start="opacity-100 transform translate-y-0"
                  x-transition:leave-end="opacity-0 transform translate-y-2"
                  class="rounded-lg shadow-lg overflow-hidden"
-                 :class="{
+                 x-bind:class="{
                      'bg-green-50 border-l-4 border-green-500': notification.type === 'success',
                      'bg-red-50 border-l-4 border-red-500': notification.type === 'error',
                      'bg-yellow-50 border-l-4 border-yellow-500': notification.type === 'warning',
@@ -95,7 +95,7 @@
                             <p x-show="notification.title"
                                x-text="notification.title"
                                class="text-sm font-medium"
-                               :class="{
+                               x-bind:class="{
                                    'text-green-800': notification.type === 'success',
                                    'text-red-800': notification.type === 'error',
                                    'text-yellow-800': notification.type === 'warning',
@@ -103,7 +103,7 @@
                                }"></p>
                             <p x-text="notification.message"
                                class="text-sm"
-                               :class="{
+                               x-bind:class="{
                                    'text-green-700': notification.type === 'success',
                                    'text-red-700': notification.type === 'error',
                                    'text-yellow-700': notification.type === 'warning',
@@ -113,7 +113,7 @@
                         <div class="ml-4 flex-shrink-0 flex">
                             <button @click="$store.toast.remove(notification.id)"
                                     class="inline-flex rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
-                                    :class="{
+                                    x-bind:class="{
                                         'text-green-500 hover:text-green-600 focus:ring-green-500': notification.type === 'success',
                                         'text-red-500 hover:text-red-600 focus:ring-red-500': notification.type === 'error',
                                         'text-yellow-500 hover:text-yellow-600 focus:ring-yellow-500': notification.type === 'warning',

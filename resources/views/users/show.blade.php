@@ -140,7 +140,7 @@
             <x-ui.card class="mb-6">
                 <h3 class="text-lg font-semibold text-primary mb-4">Permissions</h3>
                 <div x-show="user?.permissions && user.permissions.length > 0" class="flex flex-wrap gap-2">
-                    <template x-for="permission in user?.permissions" :key="permission">
+                    <template x-for="permission in user?.permissions" x-bind:key="permission">
                         <x-ui.badge variant="secondary" x-text="permission.replace('_', ' ').toUpperCase()"></x-ui.badge>
                     </template>
                 </div>

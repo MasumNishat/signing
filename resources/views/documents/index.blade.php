@@ -202,12 +202,12 @@
         <!-- Loading State -->
         <div x-show="loading" class="space-y-4">
             <div x-show="viewMode === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                <template x-for="i in 8" :key="i">
+                <template x-for="i in 8" x-bind:key="i">
                     <x-ui.skeleton type="card" class="h-48" />
                 </template>
             </div>
             <div x-show="viewMode === 'list'" class="space-y-3">
-                <template x-for="i in 6" :key="i">
+                <template x-for="i in 6" x-bind:key="i">
                     <x-ui.skeleton type="text" class="h-16 w-full" />
                 </template>
             </div>
@@ -215,11 +215,11 @@
 
         <!-- Grid View -->
         <div x-show="!loading && viewMode === 'grid'" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            <template x-for="document in documents" :key="document.id">
-                <x-ui.card class="hover:shadow-lg transition-shadow cursor-pointer relative" :padding="false">
+            <template x-for="document in documents" x-bind:key="document.id">
+                <x-ui.card class="hover:shadow-lg transition-shadow cursor-pointer relative" x-bind:padding="false">
                     <div class="absolute top-3 left-3 z-10">
                         <input type="checkbox"
-                               :checked="selectedDocuments.includes(document.id)"
+                               x-bind:checked="selectedDocuments.includes(document.id)"
                                @change="toggleSelection(document.id)"
                                class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                     </div>
@@ -242,11 +242,11 @@
 
                     <!-- Actions -->
                     <div class="px-4 py-3 bg-bg-secondary border-t border-border-primary flex items-center justify-between">
-                        <a :href="`/documents/${document.id}/viewer`" class="text-primary-600 hover:text-primary-500 text-sm font-medium">
+                        <a x-bind:href="`/documents/${document.id}/viewer`" class="text-primary-600 hover:text-primary-500 text-sm font-medium">
                             View
                         </a>
                         <div class="flex items-center space-x-3">
-                            <a :href="`/documents/${document.id}/download`" class="text-text-secondary hover:text-primary">
+                            <a x-bind:href="`/documents/${document.id}/download`" class="text-text-secondary hover:text-primary">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                 </svg>
@@ -264,14 +264,14 @@
 
         <!-- List View -->
         <div x-show="!loading && viewMode === 'list'">
-            <x-ui.card :padding="false">
+            <x-ui.card x-bind:padding="false">
                 <table class="min-w-full divide-y divide-border-primary">
                     <thead class="bg-bg-secondary">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left">
                                 <input type="checkbox"
                                        @change="selectAll()"
-                                       :checked="selectedDocuments.length === documents.length && documents.length > 0"
+                                       x-bind:checked="selectedDocuments.length === documents.length && documents.length > 0"
                                        class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase">Name</th>
@@ -282,11 +282,11 @@
                         </tr>
                     </thead>
                     <tbody class="bg-primary divide-y divide-border-primary">
-                        <template x-for="document in documents" :key="document.id">
+                        <template x-for="document in documents" x-bind:key="document.id">
                             <tr class="hover:bg-bg-hover">
                                 <td class="px-6 py-4">
                                     <input type="checkbox"
-                                           :checked="selectedDocuments.includes(document.id)"
+                                           x-bind:checked="selectedDocuments.includes(document.id)"
                                            @change="toggleSelection(document.id)"
                                            class="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500">
                                 </td>
@@ -303,10 +303,10 @@
                                 <td class="px-6 py-4 text-sm text-text-secondary" x-text="new Date(document.created_at).toLocaleDateString()"></td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end space-x-3">
-                                        <a :href="`/documents/${document.id}/viewer`" class="text-primary-600 hover:text-primary-500 text-sm font-medium">
+                                        <a x-bind:href="`/documents/${document.id}/viewer`" class="text-primary-600 hover:text-primary-500 text-sm font-medium">
                                             View
                                         </a>
-                                        <a :href="`/documents/${document.id}/download`" class="text-text-secondary hover:text-primary">
+                                        <a x-bind:href="`/documents/${document.id}/download`" class="text-text-secondary hover:text-primary">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                             </svg>
@@ -348,14 +348,14 @@
                     variant="secondary"
                     size="sm"
                     @click="loadDocuments(pagination.current_page - 1)"
-                    :disabled="pagination.current_page === 1">
+                    x-bind:disabled="pagination.current_page === 1">
                     Previous
                 </x-ui.button>
                 <x-ui.button
                     variant="secondary"
                     size="sm"
                     @click="loadDocuments(pagination.current_page + 1)"
-                    :disabled="pagination.current_page * pagination.per_page >= pagination.total">
+                    x-bind:disabled="pagination.current_page * pagination.per_page >= pagination.total">
                     Next
                 </x-ui.button>
             </div>

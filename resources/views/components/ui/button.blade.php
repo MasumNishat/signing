@@ -66,10 +66,10 @@ Usage Examples:
 <x-ui.button variant="danger" size="lg">Delete</x-ui.button>
 
 3. Loading button:
-<x-ui.button :loading="true">Saving...</x-ui.button>
+<x-ui.button x-bind:loading="true">Saving...</x-ui.button>
 
 4. Disabled button:
-<x-ui.button :disabled="true">Disabled</x-ui.button>
+<x-ui.button x-bind:disabled="true">Disabled</x-ui.button>
 
 5. Button with Alpine.js click handler:
 <x-ui.button @click="saveForm()">Save</x-ui.button>
@@ -87,7 +87,7 @@ Usage Examples:
 </x-ui.button>
 
 8. With Alpine.js loading state:
-<x-ui.button :loading="$wire.loading">
+<x-ui.button x-bind:loading="$wire.loading">
     Process Payment
 </x-ui.button>
 

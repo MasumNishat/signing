@@ -53,8 +53,8 @@
                 <x-ui.card>
                     <h3 class="font-semibold text-primary mb-4">Folders</h3>
                     <div class="space-y-2">
-                        <template x-for="folder in folders" :key="folder.id">
-                            <div @click="selectFolder(folder.id)" :class="selectedFolder === folder.id ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : 'text-primary hover:bg-bg-secondary'" class="px-3 py-2 rounded cursor-pointer">
+                        <template x-for="folder in folders" x-bind:key="folder.id">
+                            <div @click="selectFolder(folder.id)" x-bind:class="selectedFolder === folder.id ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : 'text-primary hover:bg-bg-secondary'" class="px-3 py-2 rounded cursor-pointer">
                                 <div class="flex items-center justify-between">
                                     <span x-text="folder.name"></span>
                                     <span class="text-xs text-text-secondary" x-text="folder.item_count || 0"></span>
@@ -72,7 +72,7 @@
                         <h3 class="font-semibold text-primary">Envelopes</h3>
                     </div>
                     <div class="space-y-2">
-                        <template x-for="envelope in envelopes" :key="envelope.id">
+                        <template x-for="envelope in envelopes" x-bind:key="envelope.id">
                             <div class="flex items-center justify-between p-3 border border-border-primary rounded hover:bg-bg-secondary">
                                 <div>
                                     <p class="font-medium text-primary" x-text="envelope.email_subject"></p>

@@ -38,7 +38,7 @@
         <div x-show="loading"><x-ui.skeleton type="card" class="h-32" /></div>
 
         <div x-show="!loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <template x-for="workspace in workspaces" :key="workspace.id">
+            <template x-for="workspace in workspaces" x-bind:key="workspace.id">
                 <x-ui.card>
                     <h3 class="text-lg font-semibold text-primary" x-text="workspace.name"></h3>
                     <p class="mt-2 text-sm text-text-secondary" x-text="workspace.description || 'No description'"></p>

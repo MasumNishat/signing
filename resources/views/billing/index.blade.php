@@ -67,7 +67,7 @@
                 </x-ui.card>
 
                 <!-- Recent Invoices -->
-                <x-ui.card :padding="false">
+                <x-ui.card x-bind:padding="false">
                     <div class="px-6 py-4 border-b border-card-border flex items-center justify-between">
                         <h3 class="text-lg font-semibold text-primary">Recent Invoices</h3>
                         <a href="/billing/invoices" class="text-sm font-medium text-primary-600 hover:text-primary-500">View all</a>
@@ -88,14 +88,14 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-primary divide-y divide-border-primary">
-                                <template x-for="invoice in invoices.slice(0, 5)" :key="invoice.id">
+                                <template x-for="invoice in invoices.slice(0, 5)" x-bind:key="invoice.id">
                                     <tr class="hover:bg-bg-hover">
                                         <td class="px-6 py-4 text-sm font-medium text-primary" x-text="invoice.invoice_number"></td>
                                         <td class="px-6 py-4 text-sm text-text-secondary" x-text="new Date(invoice.invoice_date).toLocaleDateString()"></td>
                                         <td class="px-6 py-4 text-sm font-medium text-primary" x-text="'$' + invoice.total_amount"></td>
                                         <td class="px-6 py-4">
                                             <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full"
-                                                  :class="invoice.status === 'paid' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'"
+                                                  x-bind:class="invoice.status === 'paid' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'"
                                                   x-text="invoice.status"></span>
                                         </td>
                                         <td class="px-6 py-4 text-right">
@@ -128,7 +128,7 @@
                                 <p class="text-sm font-semibold text-primary" x-text="usage.sent || 0"></p>
                             </div>
                             <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                                <div class="bg-primary-500 h-2 rounded-full" :style="`width: ${(usage.sent / (plan.envelopes_included || 100)) * 100}%`"></div>
+                                <div class="bg-primary-500 h-2 rounded-full" x-bind:style="`width: ${(usage.sent / (plan.envelopes_included || 100)) * 100}%`"></div>
                             </div>
                         </div>
                         <div class="pt-4 border-t border-card-border">

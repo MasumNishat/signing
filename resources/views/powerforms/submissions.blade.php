@@ -1,4 +1,4 @@
-<x-layout.app :title="'PowerForm Submissions'">
+<x-layout.app x-bind:title="'PowerForm Submissions'">
     <div x-data="{
         loading: true,
         powerform: null,
@@ -82,7 +82,7 @@
                 <div class="flex items-center space-x-2">
                     <a href="/powerforms" class="text-text-secondary hover:text-primary">PowerForms</a>
                     <span class="text-text-secondary">/</span>
-                    <a :href="`/powerforms/${powerform?.id}`" class="text-text-secondary hover:text-primary" x-text="powerform?.name"></a>
+                    <a x-bind:href="`/powerforms/${powerform?.id}`" class="text-text-secondary hover:text-primary" x-text="powerform?.name"></a>
                     <span class="text-text-secondary">/</span>
                     <span class="text-primary">Submissions</span>
                 </div>
@@ -91,7 +91,7 @@
                     <span x-text="submissions.length"></span> total submissions
                 </p>
             </div>
-            <x-ui.button variant="secondary" @click="exportToCSV()" :disabled="submissions.length === 0">
+            <x-ui.button variant="secondary" @click="exportToCSV()" x-bind:disabled="submissions.length === 0">
                 <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
@@ -150,7 +150,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-border-primary">
-                        <template x-for="(submission, index) in submissions" :key="submission.id">
+                        <template x-for="(submission, index) in submissions" x-bind:key="submission.id">
                             <tr class="hover:bg-bg-secondary">
                                 <td class="px-4 py-3 text-sm text-primary" x-text="index + 1"></td>
                                 <td class="px-4 py-3 text-sm text-primary" x-text="submission.submitted_by || 'Anonymous'"></td>
@@ -164,7 +164,7 @@
                                 <td class="px-4 py-3 text-sm text-primary" x-text="formatDate(submission.created_at)"></td>
                                 <td class="px-4 py-3 text-sm">
                                     <template x-if="submission.envelope_id">
-                                        <a :href="`/envelopes/${submission.envelope_id}`" class="text-primary-600 hover:underline">
+                                        <a x-bind:href="`/envelopes/${submission.envelope_id}`" class="text-primary-600 hover:underline">
                                             View Envelope
                                         </a>
                                     </template>

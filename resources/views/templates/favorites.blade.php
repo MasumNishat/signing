@@ -43,14 +43,14 @@
 
         <!-- Loading State -->
         <div x-show="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <template x-for="i in 6" :key="i">
+            <template x-for="i in 6" x-bind:key="i">
                 <x-ui.skeleton type="card" class="h-48" />
             </template>
         </div>
 
         <!-- Templates Grid -->
         <div x-show="!loading && templates.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <template x-for="template in templates" :key="template.id">
+            <template x-for="template in templates" x-bind:key="template.id">
                 <x-ui.card class="hover:shadow-lg transition-shadow relative">
                     <!-- Favorite Star -->
                     <button

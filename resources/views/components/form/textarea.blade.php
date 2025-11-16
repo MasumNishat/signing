@@ -25,7 +25,7 @@
 <div {{ $attributes->only('class') }}
      @if($showCount && $maxlength) x-data="{ charCount: {{ strlen(old($name, $value)) }} }" @endif>
     @if($label)
-        <x-form.label :for="$name" :required="$required">
+        <x-form.label x-bind:for="$name" x-bind:required="$required">
             {{ $label }}
         </x-form.label>
     @endif
@@ -53,9 +53,9 @@
     </div>
 
     @if($error)
-        <x-form.validation-error :message="$error" :for="$name" />
+        <x-form.validation-error x-bind:message="$error" x-bind:for="$name" />
     @elseif($helpText)
-        <x-form.help-text :for="$name">{{ $helpText }}</x-form.help-text>
+        <x-form.help-text x-bind:for="$name">{{ $helpText }}</x-form.help-text>
     @endif
 </div>
 
@@ -69,18 +69,18 @@ Usage Examples:
 <x-form.textarea
     name="message"
     label="Message"
-    :maxlength="500"
-    :show-count="true"
+    x-bind:maxlength="500"
+    x-bind:show-count="true"
 />
 
 3. Custom rows:
-<x-form.textarea name="notes" label="Notes" :rows="10" />
+<x-form.textarea name="notes" label="Notes" x-bind:rows="10" />
 
 4. Required textarea:
 <x-form.textarea
     name="reason"
     label="Void Reason"
-    :required="true"
+    x-bind:required="true"
     help-text="Please explain why you are voiding this envelope"
 />
 
@@ -88,7 +88,7 @@ Usage Examples:
 <x-form.textarea
     name="comments"
     label="Comments"
-    :error="$errors->first('comments')"
+    x-bind:error="$errors->first('comments')"
 />
 
 6. In Alpine.js form:
@@ -97,8 +97,8 @@ Usage Examples:
         name="comment"
         label="Your Comment"
         x-model="comment"
-        :maxlength="1000"
-        :show-count="true"
+        x-bind:maxlength="1000"
+        x-bind:show-count="true"
     />
     <p class="mt-2 text-sm" x-show="comment.length > 900">
         You're approaching the character limit!

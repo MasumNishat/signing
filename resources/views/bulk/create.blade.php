@@ -121,22 +121,22 @@
         <!-- Step Indicator -->
         <div class="mb-6">
             <div class="flex items-center">
-                <div class="flex items-center" :class="step >= 1 ? 'text-primary-600' : 'text-text-secondary'">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" :class="step >= 1 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
+                <div class="flex items-center" x-bind:class="step >= 1 ? 'text-primary-600' : 'text-text-secondary'">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" x-bind:class="step >= 1 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
                         <span class="text-sm font-medium">1</span>
                     </div>
                     <span class="ml-2 text-sm font-medium">Select Template</span>
                 </div>
                 <div class="mx-4 h-0.5 w-16 bg-border-primary"></div>
-                <div class="flex items-center" :class="step >= 2 ? 'text-primary-600' : 'text-text-secondary'">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" :class="step >= 2 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
+                <div class="flex items-center" x-bind:class="step >= 2 ? 'text-primary-600' : 'text-text-secondary'">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" x-bind:class="step >= 2 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
                         <span class="text-sm font-medium">2</span>
                     </div>
                     <span class="ml-2 text-sm font-medium">Add Recipients</span>
                 </div>
                 <div class="mx-4 h-0.5 w-16 bg-border-primary"></div>
-                <div class="flex items-center" :class="step >= 3 ? 'text-primary-600' : 'text-text-secondary'">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" :class="step >= 3 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
+                <div class="flex items-center" x-bind:class="step >= 3 ? 'text-primary-600' : 'text-text-secondary'">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full border-2" x-bind:class="step >= 3 ? 'border-primary-600 bg-primary-600 text-white' : 'border-border-primary'">
                         <span class="text-sm font-medium">3</span>
                     </div>
                     <span class="ml-2 text-sm font-medium">Review & Send</span>
@@ -163,7 +163,7 @@
                         <label class="block text-sm font-medium text-primary mb-1">Select Template *</label>
                         <x-ui.select x-model="bulkData.template_id" required>
                             <option value="">Choose a template...</option>
-                            <template x-for="template in templates" :key="template.id">
+                            <template x-for="template in templates" x-bind:key="template.id">
                                 <option x-bind:value="template.id" x-text="template.name"></option>
                             </template>
                         </x-ui.select>
@@ -211,7 +211,7 @@
                         <p x-show="csvFile" class="mt-2 text-sm text-primary">
                             Selected: <span x-text="csvFile?.name"></span>
                         </p>
-                        <x-ui.button variant="primary" class="mt-4" @click="uploadCsv()" :disabled="!csvFile || loading">
+                        <x-ui.button variant="primary" class="mt-4" @click="uploadCsv()" x-bind:disabled="!csvFile || loading">
                             <span x-show="!loading">Upload CSV</span>
                             <span x-show="loading">Uploading... <span x-text="uploadProgress + '%'"></span></span>
                         </x-ui.button>
@@ -230,7 +230,7 @@
                     </div>
 
                     <div class="space-y-4">
-                        <template x-for="(recipient, index) in recipients" :key="index">
+                        <template x-for="(recipient, index) in recipients" x-bind:key="index">
                             <div class="flex items-start space-x-4 p-4 bg-bg-secondary rounded-lg">
                                 <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
@@ -314,7 +314,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-border-primary">
-                            <template x-for="(recipient, index) in recipients.slice(0, 10)" :key="index">
+                            <template x-for="(recipient, index) in recipients.slice(0, 10)" x-bind:key="index">
                                 <tr>
                                     <td class="px-4 py-3 text-sm text-primary" x-text="index + 1"></td>
                                     <td class="px-4 py-3 text-sm text-primary" x-text="recipient.name"></td>
@@ -347,7 +347,7 @@
                 <x-ui.button variant="primary" @click="nextStep()" x-show="step < 3">
                     Continue
                 </x-ui.button>
-                <x-ui.button variant="primary" @click="createBulkSend()" x-show="step === 3" :disabled="loading">
+                <x-ui.button variant="primary" @click="createBulkSend()" x-show="step === 3" x-bind:disabled="loading">
                     <span x-show="!loading">Create Bulk Send</span>
                     <span x-show="loading">Creating...</span>
                 </x-ui.button>
