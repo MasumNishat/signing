@@ -231,11 +231,10 @@ Alpine.magic('api', () => {
             } catch (error) {
                 // Handle 401 Unauthorized
                 if (error.response?.status === 401) {
-                    // For session auth, redirect to login
-                    if (!token) {
+                    // Clear auth store and redirect to login (only if not already on login page)
+                    if (!window.location.pathname.includes('/login')) {
+                        Alpine.store('auth').clearAuth();
                         window.location.href = '/login';
-                    } else {
-                        Alpine.store('auth').logout();
                     }
                 }
                 throw error;
