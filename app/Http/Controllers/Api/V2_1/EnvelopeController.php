@@ -54,7 +54,7 @@ class EnvelopeController extends BaseController
             'to_date' => 'nullable|date|after_or_equal:from_date',
             'sender_user_id' => 'nullable|integer|exists:users,id',
             'search' => 'nullable|string|max:255',
-            'sort_by' => 'nullable|string|in:created_date_time,sent_date_time,email_subject,status',
+            'sort_by' => 'nullable|string|in:created_at,updated_at,created_date_time,sent_date_time,email_subject,status',
             'sort_order' => 'nullable|string|in:asc,desc',
             'per_page' => 'nullable|integer|min:1|max:100',
         ]);
