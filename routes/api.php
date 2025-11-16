@@ -46,11 +46,12 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
             ->name('oauth.token.refresh');
     });
 
-    // Protected Routes (Require Authentication)
-    Route::middleware('auth:api')->group(function () {
+    // Protected Routes (Authentication handled by individual route middleware)
+    // Note: CheckAccountAccess middleware supports both auth:api and auth:web guards
+    Route::group(function () {
 
-        // Authentication
-        Route::prefix('auth')->name('auth.')->group(function () {
+        // Authentication (requires auth:api guard)
+        Route::prefix('auth')->name('auth.')->middleware('auth:api')->group(function () {
             Route::post('logout', [AuthController::class, 'logout'])->name('logout');
             Route::get('user', [AuthController::class, 'user'])->name('user');
             Route::post('revoke', [AuthController::class, 'revoke'])->name('revoke');
