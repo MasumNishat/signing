@@ -435,4 +435,44 @@ class ConnectController extends BaseController
             return $this->error($e->getMessage(), 400);
         }
     }
+
+    /**
+     * Republish Connect information for historical envelopes
+     *
+     * POST /v2.1/accounts/{accountId}/connect/envelopes/publish/historical
+     *
+     * Republishes envelope events for auditing/reprocessing purposes.
+     * Unlike retry_queue, this republishes already-successful events.
+     */
+    public function publishHistorical(Request $request, string $accountId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $validator = Validator::make($request->all(), [
+            'from_date' => 'required|date',
+            'to_date' => 'required|date|after_or_equal:from_date',
+            'envelope_ids' => 'nullable|array',
+            'envelope_ids.*' => 'string',
+            'status' => 'nullable|string|in:draft,sent,delivered,completed,voided',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $options = [
+                'from_date' => $request->input('from_date'),
+                'to_date' => $request->input('to_date'),
+                'envelope_ids' => $request->input('envelope_ids'),
+                'status' => $request->input('status'),
+            ];
+
+            $results = $this->webhookService->republishHistoricalEvents($account, $options);
+
+            return $this->success($results, 'Historical events republished successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
 }

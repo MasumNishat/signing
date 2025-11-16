@@ -327,4 +327,86 @@ class WebhookService
         // Generate HMAC-SHA256 signature
         return hash_hmac('sha256', json_encode($payload), $secret);
     }
+
+    /**
+     * Republish historical envelope events for auditing/reprocessing
+     *
+     * @param Account $account
+     * @param array $options Filtering options (from_date, to_date, envelope_ids, etc.)
+     * @return array ['envelopes_processed' => int, 'events_published' => int, 'failures' => int]
+     */
+    public function republishHistoricalEvents(Account $account, array $options = []): array
+    {
+        // Build envelope query based on filters
+        $query = Envelope::where('account_id', $account->id);
+
+        // Filter by date range
+        if (isset($options['from_date'])) {
+            $query->where('created_at', '>=', $options['from_date']);
+        }
+
+        if (isset($options['to_date'])) {
+            $query->where('created_at', '<=', $options['to_date']);
+        }
+
+        // Filter by specific envelope IDs
+        if (isset($options['envelope_ids']) && is_array($options['envelope_ids'])) {
+            $query->whereIn('envelope_id', $options['envelope_ids']);
+        }
+
+        // Filter by envelope status
+        if (isset($options['status'])) {
+            $query->where('status', $options['status']);
+        }
+
+        // Get enabled webhook configurations
+        $configurations = ConnectConfiguration::where('account_id', $account->id)
+            ->enabled()
+            ->get();
+
+        if ($configurations->isEmpty()) {
+            return [
+                'envelopes_processed' => 0,
+                'events_published' => 0,
+                'failures' => 0,
+                'message' => 'No enabled Connect configurations found',
+            ];
+        }
+
+        $envelopes = $query->get();
+
+        $results = [
+            'envelopes_processed' => 0,
+            'events_published' => 0,
+            'failures' => 0,
+        ];
+
+        foreach ($envelopes as $envelope) {
+            $results['envelopes_processed']++;
+
+            foreach ($configurations as $config) {
+                // Republish with special 'historical-republish' event type
+                $success = $this->publishToWebhook(
+                    $config,
+                    $envelope,
+                    'historical-republish',
+                    'envelope'
+                );
+
+                if ($success) {
+                    $results['events_published']++;
+                } else {
+                    $results['failures']++;
+                }
+            }
+        }
+
+        Log::info('Historical events republished', [
+            'account_id' => $account->account_id,
+            'results' => $results,
+            'filters' => $options,
+        ]);
+
+        return $results;
+    }
 }
