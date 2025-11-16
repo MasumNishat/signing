@@ -121,6 +121,9 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
             require __DIR__.'/api/v2.1/captive_recipients.php';
         });
 
+        // Custom Tabs Routes (Reusable Field Templates)
+        require __DIR__.'/api/v2.1/custom_tabs.php';
+
         // Bulk Send Routes
         require __DIR__.'/api/v2.1/bulk.php';
 
