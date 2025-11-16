@@ -31,7 +31,7 @@
 
 <div {{ $attributes->only('class') }}>
     @if($label)
-        <x-form.label for="{{ $name }}" @if($required) required @endif>
+        <x-form.label for="{{ $name }}" :required="$required">
             {{ $label }}
         </x-form.label>
     @endif

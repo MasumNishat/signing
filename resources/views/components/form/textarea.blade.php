@@ -25,7 +25,7 @@
 <div {{ $attributes->only('class') }}
      @if($showCount && $maxlength) x-data="{ charCount: {{ strlen(old($name, $value)) }} }" @endif>
     @if($label)
-        <x-form.label for="{{ $name }}" @if($required) required @endif>
+        <x-form.label for="{{ $name }}" :required="$required">
             {{ $label }}
         </x-form.label>
     @endif
