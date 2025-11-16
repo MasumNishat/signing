@@ -31,6 +31,11 @@ Route::prefix('accounts/{accountId}/connect')->name('connect.')->group(function 
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_manage_connect'])
         ->name('update');
 
+    // Historical Republish: Republish historical events for auditing
+    Route::post('/envelopes/publish/historical', [ConnectController::class, 'publishHistorical'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_manage_connect'])
+        ->name('publish_historical');
+
     // Retry Queue: Republish for multiple envelopes
     Route::put('/envelopes/retry_queue', [ConnectController::class, 'retryEnvelopes'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_manage_connect'])

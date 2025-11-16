@@ -529,6 +529,199 @@ class BrandController extends Controller
     }
 
     /**
+     * Bulk delete brands
+     *
+     * DELETE /api/v2.1/accounts/{accountId}/brands
+     * Deletes one or more brand profiles
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @return JsonResponse
+     */
+    public function destroyBulk(Request $request, string $accountId): JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'brand_ids' => 'required|array|min:1',
+                'brand_ids.*' => 'required|string',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->validationErrorResponse($validator->errors());
+            }
+
+            $account = $this->getAccountById($accountId);
+            $brandIds = $request->input('brand_ids');
+
+            $deleted = 0;
+            foreach ($brandIds as $brandId) {
+                try {
+                    $this->brandService->deleteBrand($account->id, $brandId);
+                    $deleted++;
+                } catch (\Exception $e) {
+                    // Continue deleting other brands even if one fails
+                    continue;
+                }
+            }
+
+            return $this->successResponse([
+                'deleted_count' => $deleted,
+                'requested_count' => count($brandIds),
+            ], 'Brands deleted successfully');
+
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Export brand
+     *
+     * GET /api/v2.1/accounts/{accountId}/brands/{brandId}/file
+     * Export a specific brand as a file
+     *
+     * @param string $accountId
+     * @param string $brandId
+     * @return JsonResponse
+     */
+    public function exportBrand(string $accountId, string $brandId): JsonResponse
+    {
+        try {
+            $account = $this->getAccountById($accountId);
+            $brand = $this->brandService->getBrand($account->id, $brandId);
+
+            // Export brand as JSON (in production, this might be a specific format)
+            $exportData = [
+                'brand_id' => $brand->brand_id,
+                'brand_name' => $brand->brand_name,
+                'company_name' => $brand->company_name,
+                'send_will_include_link_to' => $brand->send_will_include_link_to,
+                'support_email' => $brand->support_email,
+                'support_phone' => $brand->support_phone,
+                'is_sending_default' => $brand->is_sending_default,
+                'is_signing_default' => $brand->is_signing_default,
+                'logos' => $brand->logos->map(function ($logo) {
+                    return [
+                        'logo_type' => $logo->logo_type,
+                        'file_name' => $logo->file_name,
+                    ];
+                }),
+                'resources' => $brand->resources->map(function ($resource) {
+                    return [
+                        'resource_content_type' => $resource->resource_content_type,
+                        'content' => $resource->content,
+                    ];
+                }),
+                'email_contents' => $brand->emailContents->map(function ($content) {
+                    return [
+                        'email_content_type' => $content->email_content_type,
+                        'content' => $content->content,
+                    ];
+                }),
+            ];
+
+            return $this->successResponse($exportData, 'Brand exported successfully');
+
+        } catch (ResourceNotFoundException $e) {
+            return $this->notFoundResponse($e->getMessage());
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Update/Put brand logo
+     *
+     * PUT /api/v2.1/accounts/{accountId}/brands/{brandId}/logos/{logoType}
+     * Put one branding logo
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $brandId
+     * @param string $logoType
+     * @return JsonResponse
+     */
+    public function updateLogo(Request $request, string $accountId, string $brandId, string $logoType): JsonResponse
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'file' => 'required|file|mimes:jpeg,png,gif,svg|max:5120', // 5MB max
+            ]);
+
+            if ($validator->fails()) {
+                return $this->validationErrorResponse($validator->errors());
+            }
+
+            $account = $this->getAccountById($accountId);
+
+            // Delete existing logo if it exists
+            try {
+                $this->brandService->deleteLogo($account->id, $brandId, $logoType);
+            } catch (\Exception $e) {
+                // It's OK if logo doesn't exist
+            }
+
+            // Upload new logo
+            $logo = $this->brandService->uploadLogo(
+                $account->id,
+                $brandId,
+                $logoType,
+                $request->file('file')
+            );
+
+            return $this->successResponse([
+                'logo_type' => $logo->logo_type,
+                'file_name' => $logo->file_name,
+                'file_url' => $logo->getFileUrl(),
+                'file_size' => $logo->getFileSizeFormatted(),
+                'mime_type' => $logo->mime_type,
+            ], 'Logo updated successfully');
+
+        } catch (ResourceNotFoundException $e) {
+            return $this->notFoundResponse($e->getMessage());
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * List brand resources
+     *
+     * GET /api/v2.1/accounts/{accountId}/brands/{brandId}/resources
+     * Returns the specified account's list of branding resources (metadata)
+     *
+     * @param string $accountId
+     * @param string $brandId
+     * @return JsonResponse
+     */
+    public function listResources(string $accountId, string $brandId): JsonResponse
+    {
+        try {
+            $account = $this->getAccountById($accountId);
+            $brand = $this->brandService->getBrand($account->id, $brandId);
+
+            $resources = $brand->resources->map(function ($resource) {
+                return [
+                    'resource_content_type' => $resource->resource_content_type,
+                    'content_length' => strlen($resource->content ?? ''),
+                    'created_at' => $resource->created_at->toIso8601String(),
+                    'updated_at' => $resource->updated_at->toIso8601String(),
+                ];
+            });
+
+            return $this->successResponse([
+                'resources' => $resources,
+                'count' => $resources->count(),
+            ], 'Brand resources retrieved successfully');
+
+        } catch (ResourceNotFoundException $e) {
+            return $this->notFoundResponse($e->getMessage());
+        } catch (\Exception $e) {
+            return $this->errorResponse($e->getMessage(), 500);
+        }
+    }
+
+    /**
      * Helper: Get account by ID
      */
     protected function getAccountById(string $accountId): \App\Models\Account

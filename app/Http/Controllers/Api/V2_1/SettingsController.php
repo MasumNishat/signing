@@ -36,10 +36,13 @@ class SettingsController extends BaseController
      * GET /accounts/{accountId}/settings
      * Get account settings
      */
-    public function getSettings(int $accountId): JsonResponse
+    public function getSettings(string $accountId): JsonResponse
     {
         try {
-            $settings = $this->settingsService->getAccountSettings($accountId);
+            // Find account by account_id (UUID string)
+            $account = \App\Models\Account::where('account_id', $accountId)->firstOrFail();
+
+            $settings = $this->settingsService->getAccountSettings($account->id);
 
             return $this->successResponse($settings->toSettingsArray(), 'Account settings retrieved successfully');
 
@@ -56,9 +59,12 @@ class SettingsController extends BaseController
      * PUT /accounts/{accountId}/settings
      * Update account settings
      */
-    public function updateSettings(Request $request, int $accountId): JsonResponse
+    public function updateSettings(Request $request, string $accountId): JsonResponse
     {
         try {
+            // Find account by account_id (UUID string)
+            $account = \App\Models\Account::where('account_id', $accountId)->firstOrFail();
+
             $validator = Validator::make($request->all(), [
                 'allow_signing_extensions' => 'sometimes|boolean',
                 'allow_signature_stamps' => 'sometimes|boolean',
@@ -76,7 +82,7 @@ class SettingsController extends BaseController
                 return $this->validationErrorResponse($validator->errors());
             }
 
-            $settings = $this->settingsService->updateAccountSettings($accountId, $request->all());
+            $settings = $this->settingsService->updateAccountSettings($account->id, $request->all());
 
             return $this->successResponse($settings->toSettingsArray(), 'Account settings updated successfully');
 
@@ -99,9 +105,10 @@ class SettingsController extends BaseController
      * GET /accounts/{accountId}/supported_languages
      * Get supported languages
      */
-    public function getSupportedLanguages(int $accountId): JsonResponse
+    public function getSupportedLanguages(string $accountId): JsonResponse
     {
         try {
+            // Note: Languages are global reference data, accountId is for route consistency
             $languages = $this->settingsService->getSupportedLanguages();
 
             $formatted = $languages->map(function ($lang) {
@@ -125,9 +132,10 @@ class SettingsController extends BaseController
      * GET /accounts/{accountId}/unsupported_file_types
      * Get unsupported file types
      */
-    public function getUnsupportedFileTypes(int $accountId): JsonResponse
+    public function getUnsupportedFileTypes(string $accountId): JsonResponse
     {
         try {
+            // Note: File types are global reference data, accountId is for route consistency
             $fileTypes = $this->settingsService->getUnsupportedFileTypes();
 
             $formatted = $fileTypes->map(function ($type) {
@@ -151,9 +159,10 @@ class SettingsController extends BaseController
      * GET /accounts/{accountId}/supported_file_types
      * Get supported file types (custom endpoint for completeness)
      */
-    public function getSupportedFileTypes(int $accountId): JsonResponse
+    public function getSupportedFileTypes(string $accountId): JsonResponse
     {
         try {
+            // Note: File types are global reference data, accountId is for route consistency
             $fileTypes = $this->settingsService->getSupportedFileTypes();
 
             $formatted = $fileTypes->map(function ($type) {

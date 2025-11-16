@@ -48,6 +48,44 @@ Route::prefix('accounts/{accountId}')->middleware(['check.account.access'])->gro
 
     /*
     |--------------------------------------------------------------------------
+    | Account Billing Plan Management (6 endpoints)
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('billing_plan')->name('billing.plan.')->group(function () {
+        // Get account billing plan
+        Route::get('/', [BillingController::class, 'getAccountBillingPlan'])
+            ->middleware(['throttle:api', 'check.permission:billing.view'])
+            ->name('show');
+
+        // Update account billing plan
+        Route::put('/', [BillingController::class, 'updateAccountBillingPlan'])
+            ->middleware(['throttle:api', 'check.permission:billing.manage'])
+            ->name('update');
+
+        // Get credit card metadata
+        Route::get('/credit_card', [BillingController::class, 'getCreditCard'])
+            ->middleware(['throttle:api', 'check.permission:billing.view'])
+            ->name('credit_card');
+
+        // Get downgrade plan information
+        Route::get('/downgrade', [BillingController::class, 'getDowngradeInfo'])
+            ->middleware(['throttle:api', 'check.permission:billing.view'])
+            ->name('downgrade.info');
+
+        // Queue downgrade request
+        Route::put('/downgrade', [BillingController::class, 'requestDowngrade'])
+            ->middleware(['throttle:api', 'check.permission:billing.manage'])
+            ->name('downgrade.request');
+
+        // Purchase additional envelopes
+        Route::put('/purchased_envelopes', [BillingController::class, 'purchaseEnvelopes'])
+            ->middleware(['throttle:api', 'check.permission:billing.manage'])
+            ->name('purchase_envelopes');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
     | Billing Charges (5 endpoints)
     |--------------------------------------------------------------------------
     */
@@ -85,6 +123,11 @@ Route::prefix('accounts/{accountId}')->middleware(['check.account.access'])->gro
     |--------------------------------------------------------------------------
     */
 
+    // Get past due invoices (at account level per OpenAPI spec)
+    Route::get('/billing_invoices_past_due', [BillingController::class, 'pastDueInvoices'])
+        ->middleware(['throttle:api', 'check.permission:billing.view'])
+        ->name('billing.invoices.past_due_root');
+
     Route::prefix('billing_invoices')->name('billing.invoices.')->group(function () {
         // List invoices
         Route::get('/', [BillingController::class, 'indexInvoices'])
@@ -96,7 +139,7 @@ Route::prefix('accounts/{accountId}')->middleware(['check.account.access'])->gro
             ->middleware(['throttle:api', 'check.permission:billing.manage'])
             ->name('store');
 
-        // Get past due invoices (MUST come before {invoiceId})
+        // Get past due invoices (MUST come before {invoiceId}) - kept for backwards compatibility
         Route::get('/past_due', [BillingController::class, 'pastDueInvoices'])
             ->middleware(['throttle:api', 'check.permission:billing.view'])
             ->name('past_due');

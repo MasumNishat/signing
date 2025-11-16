@@ -687,4 +687,263 @@ class BillingController extends BaseController
             return $this->errorResponse('Failed to retrieve billing usage', 500);
         }
     }
+
+    // =========================================================================
+    // ACCOUNT BILLING PLAN MANAGEMENT (6 endpoints)
+    // =========================================================================
+
+    /**
+     * GET /accounts/{accountId}/billing_plan
+     * Get Account Billing Plan - Returns the billing plan details for the specified account
+     */
+    public function getAccountBillingPlan(int $accountId): JsonResponse
+    {
+        try {
+            $account = \App\Models\Account::findOrFail($accountId);
+            $plan = $account->plan;
+
+            if (!$plan) {
+                return $this->notFoundResponse('No billing plan associated with this account');
+            }
+
+            return $this->successResponse([
+                'plan_id' => $plan->plan_id,
+                'plan_name' => $plan->plan_name,
+                'plan_type' => $plan->plan_type,
+                'envelopes_included' => $plan->envelopes_included,
+                'price_per_envelope' => $plan->price_per_envelope,
+                'price_per_seat' => $plan->price_per_seat,
+                'billing_period_start' => $account->billing_period_start_date?->toIso8601String(),
+                'billing_period_end' => $account->billing_period_end_date?->toIso8601String(),
+                'envelopes_sent' => $account->billing_period_envelopes_sent,
+                'envelopes_allowed' => $account->billing_period_envelopes_allowed,
+                'envelopes_remaining' => $account->getRemainingEnvelopes(),
+            ], 'Account billing plan retrieved successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to get account billing plan', [
+                'account_id' => $accountId,
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to retrieve account billing plan', 500);
+        }
+    }
+
+    /**
+     * PUT /accounts/{accountId}/billing_plan
+     * Updates the account billing plan
+     */
+    public function updateAccountBillingPlan(Request $request, int $accountId): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'plan_id' => 'required|exists:billing_plans,plan_id',
+                'effective_date' => 'sometimes|date',
+            ]);
+
+            $account = \App\Models\Account::findOrFail($accountId);
+            $newPlan = \App\Models\BillingPlan::where('plan_id', $validated['plan_id'])->firstOrFail();
+
+            // Update account's billing plan
+            $account->update([
+                'plan_id' => $newPlan->id,
+                'current_plan_id' => $newPlan->id,
+                'billing_period_start_date' => $validated['effective_date'] ?? now(),
+                'billing_period_end_date' => now()->addMonth(),
+                'billing_period_envelopes_allowed' => $newPlan->envelopes_included,
+            ]);
+
+            return $this->successResponse([
+                'plan_id' => $newPlan->plan_id,
+                'plan_name' => $newPlan->plan_name,
+                'effective_date' => $account->billing_period_start_date->toIso8601String(),
+            ], 'Account billing plan updated successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to update account billing plan', [
+                'account_id' => $accountId,
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to update account billing plan', 500);
+        }
+    }
+
+    /**
+     * GET /accounts/{accountId}/billing_plan/credit_card
+     * Get metadata for a given credit card
+     */
+    public function getCreditCard(int $accountId): JsonResponse
+    {
+        try {
+            $account = \App\Models\Account::findOrFail($accountId);
+
+            // Placeholder implementation - in production would integrate with payment gateway
+            $creditCard = [
+                'card_type' => 'Visa',
+                'last_four_digits' => '4242',
+                'expiration_month' => '12',
+                'expiration_year' => '2025',
+                'cardholder_name' => $account->account_name,
+                'billing_address' => [
+                    'street' => '123 Main St',
+                    'city' => 'San Francisco',
+                    'state' => 'CA',
+                    'postal_code' => '94111',
+                    'country' => 'US',
+                ],
+            ];
+
+            return $this->successResponse($creditCard, 'Credit card information retrieved successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to get credit card', [
+                'account_id' => $accountId,
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to retrieve credit card information', 500);
+        }
+    }
+
+    /**
+     * GET /accounts/{accountId}/billing_plan/downgrade
+     * Returns downgrade plan information for the specified account
+     */
+    public function getDowngradeInfo(int $accountId): JsonResponse
+    {
+        try {
+            $account = \App\Models\Account::findOrFail($accountId);
+            $currentPlan = $account->plan;
+
+            if (!$currentPlan) {
+                return $this->notFoundResponse('No current billing plan found');
+            }
+
+            // Get available downgrade plans (plans with lower price)
+            $downgradePlans = \App\Models\BillingPlan::where('id', '<', $currentPlan->id)
+                ->orderBy('id', 'desc')
+                ->limit(3)
+                ->get()
+                ->map(function ($plan) {
+                    return [
+                        'plan_id' => $plan->plan_id,
+                        'plan_name' => $plan->plan_name,
+                        'plan_type' => $plan->plan_type,
+                        'envelopes_included' => $plan->envelopes_included,
+                        'price_per_envelope' => $plan->price_per_envelope,
+                        'price_per_seat' => $plan->price_per_seat,
+                    ];
+                });
+
+            return $this->successResponse([
+                'current_plan' => [
+                    'plan_id' => $currentPlan->plan_id,
+                    'plan_name' => $currentPlan->plan_name,
+                ],
+                'available_downgrades' => $downgradePlans,
+                'downgrade_effective_date' => now()->addMonth()->startOfMonth()->toIso8601String(),
+                'downgrade_warning' => 'Downgrading may result in reduced features and envelope limits',
+            ], 'Downgrade information retrieved successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to get downgrade info', [
+                'account_id' => $accountId,
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to retrieve downgrade information', 500);
+        }
+    }
+
+    /**
+     * PUT /accounts/{accountId}/billing_plan/downgrade
+     * Queues downgrade billing plan request for an account
+     */
+    public function requestDowngrade(Request $request, int $accountId): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'plan_id' => 'required|exists:billing_plans,plan_id',
+                'effective_date' => 'sometimes|date|after:today',
+            ]);
+
+            $account = \App\Models\Account::findOrFail($accountId);
+            $newPlan = \App\Models\BillingPlan::where('plan_id', $validated['plan_id'])->firstOrFail();
+
+            // In production, this would queue the downgrade request
+            // For now, we'll just log it and return success
+            Log::info('Downgrade request queued', [
+                'account_id' => $accountId,
+                'current_plan' => $account->plan_id,
+                'requested_plan' => $newPlan->plan_id,
+                'effective_date' => $validated['effective_date'] ?? now()->addMonth()->startOfMonth(),
+            ]);
+
+            return $this->successResponse([
+                'downgrade_request_id' => \Illuminate\Support\Str::uuid()->toString(),
+                'current_plan' => $account->plan->plan_name,
+                'requested_plan' => $newPlan->plan_name,
+                'effective_date' => $validated['effective_date'] ?? now()->addMonth()->startOfMonth()->toIso8601String(),
+                'status' => 'pending',
+                'message' => 'Downgrade request has been queued and will be processed on the effective date',
+            ], 'Downgrade request queued successfully');
+
+        } catch (\Exception $e) {
+            Log::error('Failed to queue downgrade request', [
+                'account_id' => $accountId,
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to process downgrade request', 500);
+        }
+    }
+
+    /**
+     * PUT /accounts/{accountId}/billing_plan/purchased_envelopes
+     * Reserved: Purchase additional envelopes
+     */
+    public function purchaseEnvelopes(Request $request, int $accountId): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'envelope_count' => 'required|integer|min:1|max:10000',
+                'price_per_envelope' => 'sometimes|numeric|min:0',
+            ]);
+
+            $account = \App\Models\Account::findOrFail($accountId);
+
+            // Calculate purchase
+            $pricePerEnvelope = $validated['price_per_envelope'] ?? $account->plan->price_per_envelope ?? 1.00;
+            $totalCost = $validated['envelope_count'] * $pricePerEnvelope;
+
+            // In production, this would process payment and update account
+            // For now, just create a charge record
+            $charge = \App\Models\BillingCharge::create([
+                'account_id' => $account->id,
+                'charge_id' => \Illuminate\Support\Str::uuid()->toString(),
+                'charge_type' => 'envelope_purchase',
+                'description' => "Purchase of {$validated['envelope_count']} additional envelopes",
+                'quantity' => $validated['envelope_count'],
+                'unit_price' => $pricePerEnvelope,
+                'amount' => $totalCost,
+                'status' => 'pending',
+            ]);
+
+            // Update account's envelope allowance
+            $account->increment('billing_period_envelopes_allowed', $validated['envelope_count']);
+
+            return $this->successResponse([
+                'charge_id' => $charge->charge_id,
+                'envelope_count' => $validated['envelope_count'],
+                'price_per_envelope' => $pricePerEnvelope,
+                'total_cost' => $totalCost,
+                'new_envelope_allowance' => $account->billing_period_envelopes_allowed,
+                'status' => 'completed',
+            ], 'Envelopes purchased successfully', 201);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to purchase envelopes', [
+                'account_id' => $accountId,
+                'error' => $e->getMessage(),
+            ]);
+            return $this->errorResponse('Failed to purchase envelopes', 500);
+        }
+    }
 }

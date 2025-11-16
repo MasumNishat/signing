@@ -22,6 +22,34 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
+| Global Diagnostics (5 endpoints) - Requires Admin Access
+|--------------------------------------------------------------------------
+*/
+
+// Request logs (global)
+Route::get('/diagnostics/request_logs', [DiagnosticsController::class, 'getGlobalRequestLogs'])
+    ->middleware(['throttle:api', 'check.permission:diagnostics.view'])
+    ->name('diagnostics.global.request_logs.index');
+
+Route::get('/diagnostics/request_logs/{requestLogId}', [DiagnosticsController::class, 'getGlobalRequestLog'])
+    ->middleware(['throttle:api', 'check.permission:diagnostics.view'])
+    ->name('diagnostics.global.request_logs.show');
+
+Route::delete('/diagnostics/request_logs', [DiagnosticsController::class, 'deleteGlobalRequestLogs'])
+    ->middleware(['throttle:api', 'check.permission:diagnostics.manage'])
+    ->name('diagnostics.global.request_logs.delete');
+
+// Diagnostics settings
+Route::get('/diagnostics/settings', [DiagnosticsController::class, 'getDiagnosticsSettings'])
+    ->middleware(['throttle:api', 'check.permission:diagnostics.view'])
+    ->name('diagnostics.global.settings.get');
+
+Route::put('/diagnostics/settings', [DiagnosticsController::class, 'updateDiagnosticsSettings'])
+    ->middleware(['throttle:api', 'check.permission:diagnostics.manage'])
+    ->name('diagnostics.global.settings.update');
+
+/*
+|--------------------------------------------------------------------------
 | System Health (1 endpoint) - Public
 |--------------------------------------------------------------------------
 */

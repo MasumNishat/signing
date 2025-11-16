@@ -787,4 +787,509 @@ class DocumentController extends BaseController
             'Responsive HTML preview generated successfully'
         );
     }
+
+    /**
+     * Bulk add documents to envelope
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return JsonResponse
+     */
+    public function bulkAdd(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Reuse the store method logic
+        return $this->store($request, $accountId, $envelopeId);
+    }
+
+    /**
+     * Bulk delete documents from envelope
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return JsonResponse
+     */
+    public function bulkDestroy(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $validator = Validator::make($request->all(), [
+            'document_ids' => 'required|array|min:1',
+            'document_ids.*' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $deleted = 0;
+            foreach ($request->input('document_ids') as $documentId) {
+                $this->documentService->deleteDocument($envelope, $documentId);
+                $deleted++;
+            }
+
+            return $this->success([
+                'deleted_count' => $deleted,
+            ], 'Documents deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Bulk update document fields
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/fields
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function bulkUpdateFields(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $validator = Validator::make($request->all(), [
+            'fields' => 'required|array|min:1',
+            'fields.*.field_id' => 'required|string',
+            'fields.*.value' => 'sometimes|string',
+            'fields.*.locked' => 'sometimes|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $updated = $this->documentService->bulkUpdateFields($document, $request->input('fields'));
+
+            return $this->success($updated, 'Document fields updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Bulk delete document fields
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/fields
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function bulkDestroyFields(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $validator = Validator::make($request->all(), [
+            'field_ids' => 'required|array|min:1',
+            'field_ids.*' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $deleted = $this->documentService->bulkDeleteFields($document, $request->input('field_ids'));
+
+            return $this->success([
+                'deleted_count' => $deleted,
+            ], 'Document fields deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Delete specific page from document
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/pages/{pageNumber}
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @param int $pageNumber
+     * @return JsonResponse
+     */
+    public function deletePage(string $accountId, string $envelopeId, string $documentId, int $pageNumber): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        try {
+            $this->documentService->deletePage($document, $pageNumber);
+
+            return $this->success(null, 'Page deleted successfully', 204);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get page image
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/pages/{pageNumber}/page_image
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @param int $pageNumber
+     * @return mixed
+     */
+    public function getPageImage(Request $request, string $accountId, string $envelopeId, string $documentId, int $pageNumber)
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        try {
+            $imageData = $this->documentService->getPageImage($document, $pageNumber, $request->query());
+
+            return response($imageData['content'], 200)
+                ->header('Content-Type', $imageData['mime_type']);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Rotate page image
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/pages/{pageNumber}/page_image
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @param int $pageNumber
+     * @return JsonResponse
+     */
+    public function rotatePageImage(Request $request, string $accountId, string $envelopeId, string $documentId, int $pageNumber): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $validator = Validator::make($request->all(), [
+            'rotation' => 'required|in:90,180,270',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $this->documentService->rotatePageImage($document, $pageNumber, (int)$request->input('rotation'));
+
+            return $this->success(null, 'Page image rotated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get tabs on specific page
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/pages/{pageNumber}/tabs
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @param int $pageNumber
+     * @return JsonResponse
+     */
+    public function getPageTabs(string $accountId, string $envelopeId, string $documentId, int $pageNumber): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        try {
+            $tabs = $this->documentService->getPageTabs($document, $pageNumber);
+
+            return $this->success($tabs, 'Page tabs retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get all tabs on document
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/tabs
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function getTabs(string $accountId, string $envelopeId, string $documentId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        try {
+            $tabs = $this->documentService->getDocumentTabs($document);
+
+            return $this->success($tabs, 'Document tabs retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Add tabs to document
+     *
+     * POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function addTabs(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        try {
+            $tabs = $this->documentService->addDocumentTabs($document, $request->all());
+
+            return $this->success($tabs, 'Tabs added to document successfully', 201);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Update tabs on document
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function updateTabs(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        try {
+            $tabs = $this->documentService->updateDocumentTabs($document, $request->all());
+
+            return $this->success($tabs, 'Document tabs updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Delete tabs from document
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function deleteTabs(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $validator = Validator::make($request->all(), [
+            'tab_ids' => 'required|array|min:1',
+            'tab_ids.*' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $deleted = $this->documentService->deleteDocumentTabs($document, $request->input('tab_ids'));
+
+            return $this->success([
+                'deleted_count' => $deleted,
+            ], 'Document tabs deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get templates associated with document
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/templates
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function getTemplates(string $accountId, string $envelopeId, string $documentId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        try {
+            $templates = $this->documentService->getDocumentTemplates($document);
+
+            return $this->success($templates, 'Document templates retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Add templates to document
+     *
+     * POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/templates
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @return JsonResponse
+     */
+    public function addTemplates(Request $request, string $accountId, string $envelopeId, string $documentId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        $validator = Validator::make($request->all(), [
+            'templates' => 'required|array|min:1',
+            'templates.*.template_id' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            $templates = $this->documentService->addDocumentTemplates($document, $request->input('templates'));
+
+            return $this->success($templates, 'Templates added to document successfully', 201);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Delete template from document
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/documents/{documentId}/templates/{templateId}
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @param string $documentId
+     * @param string $templateId
+     * @return JsonResponse
+     */
+    public function deleteTemplate(string $accountId, string $envelopeId, string $documentId, string $templateId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        $document = $this->documentService->getDocument($envelope, $documentId);
+
+        try {
+            $this->documentService->deleteDocumentTemplate($document, $templateId);
+
+            return $this->success(null, 'Template deleted from document successfully', 204);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
 }

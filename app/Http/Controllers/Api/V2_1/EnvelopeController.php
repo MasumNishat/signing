@@ -443,6 +443,53 @@ class EnvelopeController extends BaseController
     }
 
     /**
+     * Create envelope email settings (POST creates/updates).
+     *
+     * POST /v2.1/accounts/{accountId}/envelopes/{envelopeId}/email_settings
+     *
+     * @param  Request  $request
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function createEmailSettings(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        // POST behaves same as PUT for email settings (create or update)
+        return $this->updateEmailSettings($request, $accountId, $envelopeId);
+    }
+
+    /**
+     * Delete envelope email settings (reset to defaults).
+     *
+     * DELETE /v2.1/accounts/{accountId}/envelopes/{envelopeId}/email_settings
+     *
+     * @param  string  $accountId
+     * @param  string  $envelopeId
+     * @return JsonResponse
+     */
+    public function deleteEmailSettings(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            // Reset email settings to null/defaults
+            $this->envelopeService->updateEmailSettings($envelope, [
+                'replyEmailAddressOverride' => null,
+                'replyEmailNameOverride' => null,
+                'bccEmailAddresses' => [],
+            ]);
+
+            return $this->noContent('Email settings deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), 400);
+        }
+    }
+
+    /**
      * Get envelope custom fields.
      *
      * @param  string  $accountId
@@ -924,5 +971,184 @@ class EnvelopeController extends BaseController
             $documentService->generateEnvelopeResponsiveHtmlPreview($envelope, $htmlDefinition),
             'Responsive HTML preview generated successfully'
         );
+    }
+
+    /**
+     * Get comments transcript for an envelope
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/comments/transcript
+     *
+     * Returns a transcript of all comments and notes made on the envelope
+     */
+    public function getCommentsTranscript(string $accountId, string $envelopeId): JsonResponse
+    {
+        try {
+            $envelope = Envelope::where('account_id', $accountId)
+                ->where('envelope_id', $envelopeId)
+                ->with(['auditEvents' => function ($query) {
+                    $query->whereIn('event_type', ['comment_added', 'note_added', 'declined_reason'])
+                        ->orderBy('created_at', 'asc');
+                }])
+                ->firstOrFail();
+
+            // Build transcript from audit events
+            $transcript = [];
+            foreach ($envelope->auditEvents as $event) {
+                $transcript[] = [
+                    'timestamp' => $event->created_at?->toIso8601String(),
+                    'user' => $event->user_name,
+                    'event_type' => $event->event_type,
+                    'comment' => $event->metadata['comment'] ?? $event->metadata['note'] ?? $event->metadata['reason'] ?? '',
+                ];
+            }
+
+            return $this->successResponse([
+                'envelope_id' => $envelope->envelope_id,
+                'comments' => $transcript,
+                'total_comments' => count($transcript),
+            ], 'Comments transcript retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * Get form data for an envelope
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/form_data
+     *
+     * Returns all form field data collected from recipients
+     */
+    public function getFormData(string $accountId, string $envelopeId): JsonResponse
+    {
+        try {
+            $envelope = Envelope::where('account_id', $accountId)
+                ->where('envelope_id', $envelopeId)
+                ->with(['tabs.recipient', 'recipients'])
+                ->firstOrFail();
+
+            // Extract form data from tabs
+            $formData = [];
+            $recipientData = [];
+
+            foreach ($envelope->tabs as $tab) {
+                // Only include tabs with values (filled by recipients)
+                if (!empty($tab->value)) {
+                    if (!isset($recipientData[$tab->recipient_id])) {
+                        $recipientData[$tab->recipient_id] = [
+                            'recipient_id' => $tab->recipient->recipient_id ?? null,
+                            'recipient_name' => $tab->recipient->name ?? 'Unknown',
+                            'recipient_email' => $tab->recipient->email ?? null,
+                            'tabs' => [],
+                        ];
+                    }
+
+                    $recipientData[$tab->recipient_id]['tabs'][] = [
+                        'tab_id' => $tab->tab_id,
+                        'tab_label' => $tab->tab_label,
+                        'tab_type' => $tab->tab_type,
+                        'value' => $tab->value,
+                        'document_id' => $tab->document_id,
+                        'page_number' => $tab->page_number,
+                    ];
+                }
+            }
+
+            // Convert to indexed array
+            $formData = array_values($recipientData);
+
+            return $this->successResponse([
+                'envelope_id' => $envelope->envelope_id,
+                'envelope_status' => $envelope->status,
+                'recipients' => $formData,
+                'total_recipients_with_data' => count($formData),
+            ], 'Form data retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * Get document generation form fields
+     *
+     * GET /v2.1/accounts/{accountId}/envelopes/{envelopeId}/docGenFormFields
+     *
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return JsonResponse
+     */
+    public function getDocGenFormFields(string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        try {
+            // Get form fields from envelope's JSONB column
+            $formFields = $envelope->doc_gen_form_fields ?? [];
+
+            return $this->successResponse([
+                'envelope_id' => $envelope->envelope_id,
+                'doc_gen_form_fields' => $formFields,
+                'count' => count($formFields),
+            ], 'Document generation form fields retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * Update document generation form fields
+     *
+     * PUT /v2.1/accounts/{accountId}/envelopes/{envelopeId}/docGenFormFields
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $envelopeId
+     * @return JsonResponse
+     */
+    public function updateDocGenFormFields(Request $request, string $accountId, string $envelopeId): JsonResponse
+    {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $envelope = Envelope::where('account_id', $account->id)
+            ->where('envelope_id', $envelopeId)
+            ->firstOrFail();
+
+        // Validate envelope is in draft status
+        if (!$envelope->isDraft()) {
+            return $this->errorResponse('Document generation form fields can only be updated for draft envelopes', 400);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'doc_gen_form_fields' => 'required|array',
+            'doc_gen_form_fields.*.name' => 'required|string|max:255',
+            'doc_gen_form_fields.*.value' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // Update form fields
+            $envelope->doc_gen_form_fields = $request->input('doc_gen_form_fields');
+            $envelope->save();
+
+            DB::commit();
+
+            return $this->successResponse([
+                'envelope_id' => $envelope->envelope_id,
+                'doc_gen_form_fields' => $envelope->doc_gen_form_fields,
+                'count' => count($envelope->doc_gen_form_fields),
+            ], 'Document generation form fields updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->handleException($e);
+        }
     }
 }

@@ -14,10 +14,61 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(function () {
 
+    // Envelope transfer rules (must come before {envelopeId} routes)
+    Route::get('transfer_rules', [\App\Http\Controllers\Api\V2_1\EnvelopeTransferRuleController::class, 'index'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('transfer_rules.index');
+
+    Route::post('transfer_rules', [\App\Http\Controllers\Api\V2_1\EnvelopeTransferRuleController::class, 'store'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.manage'])
+        ->name('transfer_rules.store');
+
+    Route::put('transfer_rules', [\App\Http\Controllers\Api\V2_1\EnvelopeTransferRuleController::class, 'bulkUpdate'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.manage'])
+        ->name('transfer_rules.bulk_update');
+
+    Route::put('transfer_rules/{ruleId}', [\App\Http\Controllers\Api\V2_1\EnvelopeTransferRuleController::class, 'update'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.manage'])
+        ->name('transfer_rules.update');
+
+    Route::delete('transfer_rules/{ruleId}', [\App\Http\Controllers\Api\V2_1\EnvelopeTransferRuleController::class, 'destroy'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.manage'])
+        ->name('transfer_rules.destroy');
+
     // Envelope statistics (must come before {envelopeId} route)
     Route::get('statistics', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'statistics'])
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('statistics');
+
+    // Envelope search endpoints (must come before {envelopeId} route)
+    Route::post('search', [\App\Http\Controllers\Api\V2_1\EnvelopeSearchController::class, 'search'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('search');
+
+    Route::get('search_folders', [\App\Http\Controllers\Api\V2_1\EnvelopeSearchController::class, 'searchFolders'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('search_folders');
+
+    Route::get('search_status', [\App\Http\Controllers\Api\V2_1\EnvelopeSearchController::class, 'searchStatus'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('search_status');
+
+    // Envelope reporting and export endpoints (must come before {envelopeId} route)
+    Route::post('export', [\App\Http\Controllers\Api\V2_1\EnvelopeReportController::class, 'export'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('export');
+
+    Route::get('reports/usage', [\App\Http\Controllers\Api\V2_1\EnvelopeReportController::class, 'usageReport'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('reports.usage');
+
+    Route::get('reports/recipients', [\App\Http\Controllers\Api\V2_1\EnvelopeReportController::class, 'recipientReport'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('reports.recipients');
+
+    Route::get('reports/completion_rate', [\App\Http\Controllers\Api\V2_1\EnvelopeReportController::class, 'completionRateReport'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('reports.completion_rate');
 
     // List envelopes
     Route::get('/', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'index'])
@@ -68,9 +119,17 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('email_settings.get');
 
+    Route::post('{envelopeId}/email_settings', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'createEmailSettings'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('email_settings.create');
+
     Route::put('{envelopeId}/email_settings', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'updateEmailSettings'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
         ->name('email_settings.update');
+
+    Route::delete('{envelopeId}/email_settings', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'deleteEmailSettings'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.delete'])
+        ->name('email_settings.delete');
 
     // Custom fields
     Route::get('{envelopeId}/custom_fields', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getCustomFields'])
@@ -141,4 +200,99 @@ Route::prefix('accounts/{accountId}/envelopes')->name('envelopes.')->group(funct
     Route::post('{envelopeId}/responsive_html_preview', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'generateResponsiveHtmlPreview'])
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('responsive_html_preview.generate');
+
+    // Comments and form data
+    Route::get('{envelopeId}/comments/transcript', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getCommentsTranscript'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('comments.transcript');
+
+    Route::get('{envelopeId}/form_data', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getFormData'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('form_data.get');
+
+    // Attachments
+    Route::get('{envelopeId}/attachments', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'index'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('attachments.index');
+
+    Route::post('{envelopeId}/attachments', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'store'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('attachments.store');
+
+    Route::put('{envelopeId}/attachments', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'update'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('attachments.update');
+
+    Route::delete('{envelopeId}/attachments', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'destroy'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.delete'])
+        ->name('attachments.destroy');
+
+    Route::get('{envelopeId}/attachments/{attachmentId}', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'show'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('attachments.show');
+
+    Route::put('{envelopeId}/attachments/{attachmentId}', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'updateSingle'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('attachments.update_single');
+
+    Route::delete('{envelopeId}/attachments/{attachmentId}', [\App\Http\Controllers\Api\V2_1\EnvelopeAttachmentController::class, 'destroySingle'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.delete'])
+        ->name('attachments.destroy_single');
+
+    // Document visibility
+    Route::get('{envelopeId}/document_visibility', [\App\Http\Controllers\Api\V2_1\DocumentVisibilityController::class, 'index'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('document_visibility.index');
+
+    Route::put('{envelopeId}/document_visibility', [\App\Http\Controllers\Api\V2_1\DocumentVisibilityController::class, 'update'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('document_visibility.update');
+
+    Route::get('{envelopeId}/documents/{documentId}/recipients', [\App\Http\Controllers\Api\V2_1\DocumentVisibilityController::class, 'getDocumentRecipients'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('documents.recipients.index');
+
+    Route::put('{envelopeId}/documents/{documentId}/recipients', [\App\Http\Controllers\Api\V2_1\DocumentVisibilityController::class, 'updateDocumentRecipients'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('documents.recipients.update');
+
+    // Consumer Disclosure
+    Route::get('{envelopeId}/recipients/{recipientId}/consumer_disclosure', [\App\Http\Controllers\Api\V2_1\EnvelopeConsumerDisclosureController::class, 'getRecipientDisclosure'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.consumer_disclosure.get');
+
+    Route::post('{envelopeId}/recipients/{recipientId}/consumer_disclosure', [\App\Http\Controllers\Api\V2_1\EnvelopeConsumerDisclosureController::class, 'acceptDisclosure'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.consumer_disclosure.accept');
+
+    Route::get('{envelopeId}/consumer_disclosure/{langCode?}', [\App\Http\Controllers\Api\V2_1\EnvelopeConsumerDisclosureController::class, 'getEnvelopeDisclosure'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('consumer_disclosure.get');
+
+    // Document Generation Form Fields
+    Route::get('{envelopeId}/docGenFormFields', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'getDocGenFormFields'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('doc_gen_form_fields.get');
+
+    Route::put('{envelopeId}/docGenFormFields', [\App\Http\Controllers\Api\V2_1\EnvelopeController::class, 'updateDocGenFormFields'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('doc_gen_form_fields.update');
+
+    // Envelope Correction & Resend
+    Route::post('{envelopeId}/correct', [\App\Http\Controllers\Api\V2_1\EnvelopeCorrectionController::class, 'correct'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('correct');
+
+    Route::post('{envelopeId}/resend', [\App\Http\Controllers\Api\V2_1\EnvelopeCorrectionController::class, 'resend'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.send'])
+        ->name('resend');
+
+    // Envelope Summary
+    Route::get('{envelopeId}/summary', [\App\Http\Controllers\Api\V2_1\EnvelopeSummaryController::class, 'getSummary'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('summary');
+
+    Route::get('{envelopeId}/status_changes', [\App\Http\Controllers\Api\V2_1\EnvelopeSummaryController::class, 'getStatusChanges'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('status_changes');
 });

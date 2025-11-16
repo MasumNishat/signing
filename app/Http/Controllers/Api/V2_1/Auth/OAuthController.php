@@ -18,7 +18,7 @@ class OAuthController extends BaseController
      * @param AuthorizationController $controller
      * @return \Illuminate\Http\Response
      */
-    public function authorize(
+    public function authorizeOAuth(
         ServerRequestInterface $request,
         AuthorizationController $controller
     ) {
@@ -33,7 +33,7 @@ class OAuthController extends BaseController
      * @param AuthorizationController $controller
      * @return \Illuminate\Http\Response
      */
-    public function authorizePost(
+    public function approveOAuth(
         ServerRequestInterface $request,
         AuthorizationController $controller
     ) {

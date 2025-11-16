@@ -57,4 +57,50 @@ Route::prefix('accounts/{accountId}/envelopes/{envelopeId}/recipients')->group(f
     Route::post('/{recipientId}/signing_url', [RecipientController::class, 'signingUrl'])
         ->middleware(['throttle:api', 'check.account.access'])
         ->name('recipients.signing_url');
+
+    // Document visibility
+    Route::get('/{recipientId}/document_visibility', [RecipientController::class, 'getDocumentVisibility'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.document_visibility.get');
+
+    Route::put('/{recipientId}/document_visibility', [RecipientController::class, 'updateDocumentVisibility'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('recipients.document_visibility.update');
+
+    // Consumer disclosure
+    Route::get('/{recipientId}/consumer_disclosure/{langCode?}', [RecipientController::class, 'getConsumerDisclosure'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.consumer_disclosure');
+
+    // Identity proof token
+    Route::post('/{recipientId}/identity_proof_token', [RecipientController::class, 'identityProofToken'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.identity_proof_token');
+
+    // Signature image
+    Route::get('/{recipientId}/signature_image', [RecipientController::class, 'getSignatureImage'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.signature_image.get');
+
+    Route::put('/{recipientId}/signature_image', [RecipientController::class, 'updateSignatureImage'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('recipients.signature_image.update');
+
+    // Initials image
+    Route::get('/{recipientId}/initials_image', [RecipientController::class, 'getInitialsImage'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.initials_image.get');
+
+    Route::put('/{recipientId}/initials_image', [RecipientController::class, 'updateInitialsImage'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('recipients.initials_image.update');
+
+    // Recipient tabs
+    Route::put('/{recipientId}/tabs', [RecipientController::class, 'updateTabs'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.update'])
+        ->name('recipients.tabs.update');
+
+    Route::delete('/{recipientId}/tabs', [RecipientController::class, 'deleteTabs'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:envelope.delete'])
+        ->name('recipients.tabs.delete');
 });

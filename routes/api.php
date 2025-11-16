@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V2_1\Auth\AuthController;
 use App\Http\Controllers\Api\V2_1\Auth\OAuthController;
+use App\Http\Controllers\Api\ServiceInformationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,10 @@ use App\Http\Controllers\Api\V2_1\Auth\OAuthController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+// Root-Level Service Information (Public)
+Route::get('/service_information', [ServiceInformationController::class, 'index'])
+    ->name('api.service.information');
 
 // API Version 2.1
 Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
@@ -31,8 +36,8 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
             ->name('refresh');
 
         // OAuth 2.0 Routes
-        Route::get('authorize', [OAuthController::class, 'authorize'])->name('oauth.authorize');
-        Route::post('authorize', [OAuthController::class, 'authorizePost'])->name('oauth.authorize.post');
+        Route::get('authorize', [OAuthController::class, 'authorizeOAuth'])->name('oauth.authorize');
+        Route::post('authorize', [OAuthController::class, 'approveOAuth'])->name('oauth.authorize.post');
         Route::post('token', [OAuthController::class, 'token'])
             ->middleware('throttle:oauth-token')
             ->name('oauth.token');
@@ -105,8 +110,42 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
         // Signature Routes
         require __DIR__.'/api/v2.1/signatures.php';
 
+        // Identity Verification Routes
+        require __DIR__.'/api/v2.1/identity_verification.php';
+
+        // Shared Access Routes
+        require __DIR__.'/api/v2.1/shared_access.php';
+
+        // Captive Recipients Routes (Embedded Signing)
+        Route::prefix('accounts/{accountId}/captive_recipients')->group(function () {
+            require __DIR__.'/api/v2.1/captive_recipients.php';
+        });
+
         // Bulk Send Routes
         require __DIR__.'/api/v2.1/bulk.php';
+
+        // Folder Routes
+        require __DIR__.'/api/v2.1/folders.php';
+
+        // Group Routes (Signing Groups & User Groups)
+        require __DIR__.'/api/v2.1/signing_groups.php';
+        require __DIR__.'/api/v2.1/groups.php';
+
+        // Settings & Diagnostics Routes
+        require __DIR__.'/api/v2.1/settings.php';
+        require __DIR__.'/api/v2.1/diagnostics.php';
+
+        // Document Generation Routes
+        require __DIR__.'/api/v2.1/document_generation.php';
+
+        // Mobile Routes
+        require __DIR__.'/api/v2.1/mobile.php';
+
+        // Notary Routes
+        require __DIR__.'/api/v2.1/notary.php';
+
+        // Advanced Features Routes
+        require __DIR__.'/api/v2.1/advanced_features.php';
 
         // Additional route files will be added as features are implemented
     });

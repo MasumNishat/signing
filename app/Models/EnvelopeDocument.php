@@ -69,6 +69,8 @@ class EnvelopeDocument extends Model
         'mime_type',
         'pages',
         'transform_pdf_fields',
+        'visible_to_recipients',
+        'document_rights',
     ];
 
     protected $casts = [
@@ -79,6 +81,7 @@ class EnvelopeDocument extends Model
         'pages' => 'integer',
         'transform_pdf_fields' => 'boolean',
         'converted_at' => 'datetime',
+        'visible_to_recipients' => 'array',
     ];
 
     protected $hidden = [

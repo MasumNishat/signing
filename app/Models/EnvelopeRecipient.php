@@ -67,6 +67,10 @@ class EnvelopeRecipient extends Model
         'host_email',
         'client_user_id',
         'embedded_recipient_start_url',
+        'consumer_disclosure_accepted',
+        'consumer_disclosure_accepted_at',
+        'consumer_disclosure_ip_address',
+        'consumer_disclosure_user_agent',
     ];
 
     protected $casts = [
@@ -80,6 +84,8 @@ class EnvelopeRecipient extends Model
         'require_signer_certificate' => 'boolean',
         'require_sign_on_paper' => 'boolean',
         'sign_in_each_location' => 'boolean',
+        'consumer_disclosure_accepted' => 'boolean',
+        'consumer_disclosure_accepted_at' => 'datetime',
     ];
 
     protected static function boot(): void

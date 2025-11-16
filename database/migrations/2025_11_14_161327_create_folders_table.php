@@ -19,6 +19,15 @@ return new class extends Migration
             $table->string('folder_name');
             $table->string('folder_type', 50)->nullable()->comment('normal, inbox, sentitems, draft, trash, recyclebin, custom');
             $table->foreignId('owner_user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('parent_folder_id')->nullable()->constrained('folders')->nullOnDelete();
+
+            // Folder metadata
+            $table->string('filter')->nullable()->comment('Folder filter criteria');
+            $table->string('uri')->nullable()->comment('Folder URI path');
+            $table->integer('item_count')->default(0);
+            $table->integer('sub_folder_count')->default(0);
+            $table->boolean('has_sub_folders')->default(false);
+            $table->text('error_details')->nullable();
 
             $table->timestamps();
 
@@ -26,6 +35,8 @@ return new class extends Migration
             $table->index('account_id');
             $table->index('folder_id');
             $table->index('owner_user_id');
+            $table->index('parent_folder_id');
+            $table->index('folder_type');
         });
     }
 

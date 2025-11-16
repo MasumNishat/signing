@@ -167,6 +167,121 @@ class DiagnosticsService
     }
 
     // =========================================================================
+    // GLOBAL DIAGNOSTICS
+    // =========================================================================
+
+    /**
+     * List all request logs (global, not account-specific).
+     */
+    public function listGlobalRequestLogs(array $filters = []): LengthAwarePaginator
+    {
+        $query = RequestLog::query()->with(['user:id,name,email']);
+
+        // Filter by account
+        if (!empty($filters['account_id'])) {
+            $query->where('account_id', $filters['account_id']);
+        }
+
+        // Filter by user
+        if (!empty($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
+        }
+
+        // Filter by method
+        if (!empty($filters['method'])) {
+            $query->withMethod($filters['method']);
+        }
+
+        // Filter by status (successful/failed)
+        if (!empty($filters['status'])) {
+            if ($filters['status'] === 'success') {
+                $query->successful();
+            } elseif ($filters['status'] === 'failed') {
+                $query->failed();
+            }
+        }
+
+        // Filter by date range
+        if (!empty($filters['from_date']) && !empty($filters['to_date'])) {
+            $query->betweenDates($filters['from_date'], $filters['to_date']);
+        }
+
+        // Sorting
+        $sortBy = $filters['sort_by'] ?? 'created_date_time';
+        $sortOrder = $filters['sort_order'] ?? 'desc';
+        $query->orderBy($sortBy, $sortOrder);
+
+        // Pagination
+        $perPage = $filters['per_page'] ?? 50;
+        return $query->paginate($perPage);
+    }
+
+    /**
+     * Delete old request logs globally.
+     */
+    public function deleteGlobalRequestLogs(int $daysOld = 90): int
+    {
+        $cutoffDate = now()->subDays($daysOld);
+
+        return RequestLog::where('created_date_time', '<', $cutoffDate)->delete();
+    }
+
+    /**
+     * Get a specific request log globally.
+     */
+    public function getGlobalRequestLog(string $requestLogId): RequestLog
+    {
+        $log = RequestLog::where('request_log_id', $requestLogId)
+            ->with(['user:id,name,email'])
+            ->first();
+
+        if (!$log) {
+            throw new ResourceNotFoundException('Request log not found');
+        }
+
+        return $log;
+    }
+
+    /**
+     * Get diagnostics settings.
+     */
+    public function getDiagnosticsSettings(): array
+    {
+        return [
+            'api_request_logging' => config('app.diagnostics.api_request_logging', true),
+            'api_request_log_remaining_days' => config('app.diagnostics.log_retention_days', 90),
+            'api_request_log_max_entries' => config('app.diagnostics.log_max_entries', 50000),
+        ];
+    }
+
+    /**
+     * Update diagnostics settings.
+     */
+    public function updateDiagnosticsSettings(array $data): array
+    {
+        // In a production environment, these would be stored in a database table
+        // For now, we'll just return the updated settings
+        $settings = $this->getDiagnosticsSettings();
+
+        if (isset($data['api_request_logging'])) {
+            $settings['api_request_logging'] = $data['api_request_logging'];
+        }
+
+        if (isset($data['api_request_log_remaining_days'])) {
+            $settings['api_request_log_remaining_days'] = $data['api_request_log_remaining_days'];
+        }
+
+        if (isset($data['api_request_log_max_entries'])) {
+            $settings['api_request_log_max_entries'] = $data['api_request_log_max_entries'];
+        }
+
+        // TODO: Persist to database in production
+        // For now, just return the updated settings
+
+        return $settings;
+    }
+
+    // =========================================================================
     // SYSTEM DIAGNOSTICS
     // =========================================================================
 
