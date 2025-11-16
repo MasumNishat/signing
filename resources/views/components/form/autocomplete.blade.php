@@ -32,7 +32,7 @@
     {{ $attributes }}>
 
     @if($label)
-        <x-form.label for="{{ $name }}" @if($required) required @endif>{{ $label }}</x-form.label>
+        <x-form.label for="{{ $name }}" :required="$required">{{ $label }}</x-form.label>
     @endif
 
     <div class="{{ $label ? 'mt-1' : '' }} relative">
