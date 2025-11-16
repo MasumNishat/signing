@@ -165,6 +165,30 @@ Route::middleware(['throttle:api'])->group(function () {
             ->middleware('check.permission:manage_account')
             ->name('settings.tabs.update');
 
+        // ==================== General Account Settings ====================
+
+        // Account Settings (general account configuration)
+        Route::get('settings', [\App\Http\Controllers\Api\V2_1\SettingsController::class, 'getSettings'])
+            ->middleware('check.permission:view_account')
+            ->name('settings.index');
+
+        Route::put('settings', [\App\Http\Controllers\Api\V2_1\SettingsController::class, 'updateSettings'])
+            ->middleware('check.permission:manage_account')
+            ->name('settings.update');
+
+        // ==================== Reference Data ====================
+
+        // Supported Languages
+        Route::get('supported_languages', [\App\Http\Controllers\Api\V2_1\SettingsController::class, 'getSupportedLanguages'])
+            ->name('supported_languages');
+
+        // File Types
+        Route::get('unsupported_file_types', [\App\Http\Controllers\Api\V2_1\SettingsController::class, 'getUnsupportedFileTypes'])
+            ->name('unsupported_file_types');
+
+        Route::get('supported_file_types', [\App\Http\Controllers\Api\V2_1\SettingsController::class, 'getSupportedFileTypes'])
+            ->name('supported_file_types');
+
         // Permission Profiles
         Route::prefix('permission-profiles')->name('permission-profiles.')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\V2_1\PermissionProfileController::class, 'index'])->name('index');
