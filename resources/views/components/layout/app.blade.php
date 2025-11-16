@@ -137,5 +137,15 @@
 
     <!-- Additional Scripts -->
     {{ $scripts ?? '' }}
+
+    <!-- Initialize Auth Store with Session User Data -->
+    @auth
+    <script>
+        document.addEventListener('alpine:init', () => {
+            // Set user data from Laravel session
+            Alpine.store('auth').user = @json(auth()->user());
+        });
+    </script>
+    @endauth
 </body>
 </html>
