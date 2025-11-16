@@ -19,7 +19,7 @@
     {{ $attributes }}>
 
     @if($label)
-        <x-form.label x-bind:for="$name">{{ $label }}</x-form.label>
+        <x-form.label for="{{ $name }}">{{ $label }}</x-form.label>
     @endif
 
     <div class="{{ $label ? 'mt-1' : '' }} border border-input-border rounded-lg p-2 bg-input-bg max-h-48 overflow-y-auto">
@@ -41,6 +41,6 @@
     </div>
 
     @if($error)
-        <x-form.validation-error x-bind:message="$error" x-bind:for="$name" />
+        <x-form.validation-error message="{{ $error }}" for="{{ $name }}" />
     @endif
 </div>

@@ -28,6 +28,6 @@ Usage Examples:
 
 4. Multiple errors:
 @foreach($errors->get('email') as $error)
-    <x-form.validation-error x-bind:message="$error" for="email" />
+    <x-form.validation-error message="{{ $error }}" for="email" />
 @endforeach
 --}}

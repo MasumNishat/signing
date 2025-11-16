@@ -31,7 +31,7 @@
 
 <div {{ $attributes->only('class') }}>
     @if($label)
-        <x-form.label x-bind:for="$name" x-bind:required="$required">
+        <x-form.label for="{{ $name }}" {{ $required ? "required" : "" }}>
             {{ $label }}
         </x-form.label>
     @endif
@@ -64,9 +64,9 @@
     </div>
 
     @if($error)
-        <x-form.validation-error x-bind:message="$error" x-bind:for="$name" />
+        <x-form.validation-error message="{{ $error }}" for="{{ $name }}" />
     @elseif($helpText)
-        <x-form.help-text x-bind:for="$name">{{ $helpText }}</x-form.help-text>
+        <x-form.help-text for="{{ $name }}">{{ $helpText }}</x-form.help-text>
     @endif
 </div>
 
@@ -84,7 +84,7 @@ Usage Examples:
     name="email"
     label="Email"
     type="email"
-    x-bind:error="$errors->first('email')"
+    error="{{ $errors->first('email')"
 />
 
 4. With help text:
