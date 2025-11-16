@@ -2315,3 +2315,84 @@ Highly productive session implementing three major categories: quick wins, brand
 **Next:** Recipient advanced features + webhook republish
 **Platform:** Production-ready at 125.34% coverage 🚀
 
+
+
+
+---
+
+## Session 42: Webhook Historical + Email Settings + Seal CRUD - IN PROGRESS 🔄
+
+**Date:** 2025-11-16
+**Branch:** claude/phase-5-signatures-seals-015526zh2Vx9Ki9df6Ftvzob
+**Status:** IN PROGRESS
+**Starting Coverage:** 129.86% (287/221 matched endpoints) - from Session 41
+**Current Coverage:** 133.03% (294/221 matched endpoints)
+**Total Improvement:** +7 endpoints (+3.17% coverage)
+
+### Session 42 Accomplishments
+
+**Part 1: Webhook Historical Republish** (1 endpoint) ✅
+- POST /connect/envelopes/publish/historical
+- Date range filtering with optional envelope_ids and status
+- Republishes successful events for auditing (vs retry_queue for failures)
+- Returns statistics: envelopes_processed, events_published, failures
+- Commit: f8002be
+
+**Part 2: Email Settings CRUD Completion** (2 endpoints) ✅
+- POST /envelopes/{envelopeId}/email_settings (idempotent create/update)
+- DELETE /envelopes/{envelopeId}/email_settings (reset to defaults)
+- Complete CRUD operations (GET and PUT already existed)
+- Commit: d354d11
+
+**Part 3: Seal CRUD Operations** (4 endpoints) ✅
+- GET /accounts/{accountId}/seals/{sealId} (get specific seal)
+- POST /accounts/{accountId}/seals (create new seal)
+- PUT /accounts/{accountId}/seals/{sealId} (update seal)
+- DELETE /accounts/{accountId}/seals/{sealId} (delete seal)
+- Service: SignatureService +58 lines
+- Controller: SignatureController +123 lines
+- Routes: signatures.php +18 lines
+- Commit: 1bf70ed
+
+### Deliverables
+- WebhookService.php: +82 lines (republishHistoricalEvents method)
+- ConnectController.php: +31 lines (publishHistorical method)
+- EnvelopeController.php: +47 lines (createEmailSettings, deleteEmailSettings)
+- SignatureService.php: +58 lines (4 seal CRUD methods)
+- SignatureController.php: +123 lines (4 seal CRUD methods + Account import)
+- Routes: connect.php +4 lines, envelopes.php +8 lines, signatures.php +18 lines
+- **Total:** 5 files modified, ~371 lines added
+- **Session summary:** docs/summary/SESSION-42-COMPLETE.md (to be updated)
+
+### Git Commits (4)
+- f8002be: Webhook historical republish (1 endpoint)
+- d354d11: Email settings POST and DELETE (2 endpoints)
+- 1bf70ed: Seal CRUD operations (4 endpoints)
+- 87721ea: Session summary documentation (partial)
+
+### Coverage Progress
+
+| Metric | Session 41 End | Session 42 Current | Change |
+|--------|----------------|-------------------|--------|
+| Matched Endpoints | 287 | 294 | +7 |
+| Coverage % | 129.86% | 133.03% | +3.17% |
+| To 135% Target | - | ~4-5 endpoints | - |
+
+### Platform Status After Session 42 (Current)
+
+**Endpoint Count:** 294 matched endpoints (133.03% of 221)
+- Session 40 end: 277 endpoints (125.34%)
+- Session 41 end: 287 endpoints (129.86%)
+- Session 42 current: 294 endpoints (133.03%)
+- **Progress toward 135% target:** ~4-5 more endpoints needed
+
+**Next Priorities (to reach 135% coverage):**
+1. Advanced search features (~3-5 endpoints)
+2. Additional missing CRUD operations
+3. Template or envelope advanced features
+
+---
+
+**Session Status:** 🔄 In Progress (7 endpoints complete, continuing)
+**Next:** Implement 4-5 more endpoints to reach 135% coverage target
+**Platform:** Production-ready at 133.03% coverage, nearly at 135% goal! 🎉
