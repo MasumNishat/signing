@@ -1,154 +1,137 @@
 <x-layout.auth title="Register">
-    <div x-data="{
-        formData: {
-            name: '',
-            email: '',
-            password: '',
-            password_confirmation: '',
-            agree_terms: false
-        },
-        errors: {},
-        loading: false,
-        passwordStrength: 0,
-        checkPasswordStrength() {
-            let strength = 0;
-            const password = this.formData.password;
-
-            if (password.length >= 8) strength++;
-            if (password.length >= 12) strength++;
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-            if (/\d/.test(password)) strength++;
-            if (/[^a-zA-Z\d]/.test(password)) strength++;
-
-            this.passwordStrength = strength;
-        },
-        async register() {
-            this.loading = true;
-            this.errors = {};
-
-            try {
-                const response = await $api.post('/register', this.formData);
-
-                $store.toast.success('Registration successful! Please login.');
-                window.location.href = '/login';
-            } catch (error) {
-                if (error.response?.data?.errors) {
-                    this.errors = error.response.data.errors;
-                } else {
-                    $store.toast.error('Registration failed. Please try again.');
-                }
-                this.loading = false;
-            }
-        }
-    }">
+    <div>
         <!-- Logo -->
         <div class="text-center mb-8">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-primary-600 rounded-lg mb-4">
                 <span class="text-3xl font-bold text-white">D</span>
             </div>
-            <h2 class="text-2xl font-bold text-primary">Create your account</h2>
-            <p class="mt-2 text-sm text-text-secondary">Start sending documents for signature</p>
+            <h2 class="text-2xl font-bold text-text-primary">Create your account</h2>
+            <p class="mt-2 text-sm text-text-secondary">Get started with your free account today.</p>
         </div>
 
-        <!-- Register Form -->
-        <form @submit.prevent="register()" class="space-y-5">
-            <!-- Full Name -->
-            <x-form.input
-                name="name"
-                label="Full Name"
-                type="text"
-                placeholder="John Doe"
-                x-model="formData.name"
-                :required="true"
-                x-bind:error="errors.name?.[0]"
-            />
+        <!-- Session-based Registration Form (NOT OAuth) -->
+        <form method="POST" action="{{ route('register.post') }}" class="space-y-6">
+            @csrf
 
-            <!-- Email -->
-            <x-form.input
-                name="email"
-                label="Email Address"
-                type="email"
-                placeholder="you@example.com"
-                x-model="formData.email"
-                :required="true"
-                x-bind:error="errors.email?.[0]"
-            />
+            <!-- Error Messages -->
+            @if ($errors->any())
+                <div class="rounded-md bg-error-50 p-4">
+                    <ul class="list-disc list-inside text-sm text-error-800">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-            <!-- Password -->
+            <!-- Name -->
             <div>
-                <x-form.input
-                    name="password"
-                    label="Password"
-                    type="password"
-                    placeholder="••••••••"
-                    x-model="formData.password"
-                    @input="checkPasswordStrength()"
-                    :required="true"
-                    x-bind:error="errors.password?.[0]"
-                />
-
-                <!-- Password Strength Indicator -->
-                <div class="mt-2">
-                    <div class="flex items-center space-x-1">
-                        <div class="flex-1 h-2 rounded-full" :class="{
-                            'bg-red-500': passwordStrength === 1,
-                            'bg-orange-500': passwordStrength === 2,
-                            'bg-yellow-500': passwordStrength === 3,
-                            'bg-green-500': passwordStrength === 4,
-                            'bg-green-600': passwordStrength === 5,
-                            'bg-gray-200': passwordStrength === 0
-                        }"></div>
+                <label for="name" class="block text-sm font-medium text-text-primary">
+                    Full Name
+                </label>
+                <div class="mt-1 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="w-5 h-5 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
                     </div>
-                    <p class="text-xs text-text-secondary mt-1" x-show="formData.password.length > 0">
-                        <span x-show="passwordStrength === 0">Very weak</span>
-                        <span x-show="passwordStrength === 1">Weak</span>
-                        <span x-show="passwordStrength === 2">Fair</span>
-                        <span x-show="passwordStrength === 3">Good</span>
-                        <span x-show="passwordStrength === 4">Strong</span>
-                        <span x-show="passwordStrength === 5">Very strong</span>
-                    </p>
+                    <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        value="{{ old('name') }}"
+                        required
+                        autocomplete="name"
+                        autofocus
+                        placeholder="John Doe"
+                        class="block w-full pl-10 pr-3 py-2 border border-border-primary rounded-lg focus:ring-primary-500 focus:border-primary-500 bg-input-bg text-input-text placeholder-input-placeholder"
+                    />
                 </div>
             </div>
 
-            <!-- Confirm Password -->
-            <x-form.input
-                name="password_confirmation"
-                label="Confirm Password"
-                type="password"
-                placeholder="••••••••"
-                x-model="formData.password_confirmation"
-                :required="true"
-            />
+            <!-- Email -->
+            <div>
+                <label for="email" class="block text-sm font-medium text-text-primary">
+                    Email Address
+                </label>
+                <div class="mt-1 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="w-5 h-5 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        value="{{ old('email') }}"
+                        required
+                        autocomplete="email"
+                        placeholder="you@example.com"
+                        class="block w-full pl-10 pr-3 py-2 border border-border-primary rounded-lg focus:ring-primary-500 focus:border-primary-500 bg-input-bg text-input-text placeholder-input-placeholder"
+                    />
+                </div>
+            </div>
 
-            <!-- Terms & Conditions -->
-            <x-form.checkbox
-                name="agree_terms"
-                x-model="formData.agree_terms"
-                :required="true"
-                x-bind:error="errors.agree_terms?.[0]">
-                <x-slot name="label">
-                    I agree to the
-                    <a href="/terms" class="text-primary-600 hover:text-primary-500">Terms of Service</a>
-                    and
-                    <a href="/privacy" class="text-primary-600 hover:text-primary-500">Privacy Policy</a>
-                </x-slot>
-            </x-form.checkbox>
+            <!-- Password -->
+            <div>
+                <label for="password" class="block text-sm font-medium text-text-primary">
+                    Password
+                </label>
+                <div class="mt-1 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="w-5 h-5 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <input
+                        type="password"
+                        name="password"
+                        id="password"
+                        required
+                        autocomplete="new-password"
+                        placeholder="••••••••"
+                        class="block w-full pl-10 pr-3 py-2 border border-border-primary rounded-lg focus:ring-primary-500 focus:border-primary-500 bg-input-bg text-input-text placeholder-input-placeholder"
+                    />
+                </div>
+                <p class="mt-1 text-xs text-text-secondary">Must be at least 8 characters</p>
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <label for="password_confirmation" class="block text-sm font-medium text-text-primary">
+                    Confirm Password
+                </label>
+                <div class="mt-1 relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="w-5 h-5 text-text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </div>
+                    <input
+                        type="password"
+                        name="password_confirmation"
+                        id="password_confirmation"
+                        required
+                        autocomplete="new-password"
+                        placeholder="••••••••"
+                        class="block w-full pl-10 pr-3 py-2 border border-border-primary rounded-lg focus:ring-primary-500 focus:border-primary-500 bg-input-bg text-input-text placeholder-input-placeholder"
+                    />
+                </div>
+            </div>
 
             <!-- Submit Button -->
-            <x-ui.button
+            <button
                 type="submit"
-                variant="primary"
-                class="w-full"
-                :loading="loading"
-                x-bind:disabled="loading || !formData.agree_terms">
-                Create account
-            </x-ui.button>
+                class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors">
+                Create Account
+            </button>
         </form>
 
         <!-- Sign In Link -->
         <p class="mt-6 text-center text-sm text-text-secondary">
             Already have an account?
-            <a href="/login" class="font-medium text-primary-600 hover:text-primary-500">
+            <a href="{{ route('login') }}" class="font-medium text-primary-600 hover:text-primary-500">
                 Sign in
             </a>
         </p>

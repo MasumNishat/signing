@@ -38,14 +38,24 @@ Route::get('/', function () {
 
 // Authentication Routes (Guest Only)
 Route::middleware('guest')->group(function () {
+    // Show forms
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
     Route::get('/reset-password/{token}', [AuthController::class, 'showResetPassword'])->name('password.reset');
+
+    // Handle form submissions (Session-based auth, NOT OAuth)
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+    Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
 });
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
+    // Logout (Session-based auth, NOT OAuth)
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
     // Dashboard Routes
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/widgets', [DashboardController::class, 'widgets'])->name('dashboard.widgets');
