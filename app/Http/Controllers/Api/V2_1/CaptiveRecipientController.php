@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
  * Manages captive recipients (embedded signers) for an account.
  * Captive recipients are pre-configured contacts used for embedded signing workflows.
  *
- * Total Endpoints: 3
+ * Total Endpoints: 5
  */
 class CaptiveRecipientController extends BaseController
 {
@@ -132,6 +132,75 @@ class CaptiveRecipientController extends BaseController
                     }),
                     'total_created' => count($createdRecipients),
                 ], 'Captive recipients created successfully');
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw $e;
+            }
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * GET /accounts/{accountId}/captive_recipients/{recipientId}
+     *
+     * Get a specific captive recipient
+     */
+    public function show(string $accountId, string $recipientId): JsonResponse
+    {
+        try {
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+
+            $captiveRecipient = CaptiveRecipient::where('account_id', $account->id)
+                ->where('id', $recipientId)
+                ->firstOrFail();
+
+            return $this->successResponse([
+                'captive_recipient_id' => $captiveRecipient->id,
+                'recipient_part' => $captiveRecipient->recipient_part,
+                'email' => $captiveRecipient->email,
+                'user_name' => $captiveRecipient->user_name,
+                'created_at' => $captiveRecipient->created_at->toIso8601String(),
+                'updated_at' => $captiveRecipient->updated_at->toIso8601String(),
+            ], 'Captive recipient retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * PUT /accounts/{accountId}/captive_recipients/{recipientId}
+     *
+     * Update a captive recipient
+     */
+    public function update(Request $request, string $accountId, string $recipientId): JsonResponse
+    {
+        try {
+            $validated = $request->validate([
+                'recipient_part' => 'sometimes|string|max:255',
+                'email' => 'sometimes|email|max:255',
+                'user_name' => 'sometimes|string|max:255',
+            ]);
+
+            $account = Account::where('account_id', $accountId)->firstOrFail();
+
+            $captiveRecipient = CaptiveRecipient::where('account_id', $account->id)
+                ->where('id', $recipientId)
+                ->firstOrFail();
+
+            DB::beginTransaction();
+
+            try {
+                $captiveRecipient->update($validated);
+                DB::commit();
+
+                return $this->successResponse([
+                    'captive_recipient_id' => $captiveRecipient->id,
+                    'recipient_part' => $captiveRecipient->recipient_part,
+                    'email' => $captiveRecipient->email,
+                    'user_name' => $captiveRecipient->user_name,
+                    'updated_at' => $captiveRecipient->updated_at->toIso8601String(),
+                ], 'Captive recipient updated successfully');
             } catch (\Exception $e) {
                 DB::rollBack();
                 throw $e;

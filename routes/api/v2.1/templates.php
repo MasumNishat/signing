@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V2_1\TemplateLockController;
 use App\Http\Controllers\Api\V2_1\TemplateNotificationController;
 use App\Http\Controllers\Api\V2_1\TemplateTabController;
 use App\Http\Controllers\Api\V2_1\TemplateBulkController;
+use App\Http\Controllers\Api\V2_1\DocumentVisibilityController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -249,4 +250,66 @@ Route::prefix('accounts/{accountId}/templates')->name('templates.')->group(funct
     Route::put('/{templateId}/tabs/{tabId}', [TemplateTabController::class, 'updateSingle'])
         ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
         ->name('tabs.update_single');
+
+    // =========================================================================
+    // TEMPLATE DOCUMENT TABS (Phase 1.1)
+    // =========================================================================
+
+    // Get tabs for a template document
+    Route::get('/{templateId}/documents/{documentId}/tabs', [TemplateTabController::class, 'getDocumentTabs'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('documents.tabs.index');
+
+    // Add tabs to a template document
+    Route::post('/{templateId}/documents/{documentId}/tabs', [TemplateTabController::class, 'addDocumentTabs'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('documents.tabs.store');
+
+    // Update tabs on a template document
+    Route::put('/{templateId}/documents/{documentId}/tabs', [TemplateTabController::class, 'updateDocumentTabs'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('documents.tabs.update');
+
+    // Delete tabs from a template document
+    Route::delete('/{templateId}/documents/{documentId}/tabs', [TemplateTabController::class, 'deleteDocumentTabs'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('documents.tabs.destroy');
+
+    // =========================================================================
+    // TEMPLATE RECIPIENT TABS (Phase 1.1)
+    // =========================================================================
+
+    // Get tabs for a template recipient
+    Route::get('/{templateId}/recipients/{recipientId}/tabs', [TemplateTabController::class, 'getRecipientTabs'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('recipients.tabs.index');
+
+    // Add tabs to a template recipient
+    Route::post('/{templateId}/recipients/{recipientId}/tabs', [TemplateTabController::class, 'addRecipientTabs'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('recipients.tabs.store');
+
+    // Update tabs for a template recipient
+    Route::put('/{templateId}/recipients/{recipientId}/tabs', [TemplateTabController::class, 'updateRecipientTabs'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('recipients.tabs.update');
+
+    // Delete tabs from a template recipient
+    Route::delete('/{templateId}/recipients/{recipientId}/tabs', [TemplateTabController::class, 'deleteRecipientTabs'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('recipients.tabs.destroy');
+
+    // =========================================================================
+    // TEMPLATE DOCUMENT VISIBILITY (Phase 1.2)
+    // =========================================================================
+
+    // Get document visibility settings for template
+    Route::get('/{templateId}/document_visibility', [DocumentVisibilityController::class, 'getTemplateVisibility'])
+        ->middleware(['throttle:api', 'check.account.access'])
+        ->name('document_visibility.index');
+
+    // Update document visibility settings for template
+    Route::put('/{templateId}/document_visibility', [DocumentVisibilityController::class, 'updateTemplateVisibility'])
+        ->middleware(['throttle:api', 'check.account.access', 'check.permission:can_update_templates'])
+        ->name('document_visibility.update');
 });

@@ -2,250 +2,587 @@
 
 namespace App\Http\Controllers\Api\V2_1;
 
+use App\Http\Controllers\Api\BaseController;
+use App\Models\Account;
 use App\Models\Template;
+use App\Models\EnvelopeDocument;
+use App\Models\EnvelopeRecipient;
 use App\Models\EnvelopeTab;
 use App\Services\TabService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 /**
- * TemplateTabController
+ * Template Tab Controller
  *
- * Handles template tab (form field) operations.
- * Templates reuse envelope_tabs table with template_id column.
- * Supports all 27 DocuSign tab types.
+ * Handles template tab (form field) management operations.
+ * Enables per-recipient and per-document tab assignment in templates.
+ *
+ * Endpoints:
+ * - GET    /templates/{id}/documents/{docId}/tabs           - Get document tabs
+ * - POST   /templates/{id}/documents/{docId}/tabs           - Add document tabs
+ * - PUT    /templates/{id}/documents/{docId}/tabs           - Update document tabs
+ * - DELETE /templates/{id}/documents/{docId}/tabs           - Delete document tabs
+ * - GET    /templates/{id}/recipients/{recipId}/tabs        - Get recipient tabs
+ * - POST   /templates/{id}/recipients/{recipId}/tabs        - Add recipient tabs
+ * - PUT    /templates/{id}/recipients/{recipId}/tabs        - Update recipient tabs
+ * - DELETE /templates/{id}/recipients/{recipId}/tabs        - Delete recipient tabs
  */
 class TemplateTabController extends BaseController
 {
+    /**
+     * Tab service
+     */
     protected TabService $tabService;
 
+    /**
+     * Initialize controller
+     */
     public function __construct(TabService $tabService)
     {
         $this->tabService = $tabService;
     }
 
     /**
-     * GET /accounts/{accountId}/templates/{templateId}/tabs
+     * Get all tabs for a template document
      *
-     * Get all tabs for a template, grouped by type
+     * GET /v2.1/accounts/{accountId}/templates/{templateId}/documents/{documentId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $templateId
+     * @param string $documentId
+     * @return JsonResponse
      */
-    public function index(string $accountId, string $templateId): JsonResponse
-    {
-        try {
-            $template = Template::where('account_id', $accountId)
-                ->where('template_id', $templateId)
-                ->with('tabs')
-                ->firstOrFail();
+    public function getDocumentTabs(
+        Request $request,
+        string $accountId,
+        string $templateId,
+        string $documentId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
 
-            // Group tabs by type
-            $groupedTabs = $this->tabService->groupTabsByType($template->tabs);
+        $template = Template::where('account_id', $account->id)
+            ->where('template_id', $templateId)
+            ->firstOrFail();
 
-            return $this->successResponse([
-                'tabs' => $groupedTabs,
-                'total_count' => $template->tabs->count(),
-            ], 'Template tabs retrieved successfully');
-        } catch (\Exception $e) {
-            return $this->handleException($e);
+        $document = EnvelopeDocument::where('template_id', $template->id)
+            ->where('document_id', $documentId)
+            ->firstOrFail();
+
+        // Get all tabs for this document across all recipients
+        $tabs = EnvelopeTab::where('template_id', $template->id)
+            ->where('document_id', $document->id)
+            ->when($request->query('type'), function ($query, $type) {
+                return $query->where('type', $type);
+            })
+            ->when($request->query('page_number'), function ($query, $pageNumber) {
+                return $query->where('page_number', $pageNumber);
+            })
+            ->get();
+
+        // Group tabs by recipient and type
+        $groupedTabs = [];
+        foreach ($tabs as $tab) {
+            $recipientId = $tab->recipient_id ?? 'unassigned';
+            if (!isset($groupedTabs[$recipientId])) {
+                $groupedTabs[$recipientId] = [];
+            }
+
+            $type = $tab->type;
+            if (!isset($groupedTabs[$recipientId][$type])) {
+                $groupedTabs[$recipientId][$type] = [];
+            }
+
+            $groupedTabs[$recipientId][$type][] = $this->tabService->getMetadata($tab);
         }
+
+        return $this->success([
+            'template_id' => $template->template_id,
+            'document_id' => $document->document_id,
+            'total_tabs' => $tabs->count(),
+            'tabs_by_recipient' => $groupedTabs,
+        ], 'Document tabs retrieved successfully');
     }
 
     /**
-     * POST /accounts/{accountId}/templates/{templateId}/tabs
+     * Add tabs to a template document
      *
-     * Add tabs to a template
+     * POST /v2.1/accounts/{accountId}/templates/{templateId}/documents/{documentId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $templateId
+     * @param string $documentId
+     * @return JsonResponse
      */
-    public function store(Request $request, string $accountId, string $templateId): JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'tabs' => 'required|array',
-                'tabs.*.tab_type' => 'required|string',
-                'tabs.*.recipient_id' => 'required|string',
-                'tabs.*.document_id' => 'required|string',
-                'tabs.*.page_number' => 'required|integer|min:1',
-                'tabs.*.x_position' => 'sometimes|numeric',
-                'tabs.*.y_position' => 'sometimes|numeric',
-                'tabs.*.width' => 'sometimes|numeric',
-                'tabs.*.height' => 'sometimes|numeric',
-                'tabs.*.anchor_string' => 'sometimes|string',
-                'tabs.*.anchor_x_offset' => 'sometimes|numeric',
-                'tabs.*.anchor_y_offset' => 'sometimes|numeric',
-                'tabs.*.label' => 'sometimes|string|max:255',
-                'tabs.*.value' => 'sometimes|string',
-                'tabs.*.required' => 'sometimes|boolean',
-                'tabs.*.locked' => 'sometimes|boolean',
-                'tabs.*.tab_order' => 'sometimes|integer',
-                'tabs.*.font' => 'sometimes|string',
-                'tabs.*.font_size' => 'sometimes|integer',
-                'tabs.*.font_color' => 'sometimes|string',
-                'tabs.*.bold' => 'sometimes|boolean',
-                'tabs.*.italic' => 'sometimes|boolean',
-                'tabs.*.underline' => 'sometimes|boolean',
-                'tabs.*.tooltip' => 'sometimes|string',
-                'tabs.*.validation_pattern' => 'sometimes|string',
-                'tabs.*.validation_message' => 'sometimes|string',
-                'tabs.*.list_items' => 'sometimes|array',
-                'tabs.*.selected' => 'sometimes|boolean',
-                'tabs.*.group_name' => 'sometimes|string',
-                'tabs.*.shared' => 'sometimes|boolean',
+    public function addDocumentTabs(
+        Request $request,
+        string $accountId,
+        string $templateId,
+        string $documentId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'tabs' => 'required|array|min:1',
+            'tabs.*.type' => 'required|string|in:' . implode(',', $this->tabService->getTabTypes()),
+            'tabs.*.recipient_id' => 'nullable|string',
+            'tabs.*.label' => 'nullable|string|max:255',
+            'tabs.*.page_number' => 'required|integer|min:1',
+            'tabs.*.x_position' => 'required|numeric',
+            'tabs.*.y_position' => 'required|numeric',
+            'tabs.*.width' => 'nullable|numeric',
+            'tabs.*.height' => 'nullable|numeric',
+            'tabs.*.required' => 'nullable|boolean',
+            'tabs.*.value' => 'nullable|string',
+            'tabs.*.validation_pattern' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $template = Template::where('account_id', $account->id)
+            ->where('template_id', $templateId)
+            ->firstOrFail();
+
+        $document = EnvelopeDocument::where('template_id', $template->id)
+            ->where('document_id', $documentId)
+            ->firstOrFail();
+
+        $createdTabs = [];
+        foreach ($request->input('tabs') as $tabData) {
+            // If recipient_id provided, verify it exists in template
+            $recipientId = null;
+            if (!empty($tabData['recipient_id'])) {
+                $recipient = EnvelopeRecipient::where('template_id', $template->id)
+                    ->where('recipient_id', $tabData['recipient_id'])
+                    ->first();
+                if ($recipient) {
+                    $recipientId = $recipient->id;
+                }
+            }
+
+            $tab = $this->tabService->createTab([
+                'template_id' => $template->id,
+                'document_id' => $document->id,
+                'recipient_id' => $recipientId,
+                'type' => $tabData['type'],
+                'label' => $tabData['label'] ?? null,
+                'page_number' => $tabData['page_number'],
+                'x_position' => $tabData['x_position'],
+                'y_position' => $tabData['y_position'],
+                'width' => $tabData['width'] ?? $this->tabService->getDefaultWidth($tabData['type']),
+                'height' => $tabData['height'] ?? $this->tabService->getDefaultHeight($tabData['type']),
+                'required' => $tabData['required'] ?? false,
+                'value' => $tabData['value'] ?? null,
+                'validation_pattern' => $tabData['validation_pattern'] ?? null,
             ]);
 
-            $template = Template::where('account_id', $accountId)
-                ->where('template_id', $templateId)
-                ->firstOrFail();
-
-            $createdTabs = $this->tabService->createTabs(
-                $template->id,
-                $validated['tabs'],
-                'template'
-            );
-
-            $groupedTabs = $this->tabService->groupTabsByType($createdTabs);
-
-            return $this->createdResponse([
-                'tabs' => $groupedTabs,
-                'total_count' => $createdTabs->count(),
-            ], 'Template tabs created successfully');
-        } catch (\Exception $e) {
-            return $this->handleException($e);
+            $createdTabs[] = $this->tabService->getMetadata($tab);
         }
+
+        return $this->created([
+            'template_id' => $template->template_id,
+            'document_id' => $document->document_id,
+            'tabs_added' => count($createdTabs),
+            'tabs' => $createdTabs,
+        ], 'Tabs added to document successfully');
     }
 
     /**
-     * PUT /accounts/{accountId}/templates/{templateId}/tabs
+     * Update tabs on a template document
      *
-     * Replace all tabs for a template
+     * PUT /v2.1/accounts/{accountId}/templates/{templateId}/documents/{documentId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $templateId
+     * @param string $documentId
+     * @return JsonResponse
      */
-    public function update(Request $request, string $accountId, string $templateId): JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'tabs' => 'required|array',
-                'tabs.*.tab_type' => 'required|string',
-                'tabs.*.recipient_id' => 'required|string',
-                'tabs.*.document_id' => 'required|string',
-                'tabs.*.page_number' => 'required|integer|min:1',
-                'tabs.*.x_position' => 'sometimes|numeric',
-                'tabs.*.y_position' => 'sometimes|numeric',
-                'tabs.*.width' => 'sometimes|numeric',
-                'tabs.*.height' => 'sometimes|numeric',
-                'tabs.*.anchor_string' => 'sometimes|string',
-                'tabs.*.label' => 'sometimes|string|max:255',
-                'tabs.*.value' => 'sometimes|string',
-                'tabs.*.required' => 'sometimes|boolean',
-            ]);
+    public function updateDocumentTabs(
+        Request $request,
+        string $accountId,
+        string $templateId,
+        string $documentId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'tabs' => 'required|array|min:1',
+            'tabs.*.tab_id' => 'required|string',
+            'tabs.*.recipient_id' => 'nullable|string',
+            'tabs.*.label' => 'nullable|string|max:255',
+            'tabs.*.page_number' => 'nullable|integer|min:1',
+            'tabs.*.x_position' => 'nullable|numeric',
+            'tabs.*.y_position' => 'nullable|numeric',
+            'tabs.*.width' => 'nullable|numeric',
+            'tabs.*.height' => 'nullable|numeric',
+            'tabs.*.required' => 'nullable|boolean',
+            'tabs.*.value' => 'nullable|string',
+        ]);
 
-            $template = Template::where('account_id', $accountId)
-                ->where('template_id', $templateId)
-                ->firstOrFail();
-
-            // Delete existing tabs
-            EnvelopeTab::where('template_id', $template->id)->delete();
-
-            // Create new tabs
-            $createdTabs = $this->tabService->createTabs(
-                $template->id,
-                $validated['tabs'],
-                'template'
-            );
-
-            $groupedTabs = $this->tabService->groupTabsByType($createdTabs);
-
-            return $this->successResponse([
-                'tabs' => $groupedTabs,
-                'total_count' => $createdTabs->count(),
-            ], 'Template tabs updated successfully');
-        } catch (\Exception $e) {
-            return $this->handleException($e);
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
         }
-    }
 
-    /**
-     * DELETE /accounts/{accountId}/templates/{templateId}/tabs
-     *
-     * Delete all tabs from a template
-     */
-    public function destroy(string $accountId, string $templateId): JsonResponse
-    {
-        try {
-            $template = Template::where('account_id', $accountId)
-                ->where('template_id', $templateId)
-                ->firstOrFail();
+        $account = Account::where('account_id', $accountId)->firstOrFail();
 
-            $count = EnvelopeTab::where('template_id', $template->id)->delete();
+        $template = Template::where('account_id', $account->id)
+            ->where('template_id', $templateId)
+            ->firstOrFail();
 
-            return $this->successResponse([
-                'deleted_count' => $count,
-            ], 'Template tabs deleted successfully');
-        } catch (\Exception $e) {
-            return $this->handleException($e);
-        }
-    }
+        $document = EnvelopeDocument::where('template_id', $template->id)
+            ->where('document_id', $documentId)
+            ->firstOrFail();
 
-    /**
-     * GET /accounts/{accountId}/templates/{templateId}/tabs/{tabId}
-     *
-     * Get a specific template tab
-     */
-    public function show(string $accountId, string $templateId, string $tabId): JsonResponse
-    {
-        try {
-            $template = Template::where('account_id', $accountId)
-                ->where('template_id', $templateId)
-                ->firstOrFail();
-
+        $updatedTabs = [];
+        foreach ($request->input('tabs') as $tabData) {
             $tab = EnvelopeTab::where('template_id', $template->id)
-                ->where('tab_id', $tabId)
+                ->where('document_id', $document->id)
+                ->where('tab_id', $tabData['tab_id'])
                 ->firstOrFail();
 
-            return $this->successResponse(
-                $this->tabService->formatTab($tab),
-                'Template tab retrieved successfully'
-            );
-        } catch (\Exception $e) {
-            return $this->handleException($e);
+            // Update recipient assignment if provided
+            if (isset($tabData['recipient_id'])) {
+                $recipient = EnvelopeRecipient::where('template_id', $template->id)
+                    ->where('recipient_id', $tabData['recipient_id'])
+                    ->first();
+                $tab->recipient_id = $recipient ? $recipient->id : null;
+            }
+
+            // Update tab properties
+            if (isset($tabData['label'])) $tab->label = $tabData['label'];
+            if (isset($tabData['page_number'])) $tab->page_number = $tabData['page_number'];
+            if (isset($tabData['x_position'])) $tab->x_position = $tabData['x_position'];
+            if (isset($tabData['y_position'])) $tab->y_position = $tabData['y_position'];
+            if (isset($tabData['width'])) $tab->width = $tabData['width'];
+            if (isset($tabData['height'])) $tab->height = $tabData['height'];
+            if (isset($tabData['required'])) $tab->required = $tabData['required'];
+            if (isset($tabData['value'])) $tab->value = $tabData['value'];
+
+            $tab->save();
+
+            $updatedTabs[] = $this->tabService->getMetadata($tab);
         }
+
+        return $this->success([
+            'template_id' => $template->template_id,
+            'document_id' => $document->document_id,
+            'tabs_updated' => count($updatedTabs),
+            'tabs' => $updatedTabs,
+        ], 'Document tabs updated successfully');
     }
 
     /**
-     * PUT /accounts/{accountId}/templates/{templateId}/tabs/{tabId}
+     * Delete tabs from a template document
      *
-     * Update a specific template tab
+     * DELETE /v2.1/accounts/{accountId}/templates/{templateId}/documents/{documentId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $templateId
+     * @param string $documentId
+     * @return JsonResponse
      */
-    public function updateSingle(Request $request, string $accountId, string $templateId, string $tabId): JsonResponse
-    {
-        try {
-            $validated = $request->validate([
-                'x_position' => 'sometimes|numeric',
-                'y_position' => 'sometimes|numeric',
-                'width' => 'sometimes|numeric',
-                'height' => 'sometimes|numeric',
-                'label' => 'sometimes|string|max:255',
-                'value' => 'sometimes|string',
-                'required' => 'sometimes|boolean',
-                'locked' => 'sometimes|boolean',
-                'tab_order' => 'sometimes|integer',
-                'tooltip' => 'sometimes|string',
-                'validation_pattern' => 'sometimes|string',
-                'validation_message' => 'sometimes|string',
+    public function deleteDocumentTabs(
+        Request $request,
+        string $accountId,
+        string $templateId,
+        string $documentId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'tab_ids' => 'required|array|min:1',
+            'tab_ids.*' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $template = Template::where('account_id', $account->id)
+            ->where('template_id', $templateId)
+            ->firstOrFail();
+
+        $document = EnvelopeDocument::where('template_id', $template->id)
+            ->where('document_id', $documentId)
+            ->firstOrFail();
+
+        $deletedCount = EnvelopeTab::where('template_id', $template->id)
+            ->where('document_id', $document->id)
+            ->whereIn('tab_id', $request->input('tab_ids'))
+            ->delete();
+
+        return $this->success([
+            'template_id' => $template->template_id,
+            'document_id' => $document->document_id,
+            'tabs_deleted' => $deletedCount,
+        ], 'Document tabs deleted successfully');
+    }
+
+    /**
+     * Get all tabs for a template recipient
+     *
+     * GET /v2.1/accounts/{accountId}/templates/{templateId}/recipients/{recipientId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $templateId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function getRecipientTabs(
+        Request $request,
+        string $accountId,
+        string $templateId,
+        string $recipientId
+    ): JsonResponse {
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $template = Template::where('account_id', $account->id)
+            ->where('template_id', $templateId)
+            ->firstOrFail();
+
+        $recipient = EnvelopeRecipient::where('template_id', $template->id)
+            ->where('recipient_id', $recipientId)
+            ->firstOrFail();
+
+        $tabs = EnvelopeTab::where('template_id', $template->id)
+            ->where('recipient_id', $recipient->id)
+            ->when($request->query('document_id'), function ($query, $documentId) use ($template) {
+                $document = EnvelopeDocument::where('template_id', $template->id)
+                    ->where('document_id', $documentId)
+                    ->firstOrFail();
+                return $query->where('document_id', $document->id);
+            })
+            ->when($request->query('type'), function ($query, $type) {
+                return $query->where('type', $type);
+            })
+            ->get();
+
+        // Group tabs by document and type
+        $groupedTabs = [];
+        foreach ($tabs as $tab) {
+            $docId = $tab->document->document_id ?? 'unknown';
+            if (!isset($groupedTabs[$docId])) {
+                $groupedTabs[$docId] = [];
+            }
+
+            $type = $tab->type;
+            if (!isset($groupedTabs[$docId][$type])) {
+                $groupedTabs[$docId][$type] = [];
+            }
+
+            $groupedTabs[$docId][$type][] = $this->tabService->getMetadata($tab);
+        }
+
+        return $this->success([
+            'template_id' => $template->template_id,
+            'recipient_id' => $recipient->recipient_id,
+            'total_tabs' => $tabs->count(),
+            'tabs_by_document' => $groupedTabs,
+        ], 'Recipient tabs retrieved successfully');
+    }
+
+    /**
+     * Add tabs to a template recipient
+     *
+     * POST /v2.1/accounts/{accountId}/templates/{templateId}/recipients/{recipientId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $templateId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function addRecipientTabs(
+        Request $request,
+        string $accountId,
+        string $templateId,
+        string $recipientId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'tabs' => 'required|array|min:1',
+            'tabs.*.type' => 'required|string|in:' . implode(',', $this->tabService->getTabTypes()),
+            'tabs.*.document_id' => 'required|string',
+            'tabs.*.label' => 'nullable|string|max:255',
+            'tabs.*.page_number' => 'required|integer|min:1',
+            'tabs.*.x_position' => 'required|numeric',
+            'tabs.*.y_position' => 'required|numeric',
+            'tabs.*.width' => 'nullable|numeric',
+            'tabs.*.height' => 'nullable|numeric',
+            'tabs.*.required' => 'nullable|boolean',
+            'tabs.*.value' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $template = Template::where('account_id', $account->id)
+            ->where('template_id', $templateId)
+            ->firstOrFail();
+
+        $recipient = EnvelopeRecipient::where('template_id', $template->id)
+            ->where('recipient_id', $recipientId)
+            ->firstOrFail();
+
+        $createdTabs = [];
+        foreach ($request->input('tabs') as $tabData) {
+            $document = EnvelopeDocument::where('template_id', $template->id)
+                ->where('document_id', $tabData['document_id'])
+                ->firstOrFail();
+
+            $tab = $this->tabService->createTab([
+                'template_id' => $template->id,
+                'document_id' => $document->id,
+                'recipient_id' => $recipient->id,
+                'type' => $tabData['type'],
+                'label' => $tabData['label'] ?? null,
+                'page_number' => $tabData['page_number'],
+                'x_position' => $tabData['x_position'],
+                'y_position' => $tabData['y_position'],
+                'width' => $tabData['width'] ?? $this->tabService->getDefaultWidth($tabData['type']),
+                'height' => $tabData['height'] ?? $this->tabService->getDefaultHeight($tabData['type']),
+                'required' => $tabData['required'] ?? false,
+                'value' => $tabData['value'] ?? null,
             ]);
 
-            $template = Template::where('account_id', $accountId)
-                ->where('template_id', $templateId)
-                ->firstOrFail();
-
-            $tab = EnvelopeTab::where('template_id', $template->id)
-                ->where('tab_id', $tabId)
-                ->firstOrFail();
-
-            $tab->update($validated);
-
-            return $this->successResponse(
-                $this->tabService->formatTab($tab->fresh()),
-                'Template tab updated successfully'
-            );
-        } catch (\Exception $e) {
-            return $this->handleException($e);
+            $createdTabs[] = $this->tabService->getMetadata($tab);
         }
+
+        return $this->created([
+            'template_id' => $template->template_id,
+            'recipient_id' => $recipient->recipient_id,
+            'tabs_added' => count($createdTabs),
+            'tabs' => $createdTabs,
+        ], 'Tabs added to recipient successfully');
+    }
+
+    /**
+     * Update tabs for a template recipient
+     *
+     * PUT /v2.1/accounts/{accountId}/templates/{templateId}/recipients/{recipientId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $templateId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function updateRecipientTabs(
+        Request $request,
+        string $accountId,
+        string $templateId,
+        string $recipientId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'tabs' => 'required|array|min:1',
+            'tabs.*.tab_id' => 'required|string',
+            'tabs.*.label' => 'nullable|string|max:255',
+            'tabs.*.page_number' => 'nullable|integer|min:1',
+            'tabs.*.x_position' => 'nullable|numeric',
+            'tabs.*.y_position' => 'nullable|numeric',
+            'tabs.*.width' => 'nullable|numeric',
+            'tabs.*.height' => 'nullable|numeric',
+            'tabs.*.required' => 'nullable|boolean',
+            'tabs.*.value' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $template = Template::where('account_id', $account->id)
+            ->where('template_id', $templateId)
+            ->firstOrFail();
+
+        $recipient = EnvelopeRecipient::where('template_id', $template->id)
+            ->where('recipient_id', $recipientId)
+            ->firstOrFail();
+
+        $updatedTabs = [];
+        foreach ($request->input('tabs') as $tabData) {
+            $tab = EnvelopeTab::where('template_id', $template->id)
+                ->where('recipient_id', $recipient->id)
+                ->where('tab_id', $tabData['tab_id'])
+                ->firstOrFail();
+
+            // Update tab properties
+            if (isset($tabData['label'])) $tab->label = $tabData['label'];
+            if (isset($tabData['page_number'])) $tab->page_number = $tabData['page_number'];
+            if (isset($tabData['x_position'])) $tab->x_position = $tabData['x_position'];
+            if (isset($tabData['y_position'])) $tab->y_position = $tabData['y_position'];
+            if (isset($tabData['width'])) $tab->width = $tabData['width'];
+            if (isset($tabData['height'])) $tab->height = $tabData['height'];
+            if (isset($tabData['required'])) $tab->required = $tabData['required'];
+            if (isset($tabData['value'])) $tab->value = $tabData['value'];
+
+            $tab->save();
+
+            $updatedTabs[] = $this->tabService->getMetadata($tab);
+        }
+
+        return $this->success([
+            'template_id' => $template->template_id,
+            'recipient_id' => $recipient->recipient_id,
+            'tabs_updated' => count($updatedTabs),
+            'tabs' => $updatedTabs,
+        ], 'Recipient tabs updated successfully');
+    }
+
+    /**
+     * Delete tabs from a template recipient
+     *
+     * DELETE /v2.1/accounts/{accountId}/templates/{templateId}/recipients/{recipientId}/tabs
+     *
+     * @param Request $request
+     * @param string $accountId
+     * @param string $templateId
+     * @param string $recipientId
+     * @return JsonResponse
+     */
+    public function deleteRecipientTabs(
+        Request $request,
+        string $accountId,
+        string $templateId,
+        string $recipientId
+    ): JsonResponse {
+        $validator = Validator::make($request->all(), [
+            'tab_ids' => 'required|array|min:1',
+            'tab_ids.*' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->validationError($validator->errors());
+        }
+
+        $account = Account::where('account_id', $accountId)->firstOrFail();
+
+        $template = Template::where('account_id', $account->id)
+            ->where('template_id', $templateId)
+            ->firstOrFail();
+
+        $recipient = EnvelopeRecipient::where('template_id', $template->id)
+            ->where('recipient_id', $recipientId)
+            ->firstOrFail();
+
+        $deletedCount = EnvelopeTab::where('template_id', $template->id)
+            ->where('recipient_id', $recipient->id)
+            ->whereIn('tab_id', $request->input('tab_ids'))
+            ->delete();
+
+        return $this->success([
+            'template_id' => $template->template_id,
+            'recipient_id' => $recipient->recipient_id,
+            'tabs_deleted' => $deletedCount,
+        ], 'Recipient tabs deleted successfully');
     }
 }
