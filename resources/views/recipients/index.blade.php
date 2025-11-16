@@ -78,7 +78,7 @@
         <!-- Page Header -->
         <div class="mb-6 flex items-center justify-between">
             <div>
-                <h1 class="text-2xl font-bold text-primary">Recipients</h1>
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Recipients</h1>
                 <p class="mt-1 text-sm text-text-secondary">Manage envelope recipients and contacts</p>
             </div>
             <x-ui.button variant="primary" onclick="window.location.href='/recipients/create'">
@@ -99,7 +99,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-text-secondary mb-2">Type</label>
-                    <select x-model="filters.type" class="w-full rounded-md border-border-primary bg-primary text-primary">
+                    <select x-model="filters.type" class="w-full rounded-md border border-gray-300 bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600">
                         <option value="all">All Types</option>
                         <option value="signer">Signer</option>
                         <option value="cc">CC</option>
@@ -108,7 +108,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-text-secondary mb-2">Status</label>
-                    <select x-model="filters.status" class="w-full rounded-md border-border-primary bg-primary text-primary">
+                    <select x-model="filters.status" class="w-full rounded-md border border-gray-300 bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-600">
                         <option value="all">All Status</option>
                         <option value="created">Created</option>
                         <option value="sent">Sent</option>
@@ -130,7 +130,7 @@
 
         <!-- Bulk Actions -->
         <div x-show="selectedRecipients.length > 0" class="mb-4 flex items-center justify-between bg-primary-50 dark:bg-primary-900/20 px-4 py-3 rounded-lg">
-            <span class="text-sm font-medium text-primary" x-text="`${selectedRecipients.length} recipient(s) selected`"></span>
+            <span class="text-sm font-medium text-primary-900 dark:text-primary-100" x-text="`${selectedRecipients.length} recipient(s) selected`"></span>
             <x-ui.button variant="danger" size="sm" @click="bulkDelete()">
                 Delete Selected
             </x-ui.button>
@@ -161,7 +161,7 @@
                             <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-primary divide-y divide-border-primary">
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-border-primary">
                         <template x-for="recipient in recipients" :key="recipient.id">
                             <tr class="hover:bg-bg-hover">
                                 <td class="px-6 py-4">
@@ -171,7 +171,7 @@
                                            class="rounded border-gray-300">
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="font-medium text-primary" x-text="recipient.name"></div>
+                                    <div class="font-medium text-gray-900 dark:text-gray-100" x-text="recipient.name"></div>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-text-secondary" x-text="recipient.email"></td>
                                 <td class="px-6 py-4">
@@ -207,7 +207,7 @@
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    <h3 class="mt-2 text-sm font-medium text-primary">No recipients found</h3>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No recipients found</h3>
                     <p class="mt-1 text-sm text-text-secondary">Get started by adding a new recipient.</p>
                     <div class="mt-6">
                         <x-ui.button variant="primary" onclick="window.location.href='/recipients/create'">
