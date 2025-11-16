@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         // Apply rate limiting to API routes globally
+        // Note: Authentication is handled per-route basis via auth:api middleware
         $middleware->api(append: [
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             'throttle:api',
