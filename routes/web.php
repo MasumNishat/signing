@@ -18,6 +18,7 @@ use App\Http\Controllers\Web\FolderController;
 use App\Http\Controllers\Web\WorkspaceController;
 use App\Http\Controllers\Web\ConnectController;
 use App\Http\Controllers\Web\WorkflowController;
+use App\Http\Controllers\Web\DiagnosticsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('envelopes')->name('envelopes.')->group(function () {
         Route::get('/', [EnvelopeController::class, 'index'])->name('index');
         Route::get('/create', [EnvelopeController::class, 'create'])->name('create');
+        Route::get('/advanced-search', [EnvelopeController::class, 'advancedSearch'])->name('advanced-search');
         Route::get('/{id}', [EnvelopeController::class, 'show'])->name('show');
         Route::get('/{id}/edit', [EnvelopeController::class, 'edit'])->name('edit');
     });
@@ -162,5 +164,11 @@ Route::middleware('auth')->group(function () {
     // Workflow Routes (Phase F7)
     Route::prefix('workflow')->name('workflow.')->group(function () {
         Route::get('/builder', [WorkflowController::class, 'builder'])->name('builder');
+    });
+
+    // Diagnostics Routes (Phase F8)
+    Route::prefix('diagnostics')->name('diagnostics.')->group(function () {
+        Route::get('/logs', [DiagnosticsController::class, 'logs'])->name('logs');
+        Route::get('/health', [DiagnosticsController::class, 'health'])->name('health');
     });
 });

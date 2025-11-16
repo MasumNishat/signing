@@ -42,4 +42,12 @@ class EnvelopeController extends Controller
     {
         return view('envelopes.edit', ['envelopeId' => $id]);
     }
+
+    /**
+     * Display advanced search interface
+     */
+    public function advancedSearch()
+    {
+        return view('envelopes.advanced-search');
+    }
 }
