@@ -296,11 +296,11 @@
                                     x-bind:name="'recipient_type_' + index"
                                     label="Role"
                                     x-model="recipient.recipient_type"
-                                    x-bind:options="[
-                                        'signer' => 'Signer',
-                                        'cc' => 'CC (Receives Copy)',
-                                        'in_person_signer' => 'In-Person Signer'
-                                    ]"
+                                    x-bind:options="{
+                                        'signer': 'Signer',
+                                        'cc': 'CC (Receives Copy)',
+                                        'in_person_signer': 'In-Person Signer'
+                                    }"
                                 />
                                 <button @click="removeRecipient(recipient.id)" class="mt-2 text-sm text-red-600 hover:text-red-700">
                                     Remove
