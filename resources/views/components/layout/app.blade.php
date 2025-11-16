@@ -142,8 +142,9 @@
     @auth
     <script>
         document.addEventListener('alpine:init', () => {
-            // Set user data from Laravel session
+            // Set user data and API token from Laravel session
             Alpine.store('auth').user = @json(auth()->user());
+            Alpine.store('auth').token = @json(session('api_token'));
         });
     </script>
     @endauth

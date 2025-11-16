@@ -34,6 +34,13 @@ class AuthController extends Controller
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            // Generate personal access token for API calls
+            $user = Auth::user();
+            $token = $user->createToken('web-session')->accessToken;
+
+            // Store token in session for frontend use
+            session(['api_token' => $token]);
+
             return redirect()->intended('dashboard');
         }
 
@@ -70,6 +77,10 @@ class AuthController extends Controller
         // Auto-login after registration
         Auth::login($user);
 
+        // Generate personal access token for API calls
+        $token = $user->createToken('web-session')->accessToken;
+        session(['api_token' => $token]);
+
         return redirect('dashboard');
     }
 
@@ -78,6 +89,12 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        // Revoke all user tokens before logout
+        $user = Auth::user();
+        if ($user) {
+            $user->tokens()->delete();
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();
