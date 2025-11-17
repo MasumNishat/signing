@@ -49,7 +49,7 @@ class AccountController extends Controller
         $validator = Validator::make($request->all(), [
             'account_name' => 'required|string|max:255',
             'organization' => 'nullable|string|max:255',
-            'plan_id' => 'required|integer|exists:plans,id',
+            'plan_id' => 'nullable|integer|exists:plans,id',
         ]);
 
         if ($validator->fails()) {
