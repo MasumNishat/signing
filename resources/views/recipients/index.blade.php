@@ -28,8 +28,8 @@
                     status: this.filters.status
                 });
 
-                const response = await $api.get(`/accounts/${$store.auth.user.account_id}/recipients?${params}`);
-                this.recipients = response.data.data;
+                const response = await $api.get(`/accounts/${$store.auth.user.account_id}/contacts?${params}`);
+                this.recipients = response.data.data || response.data;
                 this.pagination = response.data.meta;
                 this.loading = false;
             } catch (error) {
@@ -41,7 +41,7 @@
             if (!confirm('Delete this recipient?')) return;
 
             try {
-                await $api.delete(`/accounts/${$store.auth.user.account_id}/recipients/${id}`);
+                await $api.delete(`/accounts/${$store.auth.user.account_id}/contacts/${id}`);
                 $store.toast.success('Recipient deleted');
                 this.loadRecipients(this.pagination.current_page);
             } catch (error) {
@@ -62,7 +62,7 @@
             try {
                 await Promise.all(
                     this.selectedRecipients.map(id =>
-                        $api.delete(`/accounts/${$store.auth.user.account_id}/recipients/${id}`)
+                        $api.delete(`/accounts/${$store.auth.user.account_id}/contacts/${id}`)
                     )
                 );
                 $store.toast.success(`${this.selectedRecipients.length} recipient(s) deleted`);
