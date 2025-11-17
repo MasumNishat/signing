@@ -32,4 +32,22 @@ class DocumentController extends Controller
     {
         return view('documents.viewer', ['documentId' => $id]);
     }
+
+    /**
+     * Show the create form
+     */
+    public function create()
+    {
+        return view('documents.create');
+    }
+
+    /**
+     * Show the edit form
+     *
+     * @param string $id
+     */
+    public function edit($id)
+    {
+        return view('documents.edit', ['documentId' => $id]);
+    }
 }
