@@ -11,6 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: 'api',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        then: function () {
+            // Cache clearing routes (development only)
+            if (file_exists(__DIR__.'/../routes/clear-cache.php')) {
+                require __DIR__.'/../routes/clear-cache.php';
+            }
+        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Register middleware aliases
