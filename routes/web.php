@@ -85,8 +85,10 @@ Route::middleware('auth')->group(function () {
     // Document Routes (Phase F5)
     Route::prefix('documents')->name('documents.')->group(function () {
         Route::get('/', [DocumentController::class, 'index'])->name('index');
+        Route::get('/create', [DocumentController::class, 'create'])->name('create');
         Route::get('/upload', [DocumentController::class, 'upload'])->name('upload');
         Route::get('/{id}/viewer', [DocumentController::class, 'viewer'])->name('viewer');
+        Route::get('/{id}/edit', [DocumentController::class, 'edit'])->name('edit');
     });
 
     // Recipient Routes (Phase F5)
