@@ -48,7 +48,7 @@ Route::prefix('v2.1')->name('api.v2.1.')->group(function () {
 
     // Protected Routes (Authentication handled by individual route middleware)
     // Note: CheckAccountAccess middleware supports both auth:api and auth:web guards
-    Route::group(function () {
+    Route::group([], function () {
 
         // Authentication (requires auth:api guard)
         Route::prefix('auth')->name('auth.')->middleware('auth:api')->group(function () {
