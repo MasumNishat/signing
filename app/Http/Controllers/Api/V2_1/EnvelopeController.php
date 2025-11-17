@@ -85,9 +85,10 @@ class EnvelopeController extends BaseController
 
         // Validate request
         $validator = Validator::make($request->all(), [
-            'email_subject' => 'required|string|max:500',
+            'email_subject' => 'nullable|string|max:500',
             'email_blurb' => 'nullable|string',
             'sender_user_id' => 'nullable|integer|exists:users,id',
+            'status' => 'nullable|string|in:draft,sent',
 
             // Envelope settings
             'enable_wet_sign' => 'nullable|boolean',
@@ -107,8 +108,8 @@ class EnvelopeController extends BaseController
             // Workflow settings
             'enable_sequential_signing' => 'nullable|boolean',
 
-            // Documents
-            'documents' => 'required|array|min:1',
+            // Documents (allow minimal metadata for draft envelopes)
+            'documents' => 'nullable|array',
             'documents.*.name' => 'required|string|max:255',
             'documents.*.document_base64' => 'nullable|string',
             'documents.*.file' => 'nullable|file|max:25000|mimes:pdf,doc,docx',
@@ -117,25 +118,26 @@ class EnvelopeController extends BaseController
             'documents.*.signable' => 'nullable|boolean',
             'documents.*.include_in_download' => 'nullable|boolean',
 
-            // Recipients
-            'recipients' => 'required|array|min:1',
-            'recipients.*.type' => 'required|string|in:signer,viewer,approver,certifiedDelivery',
+            // Recipients (accept both 'type' and 'recipient_type' for compatibility)
+            'recipients' => 'nullable|array',
+            'recipients.*.type' => 'nullable|string|in:signer,viewer,approver,certifiedDelivery',
+            'recipients.*.recipient_type' => 'nullable|string|in:signer,viewer,approver,certifiedDelivery',
             'recipients.*.name' => 'required|string|max:255',
             'recipients.*.email' => 'required|email|max:255',
             'recipients.*.routing_order' => 'nullable|integer|min:1',
             'recipients.*.tabs' => 'nullable|array',
-            'recipients.*.tabs.*.type' => 'required|string',
+            'recipients.*.tabs.*.type' => 'required_with:recipients.*.tabs|string',
             'recipients.*.tabs.*.tab_label' => 'nullable|string|max:255',
-            'recipients.*.tabs.*.page_number' => 'required|integer|min:1',
-            'recipients.*.tabs.*.x_position' => 'required|integer|min:0',
-            'recipients.*.tabs.*.y_position' => 'required|integer|min:0',
+            'recipients.*.tabs.*.page_number' => 'nullable|integer|min:1',
+            'recipients.*.tabs.*.x_position' => 'nullable|integer|min:0',
+            'recipients.*.tabs.*.y_position' => 'nullable|integer|min:0',
             'recipients.*.tabs.*.width' => 'nullable|integer|min:1',
             'recipients.*.tabs.*.height' => 'nullable|integer|min:1',
             'recipients.*.tabs.*.required' => 'nullable|boolean',
 
             // Custom fields
             'custom_fields' => 'nullable|array',
-            'custom_fields.*.name' => 'required|string|max:255',
+            'custom_fields.*.name' => 'required_with:custom_fields|string|max:255',
             'custom_fields.*.value' => 'nullable|string',
             'custom_fields.*.type' => 'nullable|string|in:text,list',
             'custom_fields.*.required' => 'nullable|boolean',
@@ -146,8 +148,19 @@ class EnvelopeController extends BaseController
             return $this->validationError($validator->errors());
         }
 
+        // Normalize recipient_type to type for backwards compatibility
+        $validated = $validator->validated();
+        if (isset($validated['recipients'])) {
+            foreach ($validated['recipients'] as &$recipient) {
+                if (isset($recipient['recipient_type']) && !isset($recipient['type'])) {
+                    $recipient['type'] = $recipient['recipient_type'];
+                    unset($recipient['recipient_type']);
+                }
+            }
+        }
+
         try {
-            $envelope = $this->envelopeService->createEnvelope($account, $validator->validated());
+            $envelope = $this->envelopeService->createEnvelope($account, $validated);
 
             return $this->created($envelope, 'Envelope created successfully');
         } catch (\Exception $e) {
